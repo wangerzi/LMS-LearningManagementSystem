@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>邮件发送设置</title>
+    <link rel="stylesheet" href="__PUBLIC__/css/reset.css" />
+    <link rel="stylesheet" href="__PUBLIC__/css/basic.css" />
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script type="text/javascript">
+    	
+    </script>
+	<style type="text/css">
+		table{
+			width:100%;
+		}
+		th{
+			text-align: center;
+		}
+        td{
+            height:30px;
+            border:1px solid #eee;
+        }
+	</style>
+</head>
+<body>
+	<form action="{:U(GROUP_NAME.'/System/updateWeb')}" method="post">
+		{$__UNIQID__}
+		<table>
+			<tr>
+				<th colspan="2">邮件发送设置</th>
+			</tr>
+            <foreach name="data" item="v" key="k">
+                <tr>
+                    <td>{$v}：</td>
+                    <td>
+                        <input type="text" name="{$k}" value="{:C($k)}"/>
+                    </td>
+                </tr>
+            </foreach>
+            <tr>
+                <td colspan="2">
+                    <input type="submit" value="保存" />
+                </td>
+            </tr>
+		</table>
+	</form>
+</body>
+</html>

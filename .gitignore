@@ -1,0 +1,5 @@
+#忽视零时文件。
+/LMS/temp
+/LMS/data/user
+/other
+/resource

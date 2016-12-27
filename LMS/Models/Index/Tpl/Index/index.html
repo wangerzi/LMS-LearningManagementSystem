@@ -1,0 +1,78 @@
+<extend name="./LMS/Models/Index/Tpl/base.html" />
+<block name="title">
+    主页
+</block>
+<block name="CSS_AND_JS">
+    <!--每个页面特色的CSS区域-->
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/css/index.css" />
+    <!--highcharts图表插件-->
+    <script src="__PUBLIC__/js/penguin/Highcharts/highcharts.js"></script>
+    <script type="text/javascript">
+        var day_active_id="day-active-chart";
+        var day_active_data_url="{$day_active_path}";//数据源
+    </script>
+    <!--active图标的JS-->
+    <script src="__PUBLIC__/js/charts/day-active.js"></script>
+    <!--/每个页面特色的CSS区域-->
+</block>
+<block name="body">
+    <!--顶部的导航栏！-->
+    <ul class="nav nav-pills nav-justified" id="main-top-leader">
+        <li>
+            <a href="{:U(GROUP_NAME.'/Plan/index',array('type'=>'today_not_complete'))}">
+                <h4 class="text-center">
+                    {$plan_num['not_complete']}
+                </h4>
+                 <p class="text-info">今日未完成计划</p>
+            </a>
+        </li>
+        <li>
+            <a href="{:U(GROUP_NAME.'/Plan/index',array('type'=>'today_complete'))}">
+                <h4 class="text-center">
+                    {$plan_num['complete']}
+                </h4>
+                 <p class="text-info">今日已完成计划</p>
+            </a>
+        </li>
+        <li>
+            <a href="{:U(GROUP_NAME.'/Plan/index',array('type'=>'continue'))}">
+                <h4 class="text-center">
+                    {$plan_num['continue']}
+                </h4>
+                 <p class="text-info">已开始学习计划</p>
+            </a>
+        </li>
+        <li>
+            <a href="{:U(GROUP_NAME.'/Plan/index',array('type'=>'end'))}">
+                <h4 class="text-center">
+                    {$plan_num['end']}
+                </h4>
+                 <p class="text-info">已结束学习计划</p>
+            </a>
+        </li>
+         <li>
+            <a href="">
+                <h4 class="text-center">
+                    {$number['message']}
+                </h4>
+                 <p class="text-info">未处理私信</p>
+            </a>
+        </li>
+        <li>
+            <a href="" class="no-right">
+                <h4 class="text-center">
+                    0
+                </h4>
+                 <p class="text-info">未处理监督报告</p>
+            </a>
+        </li>
+    </ul>
+    <hr style="margin-top:0;">
+    <!--日活跃量的图！-->
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <span class="panel-title">任务曲线</span>
+        </div>
+        <div class="panel-body" id="day-active-chart"></div>
+    </div>
+</block>

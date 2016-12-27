@@ -1,0 +1,401 @@
+<html lang='en'>
+<head>
+	<meta charset='utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1.0'>
+		<title>LMS学习管理系统-主页</title>
+
+	<link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="./css/base.css" />
+
+	<script type="text/javascript" src='./js/jquery.min.js'></script>
+	<script type="text/javascript" src='./js/bootstrap.min.js'></script>
+
+	<script type="text/javascript" src='./js/base.js'></script>
+
+	<!--特色JS/CSS-->
+	<script type="text/javascript" src='./js/plan/add.js'></script>
+	<!--/特色JS/CSS-->
+	<style type="text/css">
+	</style>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+	<!--最前边的标题-->
+	<div class="navbar-header navbar-nav navbar-left" style="margin-right:20px;">
+		<a href="" class="navbar-brand" style="color:#fff;"><span class="glyphicon glyphicon-tasks"></span> LMS学习管理系统</a>
+	</div>
+	<!--快速点击的链接（左）-->
+	<ul class="navbar-nav  nav nav-pills navbar-left">
+		<li><a href="">管理学习计划</a></li>
+		<li><a href="">寻找有缘人</a></li>
+		<li><a href="">下载APP</a></li>
+	</ul>
+	<!--用户的个人信息消息-->
+	<ul class="navbar-nav nav nav-pills navbar-right" style="padding-right: 20px;">
+		<li class="dropdown" id="messageArea">
+			<p class="dropdown-toggle clearfix navbar-text">
+				消息
+			</p>
+			<ul class="dropdown-menu" role="menu">
+				<li class="alert alert-info alert-dismissable">
+					<button class="close" data-dismiss="alert" aria-hidden="true">x</button>
+					{:C('WEB_NAME')}
+				</li>
+				<li class="alert alert-warning alert-dismissable">
+					<button class="close" data-dismiss="alert" aria-hidden="true">x</button>
+					消息2
+				</li>
+				<li class="alert alert-danger alert-dismissable">
+					<button class="close" data-dismiss="alert" aria-hidden="true">x</button>
+					消息3
+				</li>
+			</ul>
+		</li>
+		<li class="dropdown">
+			<div class="dropdown-toggle clearfix">
+				<img src="images/face.jpg" width="30px" height="30px" class="img-circle img-responsive pull-left" style="margin:10px 0 0 0" />
+				<p class="navbar-text pull-left">王二子<span class="caret"></span></p>
+			</div>
+			<ul class="dropdown-menu" role="menu">
+				<li><a href="">我的私信</a></li>
+				<li><a href="">账户设置</a></li>
+				<li><a href="">退出登录</a></li>
+			</ul>
+		</li>
+	</ul>
+	<!--搜索框-->
+	<form class="navbar-form navbar-right">
+		<div class="input-group input-group-sm">
+			<span class="input-group-addon">
+				<span class="glyphicon glyphicon-search"></span>
+			</span>
+			<input type="text" class="form-control" placeholder="Search" />
+		</div>
+	</form>
+</nav>
+<div class="container " style="width:100%;">
+	<div class="row" style="padding:30px 0;">
+		<!--左边的-->
+		<div class="col-md-2">
+			<ul class="nav nav-pills nav-stacked" id="left-leader">
+				<li class="active">
+					<a href="">
+						<span class="glyphicon glyphicon-home"></span>
+						我的首页
+					</a>
+				</li>
+				<li class="">
+					<a href="">
+						<span class="glyphicon glyphicon-align-left"></span>
+						我的学习计划
+					</a>
+				</li>
+				<li class="">
+					<a href="">
+						<span class="glyphicon glyphicon-user"></span>
+						好友管理
+					</a>
+				</li>
+				<li class="">
+					<a href="">
+						<span class="glyphicon glyphicon-eye-open"></span>
+						我监督的人
+					</a>
+				</li>
+				<li class="">
+					<a href="">
+						<span class="glyphicon glyphicon-envelope"></span>
+						私信管理
+					</a>
+				</li>
+				<li class="">
+					<a href="">
+						<span class="glyphicon glyphicon-cog"></span>
+						账户管理
+					</a>
+				</li>
+			</ul>
+		</div>
+		<!--右侧的操作区-->
+		<div class="col-md-10">
+			<span class="col-md-11 col-offset-1">
+				<form action="" role="form">
+					<!--基本设置-->
+					<div class="panel panel-success">
+						<div class="panel-heading">
+							<div class="panel-title">
+								基本设置
+							</div>
+						</div>
+						<div class="panel-body">
+							<!--计划名称-->
+							<div class="form-group col-md-6">
+								<label for="planName" class="control-label">计划名称</label>
+								<input type="text" class="form-control" name="planName" id="planName" />
+							</div>
+								<!--是否公开-->
+							<div class="form-group col-md-6">
+								<label class="control-label">是否公开</label>
+								<div class="radio">
+									<label>
+										<input type="radio" name="open" value="1" checked="checked" />
+										公开
+									</label>
+									<label>
+										<input type="radio" name="open" value="0" />
+										不公开
+									</label>
+								</div>
+							</div>
+								<!--开启时间-->
+							<div class="form-group col-md-6">
+								<label class="control-label">开始时间</label>
+								<div class="">
+									<input type="date" name="startTime" class="form-control" style="width:auto;"/>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!--学习阶段和任务！-->
+					<div class="panel panel-success">
+						<div class="panel-heading">
+							<div class="panel-title">添加学习阶段和任务</div>
+						</div>
+						<div class="panel-body" id="addStageArea">
+							<div class="col-md-12" style="margin-bottom:10px;">
+								<button type="button" class="btn btn-success" id="addStage">
+									<span class="glyphicon glyphicon-plus-sign"></span>
+									添加阶段
+								</button>
+							</div>
+						</div>
+						<div class="panel-footer">
+							您可以点击 <a href="javascript:add_stage();">添加阶段</a> 添加一个学习阶段，并可以在学习阶段下添加许多任务，学习任务可以设置完成时长，我们会根据您每日的可学习时间计算出完成计划的总时间，每日可学习时间可以在 <a
+								href="">系统设置</a>里设置。
+						</div>
+					</div>
+					<!--添加阶段 基本样式-->
+					<!--<div class="form-group">
+						<label class="control-label col-md-12">第<span>1</span>阶段</label>
+						<div class="col-md-6">
+							<input type="text" name="stage_1" class="form-control" style="margin-bottom:5px;" />
+							<textarea name="stage_info_1" cols="30" rows="3" class="form-control"></textarea>
+						</div>
+						<div class="col-md-6">
+							<button type="button" class="btn btn-danger">
+								<span class="glyphicon glyphicon-remove"></span>
+								删除阶段
+							</button>
+							<button type="button" class="btn btn-success">
+								<span class="glyphicon glyphicon-plus"></span>
+								添加任务
+							</button>
+						</div>
+						&lt;!&ndash;添加任务&ndash;&gt;
+						<div class="form-group">
+							<label class="control-label col-md-11 col-md-offset-1">任务<span>1</span></label>
+							<div class="col-md-5 col-md-offset-1">
+								<input type="text" name="mission[]" class="form-control" style="margin-bottom:5px;" />
+								<textarea name="" cols="30" rows="3" class="form-control"></textarea>
+							</div>
+							<div class="col-md-6">
+								<div class="col-md-12">
+									<button type="button" class="btn btn-warning pull-left">
+										<span class="glyphicon glyphicon-remove-circle"></span>
+										删除任务
+									</button>
+								</div>
+								<div class="form-group col-md-6" style="margin-top:5px;">
+									<input type="text" class="form-control" placeholder="学习时间(小时),默认6" />
+								</div>
+							</div>
+						</div>
+					</div>-->
+					<div class="panel panel-success">
+						<div class="panel-heading">
+							<div class="panel-title">
+								监督人邀请
+							</div>
+						</div>
+						<div class="panel-body">
+							<div class="form-group form-inline">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="control[]" />
+										王二子
+									</label>
+								</div>
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="control[]" />
+										Wang
+									</label>
+								</div>
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="control[]" />
+										Admin
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="panel-footer">
+							我们会向选中好友发出监督申请，好友接受申请后即可开始监督，每个学习计划只能各有一个监督者，此项可以创建完成后再做更改！
+						</div>
+					</div>
+					<div class="panel panel-success">
+						<div class="panel-heading">
+							<div class="panel-title">
+								选择封面图片并提交（<span class="text-warning">封面比例9:5最佳，封面选填</span>）
+							</div>
+						</div>
+						<div class="panel-body">
+							<div class="form-group col-md-6">
+								<label class="control-label">
+									选择图片：
+								</label>
+								<input type="file" class="form-control" />
+							</div>
+						</div>
+					</div>
+					<fieldset>
+						<legend>
+							提交学习计划<!--点击提交就可以啦 ↖(^ω^)↗-->
+						</legend>
+						<div class="form-group col-md-12">
+							<button type="submit" class="btn btn-success">
+								<span class="glyphicon glyphicon-ok"></span>
+								提交
+							</button>
+							<button type="submit" class="btn btn-danger">
+								<span class="glyphicon glyphicon-remove"></span>
+								取消
+							</button>
+						</div>
+					</fieldset>
+					<!--每日通知和每日警告放在用户设置那里，否则不好管理！-->
+					<!--<fieldset>
+						<legend>提示设置</legend>
+						&lt;!&ndash;每日通知设置&ndash;&gt;
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="control-label">是否开启每日通知</label>
+								<div class="radio">
+									<label>
+										<input type="radio" name="open_day_notice" value="1" checked="checked" />
+										开启
+									</label>
+									<label>
+										<input type="radio" name="open_day_notice" value="0" />
+										关闭
+									</label>
+								</div>
+							</div>
+							&lt;!&ndash;每日通知时间&ndash;&gt;
+							<div class="form-group">
+								<label class="control-label">每日通知时间</label>
+								<div class="">
+									<input type="time" name="day_notice_time" class="form-control" style="width:auto;"/>
+								</div>
+							</div>
+						</div>
+						&lt;!&ndash;每日警告设置&ndash;&gt;
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="control-label">是否开启警告</label>
+								<div class="radio">
+									<label>
+										<input type="radio" name="open_day_alert" value="1" checked="checked" />
+										开启
+									</label>
+									<label>
+										<input type="radio" name="open_day_alert" value="0" />
+										关闭
+									</label>
+								</div>
+							</div>
+							&lt;!&ndash;每日警告时间&ndash;&gt;
+							<div class="form-group">
+								<label class="control-label">每日警告时间</label>
+								<div class="">
+									<input type="time" name="day_alert_time" class="form-control" style="width:auto;"/>
+								</div>
+							</div>
+							<p class="help-block">
+								当每日到达警告时间时，若任务还没有完成，将会
+							</p>
+						</div>
+					</fieldset>-->
+				</form>
+				<!--删除的模块框-->
+				<div class="modal fade" id="delModal" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-header">
+							<button class="close"></button>
+							<h4 class="modal-title">确认删除这个 <span class="name">阶段</span>吗？</h4>
+						</div>
+						<div class="modal-content">
+							删除后无法恢复，确定要这样做吗？
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-default" data-dismiss="modal">
+								取消
+							</button>
+							<button class="btn btn-primary">
+								确认
+							</button>
+						</div>
+					</div>
+				</div>
+			</span>
+		</div>
+	</div>
+	<div class="row" id="footer">
+		<div class="col-md-5">
+			<h1><span class="glyphicon glyphicon-tasks"></span> LMS学习管理系统</h1>
+			<small>
+				<p>
+					本系统由Wang自主开发，系统以学习计划管理为核心，帮助您获得全新的个人发展和能力提升，本系统完全免费，有什么意见或建议可以通过以下方式联系我：
+				</p>
+				<ul class="">
+					<li class="">
+						<span class="glyphicon glyphicon-envelope"></span>
+						<a href="mailto:944688482@qq.com">944688482@qq.com</a>
+					</li>
+					<li class="">
+						<span class="glyphicon glyphicon-earphone"></span>
+						<a href="#">150xxxxx921</a>
+					</li>
+				</ul>
+				<p>
+					本站资源大部分均来自互联网，若侵删
+				</p>
+				<p>
+					&copy;2015-2016 Wang 版权所有
+				</p>
+			</small>
+		</div>
+		<div class="col-md-5 col-md-offset-2">
+			<h2>友情链接</h2>
+			<small>
+				<dl class="list-inline">
+					<dt>
+						特别感谢：
+					</dt>
+					<dd>
+						<a href="http://www.thinkphp.cn/" target="_blank">ThinkPHP</a>
+						<a href="http://study.163.com/" target="_blank">网易云课堂</a>
+						<a href="http://getbootstrap.com/" target="_blank">Bootstrap</a>
+						<a href="http://www.bootcss.com/" target="_blank">Bootstrap中文网</a>
+						<a href="http://www.runoob.com/" target="_blank">菜鸟教程</a>
+					</dd>
+				</dl>
+				<p>
+					在本系统制作的过程中，在网上查找了很多资料，并取经优秀网站，特此鸣谢！
+				</p>
+			</small>
+		</div>
+	</div>
+</div>
+</body>
+</html>

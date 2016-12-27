@@ -1,0 +1,124 @@
+<extend name="./LMS/Models/Index/Tpl/base.html" />
+<block name="title">
+	计划评论-{$plan['name']}
+</block>
+<block name="leader">
+</block>
+<block name="left-bar">
+</block>
+<block name="CSS_AND_JS">
+	<!--特色JS/CSS-->
+	<script type="text/javascript" src='__PUBLIC__/js/plan/comment.js'></script>
+	<script type="text/javascript">
+		var comment_url="{:U(GROUP_NAME.'/Plan/commentHandle')}";
+		var comment_uniqid='{$url_uniqid}';
+		var pid={$plan['id']};
+	</script>
+	<!--/特色JS/CSS-->
+</block>
+<block name="body">
+	<!--展示封面和各种信息-->
+	<input type="hidden" value="0" id="starInput" />
+	<div class="container">
+		<div class="page-header">
+			<h1>{$plan['name']}</h1>
+			<ul class="list-inline">
+				<li>
+					<span class="glyphicon glyphicon-eye-open"></span>
+					{$plan['saw']}
+				</li>
+				<li class="text-success">
+					<for start="0" end="$plan['star']">
+						<span class="glyphicon glyphicon-star"></span>
+					</for>
+					<for start="$plan['star']" end="5">
+						<span class="glyphicon glyphicon-star-empty"></span>
+					</for>
+					<span class="text-info">({$plan['comment_star']})</span>
+				</li>
+				<li>
+					创建人：<a href="">{$plan['creator']['username']}</a>
+				</li>
+			</ul>
+			<div>
+				<button class="btn btn-success" alt="学习计划" data="0" onclick="fastComment(this,true);" style="margin-bottom:10px;">快速发表评论</button>
+			</div>
+		</div>
+		<div class="media-list">
+			<if condition="empty($comment)">
+				<h2>暂无评论，来抢沙发吧！</h2>
+				<else/>
+				<foreach name="comment" item="value">
+					<div class="media">
+						<div class="pull-left media-object">
+							<ul class="list-unstyled">
+								<li><img src="{$value['user']['face']}" class="img-circle" style="width:50px;height:50px;" alt="" /></li>
+							</ul>
+						</div>
+						<div class="media-body">
+							<h3 class="media-heading">
+								<a href="">{$value['user']['username']}</a>
+								<span class="text-warning small">
+									<for start="0" end="$value['star']">
+										<span class="glyphicon glyphicon-star"></span>
+									</for>
+									<for start="$value['star']" end="5">
+										<span class="glyphicon glyphicon-star-empty"></span>
+									</for>
+								</span>
+							</h3>
+							<p class="text-muted"><span class="glyphicon glyphicon-time"></span> {:show_time($value['time'])}</p>
+							<p>
+								{$value['content']}
+							</p>
+							<p>
+								<button class="btn btn-link" onclick="fastComment(this)" data="{$value['id']}" type="button" alt="{$value['user']['username']}" >
+									<small>回复</small>
+								</button>
+								<if condition="!empty($value['child'])">
+									<button class="btn btn-link small" data="{$value['id']}" onclick="showChildComment(this);">
+										<small>查看评论({:count($value['child'])})</small>
+									</button>
+								</if>
+							</p>
+							<!--二级评论-->
+							<if condition="!empty($value['child'])">
+								<hr>
+								<div id="{$value['id']}_comments" style="display: none;">
+									<foreach name="value['child']" item="val">
+										<div class="media">
+											<div class="pull-left media-object">
+												<ul class="list-unstyled">
+													<li><img src="{$val['user']['face']}" class="img-circle" style="width:50px;height:50px;" alt="" /></li>
+												</ul>
+											</div>
+											<div class="media-body">
+												<h3 class="media-heading"><a href="">{$val['user']['username']}</a></h3>
+												<p class="text-muted"><span class="glyphicon glyphicon-time"></span> {:show_time($val['time'])}</p>
+												<p>
+													{$val['content']}
+												</p>
+												<p>
+													<button class="btn btn-link small" onclick="fastComment(this)" data="{$val['id']}" type="button" alt="{$val['user']['username']}" >
+														回复
+													</button>
+												</p>
+											</div>
+										</div>
+									</foreach>
+								</div>
+							</if>
+						</div>
+					</div>
+					<hr>
+				</foreach>
+				<!--分页-->
+				<div class="col-md-12">
+					<ul class="pagination">
+						{$page}
+					</ul>
+				</div>
+			</if>
+		</div>
+	</div>
+</block>

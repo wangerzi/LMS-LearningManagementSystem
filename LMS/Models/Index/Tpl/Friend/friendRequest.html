@@ -1,0 +1,70 @@
+<script type="text/javascript">
+    var url_uniqid='{$url_uniqid}';
+    var passFriendUrl="{:U(GROUP_NAME.'/Friend/dealRequest',array('pass'=>1))}";
+    var rejectFriendUrl="{:U(GROUP_NAME.'/Friend/dealRequest')}";
+</script>
+<if condition="count($data) lt 1">
+    <h2>
+        您没有未处理的好友申请哦，点击 ‘找朋友’ 进行搜索，或者( ﹁ ﹁ ) ~→
+        <button onclick="loadThis(this,$('#result'));activeLeader($('#result-leader').find('li a').eq(0));" alt="{:U(GROUP_NAME.'/Friend/fate')}" class="btn btn-success">
+            <span class="glyphicon glyphicon-search"></span>
+            寻找有缘人
+        </button>
+    </h2>
+    <else/>
+    <table class="table">
+        <thead>
+        <tr>
+            <th></th>
+            <th>用户基本信息</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+            <foreach name="data" item="val">
+                <tr>
+                    <td>
+                        <img src="{$val.user.face}" alt="{$val.username}" class="img-circle img-thumbnail img-responsive center-block" style="width:80px;" />
+                    </td>
+                    <td width="50%">
+                        {$val.user.username}
+                        <p class="help-block">
+                            {$val.user.info}
+                        </p>
+                        <p class="text-warning small">
+                            来自:
+                            <if condition="$val['type']">
+                                寻找有缘人
+                                <else/>
+                                好友查找
+                            </if>
+                        </p>
+                    </td>
+                    <td>
+                <span class="btn-group">
+                    <button data="{$val.id}" onclick="passRequest(this)" class="btn btn-success">
+                        <span class="glyphicon glyphicon-ok"></span>
+                        同意申请
+                    </button>
+                    <a href="" class="btn btn-info">
+                        <span class="glyphicon glyphicon-comment"></span>
+                        私信
+                    </a>
+                    <button data="{$val.id}" onclick="rejectRequest(this)" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-remove"></span>
+                        拒绝
+                    </button>
+                </span>
+                    </td>
+                </tr>
+            </foreach>
+        <tr>
+            <td colspan="3">
+                <ul class="pagination">
+                    {$page}
+                </ul>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</if>

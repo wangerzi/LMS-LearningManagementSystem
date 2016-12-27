@@ -1,0 +1,261 @@
+<html lang='en'>
+<head>
+	<meta charset='utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1.0'>
+	<title><block name="title"></block>-{:C('WEB_NAME')}</title>
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/base.css" />
+
+	<script type="text/javascript" src='__PUBLIC__/js/jquery.min.js'></script>
+	<script type="text/javascript" src='__PUBLIC__/js/bootstrap.min.js'></script>
+
+    <script type="text/javascript">
+        //左侧导航栏的位置
+        var left_row='{$module_name}';
+		var checkoutUrl='{:U(GROUP_NAME."/Index/checkout")}';
+    </script>
+    <block name="CSS_AND_JS"><!--JS和CSS处理区域！-->
+    </block>
+	<script type="text/javascript" src='__PUBLIC__/js/base.js'></script>
+	<style type="text/css">
+	</style>
+</head>
+<body>
+<!--<div class="alert-background"></div>
+<div class="alert-content row">
+	<div class="panel panel-warning wq-alert col-md-4 col-md-offset-4" style="padding:0;">
+		<div class="panel-heading">
+			<div class="panel-title">
+				<span class="glyphicon glyphicon-info-sign"></span>
+				你好！
+				<button class="close">
+					&times;
+				</button>
+			</div>
+		</div>
+		<div class="panel-body">
+			你好！！！
+		</div>
+		<div class="panel-body">
+			<button class="btn btn-primary col-md-5">
+				确定
+			</button>
+			<span class="col-md-2"></span>
+			<button class="btn btn-danger col-md-5">
+				取消
+			</button>
+		</div>
+	</div>
+</div>-->
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+	<!--最前边的标题-->
+	<div class="navbar-header navbar-nav navbar-left" style="margin-right:20px;">
+		<a href="{:U('Index/Index/index')}" class="navbar-brand" style="color:#fff;">
+			<span class="glyphicon glyphicon-tasks"></span>
+			{:C('WEB_NAME')}
+		</a>
+	</div>
+	<!--快速点击的链接（左）-->
+	<ul class="navbar-nav  nav nav-pills navbar-left">
+		<li><a href="{:U('Index/Plan/index')}">管理学习计划</a></li>
+		<li><a href="{:U(GROUP_NAME.'/Friend/index')}">寻找有缘人</a></li>
+		<li><a href="">下载APP</a></li>
+	</ul>
+	<!--用户的个人信息消息-->
+	<ul class="navbar-nav nav nav-pills navbar-right" style="padding-right: 20px;">
+		<li id="messageArea">
+			<a href="{:U(GROUP_NAME.'/Message/index',array('onlyRead'=>true))}">
+				消息
+				<if condition="$number['message']">
+					<span class="badge number-message" style="background-color:#d9534f;">
+						{$number['message']}
+					</span>
+				</if>
+			</a>
+		</li>
+		<li class="dropdown">
+			<div class="dropdown-toggle clearfix" style="font-family: 微软雅黑;">
+				<img src="{$user['face']}" width="30px" height="30px" class="img-circle img-responsive pull-left" style="margin:10px 0 0 0" />
+				<p class="navbar-text pull-left">{$user['username']}<span class="caret"></span></p>
+			</div>
+			<ul class="dropdown-menu" role="menu">
+				<li><a href="{:U(GROUP_NAME.'/Message/index')}">我的私信</a></li>
+				<li><a href="{:U(GROUP_NAME.'/Account/index')}">账户设置</a></li>
+				<li><a href="{:U('Index/Login/logout')}">退出登录</a></li>
+			</ul>
+		</li>
+	</ul>
+	<!--搜索框-->
+	<form class="navbar-form navbar-right">
+		<div class="input-group input-group-sm">
+			<span class="input-group-addon">
+				<span class="glyphicon glyphicon-search"></span>
+			</span>
+			<input type="text" class="form-control" placeholder="Search" />
+		</div>
+	</form>
+</nav>
+<div class="container " style="width:100%;">
+	<block name="leader">
+		<div class="row" id="leaderPic">
+			<div class="col-md-12" style="margin-top:30px">
+				<div class="col-md-6 clearfix">
+					<img src="{$user['face']}" alt="" width="100px" height="100px" class="img-circle img-thumbnail img-responsive pull-left" />
+					<h3 style="color:#fff;">
+						<a href="">{$user['username']}，晚上好</a>
+					</h3>
+					<h4>人类被赋予了一种工作，那就是精神的成长。</h4>
+				</div>
+				<div class="col-md-4 col-md-offset-2" style="color:#fff;margin-top:0px;">
+					<!--一键签到-->
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<div class="panel-title">
+								<span class="glyphicon glyphicon-check"></span>
+								新的一天，从签到开始
+							</div>
+						</div>
+						<div class="panel-body" id="checkoutArea" style="color:#333;">
+							<!--没签到的情况：-->
+							<if condition="$checkout['total'] lt 1">
+								<p class="pull-left" style="line-height:2.42857143;margin-right:10px;">今天还没签到哦！戳我签到 ( ﹁ ﹁ ) ~→</p>
+								<button type="submit" id="checkout" class="btn btn-success">一键签到</button>
+								<else/>
+								<p>
+									当前等级：<b class="text-danger">Lv. {$level.level}</b>，距离 <b class="text-primary">Lv. {$level['level']+1}</b>还差 <b>{$level.next}</b>点经验
+								</p>
+								<div class="progress" style="height:10px;margin-bottom:5px;">
+									<div alt="{$user['exp']/$level['next_need']}" id="exp-bar" class="progress-bar progress-bar-success progress-bar-striped active">
+										<span style="line-height:10px;">{$user['exp']}/{$level['next_need']}</span>
+									</div>
+								</div>
+								<!--您已连续签到 <b>{$user.checkout}</b> 天，下次签到获得 <b>{:checkoutExp($user['checkout']+1)}</b> 点经验-->
+							</if>
+							<!--签到完成的情况：-->
+							<!--签到成功，您已连续签到 <b>2</b> 天，获得 <b>2</b> 点经验-->
+							<!--已经签到的情况：-->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</block>
+	<div class="row" style="padding:30px 0;">
+		<!--左边的-->
+		<block name="left-bar">
+			<div class="col-md-2" id="left-nav">
+				<ul class="nav nav-pills nav-stacked" id="left-leader" style="position:relative;">
+					<li class="" alt="Index">
+						<a href="{:U(GROUP_NAME.'/Index/index')}">
+							<span class="glyphicon glyphicon-home"></span>
+							我的首页
+						</a>
+					</li>
+					<li class="" alt="Plan">
+						<a href="{:U(GROUP_NAME.'/Plan/index')}">
+							<span class="glyphicon glyphicon-align-left"></span>
+							我的学习计划
+						</a>
+					</li>
+					<li class="" alt="Friend">
+						<a href="{:U(GROUP_NAME.'/Friend/index')}">
+							<span class="glyphicon glyphicon-user"></span>
+							好友管理
+							<if condition="$number['friend']">
+								<span class="badge number-friend">
+									{$number['friend']}
+								</span>
+							</if>
+						</a>
+					</li>
+					<li class="" alt="Supervision">
+						<a href="{:U(GROUP_NAME.'/Supervision/index')}">
+							<span class="glyphicon glyphicon-eye-open"></span>
+							我的监督
+							<if condition="$number['supervision']">
+								<span class="badge supervision">{$number['supervision']}</span>
+							</if>
+						</a>
+					</li>
+					<li class="" alt="Message">
+						<a href="{:U(GROUP_NAME.'/Message/index')}">
+							<span class="glyphicon glyphicon-envelope"></span>
+							<span>私信管理</span>
+							<if condition="$number['message']">
+								<span class="badge number-message">
+									{$number['message']}
+								</span>
+							</if>
+						</a>
+					</li>
+					<li class="" alt="Account">
+						<a href="{:U(GROUP_NAME.'/Account/index')}">
+							<span class="glyphicon glyphicon-cog"></span>
+							账户管理
+						</a>
+					</li>
+				</ul>
+			</div>
+		</block>
+		<!--右侧的操作区-->
+		<div class="col-md-10">
+			<div class="col-md-12" id="main-body">
+				<block name="body">
+
+				</block>
+			</div>
+		</div>
+	</div>
+	<div class="row" id="footer">
+		<div class="col-md-5">
+			<h1>
+				<span class="glyphicon glyphicon-tasks"></span>
+				{:C('WEB_NAME')}
+			</h1>
+			<small>
+				<p>
+					本系统由Wang自主开发，系统以学习计划管理为核心，帮助您获得全新的个人发展和能力提升，本系统完全免费，有什么意见或建议可以通过以下方式联系我：
+				</p>
+				<ul class="">
+					<li class="">
+						<span class="glyphicon glyphicon-envelope"></span>
+						<a href="mailto:944688482@qq.com">944688482@qq.com</a>
+					</li>
+					<li class="">
+						<span class="glyphicon glyphicon-earphone"></span>
+						<a href="#">150xxxxx921</a>
+					</li>
+				</ul>
+				<p>
+					本站资源大部分均来自互联网，若侵删
+				</p>
+				<p class="help-block">
+					&copy;2016-2016 wj2015.com.cn 版权所有 -v {:C('WEB_VERSION')}
+				</p>
+			</small>
+		</div>
+		<div class="col-md-5 col-md-offset-2">
+			<h2>友情链接</h2>
+			<small>
+				<dl class="list-inline">
+					<dt>
+						特别感谢：
+					</dt>
+					<dd>
+						<a href="http://www.thinkphp.cn/" target="_blank">ThinkPHP</a>
+						<a href="http://study.163.com/" target="_blank">网易云课堂</a>
+						<a href="http://getbootstrap.com/" target="_blank">Bootstrap</a>
+						<a href="http://www.bootcss.com/" target="_blank">Bootstrap中文网</a>
+						<a href="http://www.runoob.com/" target="_blank">菜鸟教程</a>
+						<a href="http://glyphicons.com/" target="_blank">Glyphicons</a>
+					</dd>
+				</dl>
+				<p>
+					在本系统制作的过程中，制作者在网上查找了很多资料，尤其在上述网站中获取了较多帮助，特此鸣谢！
+				</p>
+			</small>
+		</div>
+	</div>
+</div>
+</body>
+</html>

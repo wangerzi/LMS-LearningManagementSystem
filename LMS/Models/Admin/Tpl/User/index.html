@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>邮件发送设置</title>
+    <link rel="stylesheet" href="__PUBLIC__/css/reset.css" />
+    <link rel="stylesheet" href="__PUBLIC__/css/basic.css" />
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script type="text/javascript">
+    	
+    </script>
+	<style type="text/css">
+		table{
+			width:100%;
+		}
+		th{
+			text-align: left;
+		}
+        td{
+            height:30px;
+            border:1px solid #eee;
+            overflow:hidden;
+        }
+	</style>
+</head>
+<body>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>用户名</th>
+            <th>email</th>
+            <th>注册时间</th>
+            <th>最后登录时间</th>
+            <th>最后登录IP</th>
+            <th>生日</th>
+            <th>锁定</th>
+            <th>激活</th>
+            <th>操作</th>
+        </tr>
+        <foreach name="data" item="v" key="k">
+            <tr>
+                <td alt="{$v['id']}">{$v['id']}</td>
+                <td alt="{$v['username']}">{$v['username']}</td>
+                <td alt="{$v['email']}">{$v['email']}</td>
+                <td alt="{:date('Y-m-d H:i:s',$v['reg_time'])}">{:date('Y-m-d H:i:s',$v['reg_time'])}</td>
+                <td alt="{:date('Y-m-d H:i:s',$v['last_tim'])}">{:date('Y-m-d H:i:s',$v['last_time'])}</td>
+                <td alt="{$v['login_ip']}">{$v['login_ip']}</td>
+                <td alt="{:date('Y-m-d',$v['birth'])}">{:date('Y-m-d',$v['birth'])}</td>
+                <td>
+                    <if condition="$v['lock']">
+                        <a href="{:U(GROUP_NAME.'/User/lock',array('uid'=>$v['id'],'lock'=>0,'uniqid'=>$url_uniqid))}">解锁</a>
+                        <else/>
+                        <a href="{:U(GROUP_NAME.'/User/lock',array('uid'=>$v['id'],'lock'=>1,'uniqid'=>$url_uniqid))}">锁定</a>
+                    </if>
+                </td>
+                <td>
+                    <if condition="$v['active']">
+                        <a href="{:U('Index/Register/active',array('active'=>$v['active'],'uniqid'=>$url_uniqid))}">激活</a>
+                        <else/>
+                        <span>已激活</span>
+                    </if>
+                </td>
+                <td>
+                    [<a href="{:U(GROUP_NAME.'/Mailer/index',array('uid'=>$v['id'],'uniqid'=>$url_uniqid))}">发送管理员邮件</a>]
+                    [<a href="{:U(GROUP_NAME.'/User/delete',array('uid'=>$v['id'],'uniqid'=>$url_uniqid))}">删除用户</a>]
+                </td>
+            </tr>
+        </foreach>
+        <tr>
+            <td colspan="10">
+                {$page}
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

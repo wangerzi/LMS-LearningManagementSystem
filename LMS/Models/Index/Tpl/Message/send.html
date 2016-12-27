@@ -1,0 +1,64 @@
+<extend name="./LMS/Models/Index/Tpl/base.html" />
+<block name="title">
+    新建私信
+</block>
+<block name="CSS_AND_JS">
+    <!--每个页面特色的CSS区域-->
+    <script type="text/javascript">
+        MESS_MIN_NAME={:C('MESS_MIN_NAME')};
+        MESS_MAX_NAME={:C('MESS_MAX_NAME')};
+
+        MESS_MIN_CONTENT={:C('MESS_MIN_CONTENT')};
+        MESS_MAX_CONTENT={:C('MESS_MAX_CONTENT')};
+
+    </script>
+    <link rel="stylesheet" href="__PUBLIC__/css/bootstrap/bootstrapValidator.min.css">
+    <script type="text/javascript" src="__PUBLIC__/js/penguin/bootstrap/bootstrapValidator.min.js"></script>
+    <script type="text/javascript" src='__PUBLIC__/js/message/new.js'></script>
+    <!--/每个页面特色的CSS区域-->
+</block>
+<block name="body">
+    <form action="{:U(GROUP_NAME.'/Message/sendHandle')}" method="post" role="form" id="sendMail">
+        {$__UNIQID__}
+        <h1></h1>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>
+                    收信人
+                </label>
+                <select name="uid" id="select_uid" class="form-control">
+                    <if condition="$ruser">
+                        <option value="{$ruser.id}">{$ruser.username}</option>
+                        <else/>
+                        <option value="" selected="selected">选择好友</option>
+                    </if>
+                    <foreach name="friend" item="value">
+                        <option value="{$value['user']['id']}">{$value['user']['username']}</option>
+                    </foreach>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="form-group">
+                <label>
+                    私信标题
+                </label>
+                <input type="text" name="title" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+                <label>
+                    私信内容
+                </label>
+                <textarea name="content" cols="30" rows="10" class="form-control"></textarea>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+                <button type="submit" class="btn btn-success">发送</button>
+                <button type="button" onclick="wq_confirm('确定要取消发送邮件吗？',function(){history.back()});" class="btn btn-danger">取消</button>
+            </div>
+        </div>
+    </form>
+</block>

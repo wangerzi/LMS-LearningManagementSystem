@@ -1,0 +1,58 @@
+.plan-list{
+    width:100%;
+}
+.plan-list tr.stage{
+    font-weight:bolder;
+    background:#eee;
+}
+/**/
+.plan-list td.first{
+    width:55px;
+    padding:8px;
+
+    text-indent:5px;
+}
+.plan-list tr.stage td.first{
+    text-indent:0;
+}
+/*圆圈的外层td*/
+.plan-list tr.stage td.circle-warp{
+    width:60px;
+}
+
+.circle-lg,.circle-md,.circle-sm{
+    text-align: center;
+
+    background: #fff;
+    border-radius: 50%;
+    display: inline-block;
+    *display: inline;
+    *zoom:1;
+}
+.circle-lg{
+    width:50px;
+    height:50px;
+
+    line-height:50px;
+    font-size:30px;
+
+    border:3px solid #666;
+}
+.circle-md{
+    width:30px;
+    height:30px;
+
+    line-height:25px;
+    font-size:20px;
+
+    border:3px solid #666;
+}
+.circle-sm{
+    width:20px;
+    height:20px;
+
+    line-height:20px;
+    font-size:15px;
+
+    border:1px solid #666;
+}

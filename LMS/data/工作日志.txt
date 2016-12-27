@@ -1,0 +1,3 @@
+特别要讲数据库的变动写下来，否则容易造成混乱！
+1. 在部署的时候，管理员的邮件监控只能通过localhost进入，或者改为某IP的才能进入，修改IP在邮箱配置里边。
+2. 邮箱发送需要开启extension=php_sockets.dll;extension=php_openssl.dll;否则发送失败！

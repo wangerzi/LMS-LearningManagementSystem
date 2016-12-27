@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>验证码设置</title>
+    <link rel="stylesheet" href="__PUBLIC__/css/reset.css" />
+    <link rel="stylesheet" href="__PUBLIC__/css/basic.css" />
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script type="text/javascript">
+    	
+    </script>
+	<style type="text/css">
+		table{
+			width:100%;
+		}
+		th{
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+	<form action="{:U(GROUP_NAME.'/System/updateVerify')}" method="post">
+		<table>
+			<tr>
+				<th colspan="2">验证码设置</th>
+			</tr>
+			<tr>
+				<td>是否开启登录验证码：</td>
+				<td>
+					<IF condition="C('LOGIN_VERIFY')">
+						<input type="radio" name="LOGIN_VERIFY" value="1" checked="checked" />开启
+						<input type="radio" name="LOGIN_VERIFY" value="0" />关闭
+						<ELSE/>
+						<input type="radio" name="LOGIN_VERIFY" value="1" />开启
+						<input type="radio" name="LOGIN_VERIFY" value="0" checked="checked" />关闭
+					</IF>
+				</td>
+			</tr>
+			<tr>
+				<td>是否开启注册验证码：</td>
+				<td>
+					<IF condition="C('REG_VERIFY')">
+						<input type="radio" name="REG_VERIFY" value="1" checked="checked" />开启
+						<input type="radio" name="REG_VERIFY" value="0" />关闭
+						<ELSE/>
+						<input type="radio" name="REG_VERIFY" value="1" />开启
+						<input type="radio" name="REG_VERIFY" value="0" checked="checked" />关闭
+					</IF>
+				</td>
+			</tr>
+			<tr>
+				<td>验证码长度：</td>
+				<td><input type="text" name="VERIFY_LEN" value="{:C('VERIFY_LEN')}" /></td>
+			</tr>
+			<tr>
+				<td>验证码类型：</td>
+				<td><select name="VERIFY_TYPE">
+					<option value="0" <IF condition="C('VERIFY_TYPE') eq 0"> selected='selected'</IF> >大小写字母</option>
+					<option value="1" <IF condition="C('VERIFY_TYPE') eq 1"> selected='selected'</IF> >数字</option>
+					<option value="2" <IF condition="C('VERIFY_TYPE') eq 2"> selected='selected'</IF> >大写字母</option>
+					<option value="3" <IF condition="C('VERIFY_TYPE') eq 3"> selected='selected'</IF> >小写字母</option>
+					<option value="4" <IF condition="C('VERIFY_TYPE') eq 4"> selected='selected'</IF> >中文</option>
+				</select></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<input type="submit" value="提交更改" />
+				</td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>

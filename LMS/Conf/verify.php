@@ -1,0 +1,1 @@
+<?php	return array ( 'LOGIN_VERIFY' => '0', 'REG_VERIFY' => '0', 'VERIFY_LEN' => '2', 'VERIFY_TYPE' => '4', );?>

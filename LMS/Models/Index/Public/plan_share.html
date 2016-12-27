@@ -1,0 +1,254 @@
+<html lang='en'>
+<head>
+	<meta charset='utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1.0'>
+		<title>LMS学习管理系统-主页</title>
+
+	<link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="./css/base.css" />
+
+	<script type="text/javascript" src='./js/jquery.min.js'></script>
+	<script type="text/javascript" src='./js/bootstrap.min.js'></script>
+
+	<script type="text/javascript" src='./js/base.js'></script>
+	<style type="text/css">
+	</style>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+	<!--最前边的标题-->
+	<div class="navbar-header navbar-nav navbar-left" style="margin-right:20px;">
+		<a href="" class="navbar-brand" style="color:#fff;"><span class="glyphicon glyphicon-tasks"></span> LMS学习管理系统</a>
+	</div>
+	<!--快速点击的链接（左）-->
+	<ul class="navbar-nav  nav nav-pills navbar-left">
+		<li><a href="">管理学习计划</a></li>
+		<li><a href="">寻找有缘人</a></li>
+		<li><a href="">下载APP</a></li>
+	</ul>
+	<!--用户的个人信息消息-->
+	<ul class="navbar-nav nav nav-pills navbar-right" style="padding-right: 20px;">
+		<li class="dropdown" id="messageArea">
+			<p class="dropdown-toggle clearfix navbar-text">
+				消息
+			</p>
+			<ul class="dropdown-menu" role="menu">
+				<li class="alert alert-info alert-dismissable">
+					<button class="close" data-dismiss="alert" aria-hidden="true">x</button>
+					{:C('WEB_NAME')}
+				</li>
+				<li class="alert alert-warning alert-dismissable">
+					<button class="close" data-dismiss="alert" aria-hidden="true">x</button>
+					消息2
+				</li>
+				<li class="alert alert-danger alert-dismissable">
+					<button class="close" data-dismiss="alert" aria-hidden="true">x</button>
+					消息3
+				</li>
+			</ul>
+		</li>
+		<li class="dropdown">
+			<div class="dropdown-toggle clearfix">
+				<img src="images/face.jpg" width="30px" height="30px" class="img-circle img-responsive pull-left" style="margin:10px 0 0 0" />
+				<p class="navbar-text pull-left">王二子<span class="caret"></span></p>
+			</div>
+			<ul class="dropdown-menu" role="menu">
+				<li><a href="">我的私信</a></li>
+				<li><a href="">账户设置</a></li>
+				<li><a href="">退出登录</a></li>
+			</ul>
+		</li>
+	</ul>
+	<!--搜索框-->
+	<form class="navbar-form navbar-right">
+		<div class="input-group input-group-sm">
+			<span class="input-group-addon">
+				<span class="glyphicon glyphicon-search"></span>
+			</span>
+			<input type="text" class="form-control" placeholder="Search" />
+		</div>
+	</form>
+</nav>
+<div class="container " style="width:100%;">
+	<div class="row" style="padding:30px 0;">
+		<!--右侧的操作区-->
+		<div class="col-md-12">
+			<div class="col-md-12" style="background:#fff;">
+				<!--展示封面和各种信息-->
+				<div class="row">
+					<div class="col-md-5">
+						<div class="thumbnail" style="margin-top:15px;">
+							<img src="./images/test.jpg" alt="" />
+							<div class="caption">
+								<button class="btn">
+									<span class="glyphicon glyphicon-user"></span>
+									5人参加
+								</button>
+								<button class="btn btn-success">
+									<span class="glyphicon glyphicon-thumbs-up"></span>
+									赞(1000)
+								</button>
+								<!--如果不是自己的计划-->
+								<button class="btn btn-success">
+									<span class="glyphicon glyphicon-plus"></span>
+									参加此计划
+								</button>
+								<a class="btn btn-warning" href="">
+									<span class="glyphicon glyphicon-flag"></span>
+									查看评论(1)
+								</a>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-7">
+						<h3>李炎恢ThinkPHP视频学习计划</h3>
+						<ul class="list-inline">
+							<li>
+								<span class="glyphicon glyphicon-eye-open"></span>
+								1200
+							</li>
+							<li class="text-success">
+								<span class="glyphicon glyphicon-star"></span>
+								<span class="glyphicon glyphicon-star"></span>
+								<span class="glyphicon glyphicon-star"></span>
+								<span class="glyphicon glyphicon-star-empty"></span>
+								<span class="glyphicon glyphicon-star-empty"></span>
+								<span class="text-info">(48)</span>
+							</li>
+							<li>
+								创建者：<a href="">李炎恢</a>
+							</li>
+						</ul>
+						<ul class="list-unstyled">
+							<li class="">
+								分享链接：
+								<a href="{:U(GROUP_NAME.'/Plan/share',array('pid'=>$data['plan']['id']))}">{:U(GROUP_NAME.'/Plan/share',array('pid'=>$data['plan']['id']),false,false,true)}</a>
+							</li>
+						</ul>
+						<hr>
+						<div class="well clearfix">
+							<!--各种时间信息-->
+							<table class="col-md-6">
+								<tr>
+									<td>
+										创建时间：
+									</td>
+									<td>
+										2016-12-15 13:41:23
+									</td>
+								</tr>
+							</table>
+							<!--完成情况和延期情况！-->
+							<table class="col-md-6">
+								<tr>
+									<td>
+										计划类型：
+									</td>
+									<td>
+										顺序模式
+									</td>
+								</tr>
+								<tr>
+									<td>总任务：</td>
+									<td>{$data.mission_total}个</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<table class="table table-responsive table-hover plan-list">
+									<tr class="stage">
+										<td class="first">
+											阶段
+										</td>
+										<td class="circle-warp col-md-1 text-center">
+											<span class="circle-md">
+												1
+											</span>
+										</td>
+										<td>
+											<span class="">
+												阶段一
+											</span>
+											<span class="help-block small" style="padding-left:30px;display:inline;">
+												描述：11111
+											</span>
+										</td>
+										<td>
+										</td>
+									</tr>
+									<tr>
+										<td class="first">
+											任务
+										</td>
+										<td class="circle-warp text-center">
+											<span class="circle-sm center-block">
+												1
+											</span>
+										</td>
+										<td>
+											任务1 ( 6h )
+											<p class="help-block small">
+												描述:111
+											</p>
+										</td>
+										<td class="col-md-4">
+
+										</td>
+									</tr>
+						</table>
+					</div>
+			</div>
+		</div>
+	</div>
+	<div class="row" id="footer">
+		<div class="col-md-5">
+			<h1><span class="glyphicon glyphicon-tasks"></span> LMS学习管理系统</h1>
+			<small>
+				<p>
+					本系统由Wang自主开发，系统以学习计划管理为核心，帮助您获得全新的个人发展和能力提升，本系统完全免费，有什么意见或建议可以通过以下方式联系我：
+				</p>
+				<ul class="">
+					<li class="">
+						<span class="glyphicon glyphicon-envelope"></span>
+						<a href="mailto:944688482@qq.com">944688482@qq.com</a>
+					</li>
+					<li class="">
+						<span class="glyphicon glyphicon-earphone"></span>
+						<a href="#">150xxxxx921</a>
+					</li>
+				</ul>
+				<p>
+					本站资源大部分均来自互联网，若侵删
+				</p>
+				<p>
+					&copy;2015-2016 Wang 版权所有
+				</p>
+			</small>
+		</div>
+		<div class="col-md-5 col-md-offset-2">
+			<h2>友情链接</h2>
+			<small>
+				<dl class="list-inline">
+					<dt>
+						特别感谢：
+					</dt>
+					<dd>
+						<a href="http://www.thinkphp.cn/" target="_blank">ThinkPHP</a>
+						<a href="http://study.163.com/" target="_blank">网易云课堂</a>
+						<a href="http://getbootstrap.com/" target="_blank">Bootstrap</a>
+						<a href="http://www.bootcss.com/" target="_blank">Bootstrap中文网</a>
+						<a href="http://www.runoob.com/" target="_blank">菜鸟教程</a>
+					</dd>
+				</dl>
+				<p>
+					在本系统制作的过程中，在网上查找了很多资料，并取经优秀网站，特此鸣谢！
+				</p>
+			</small>
+		</div>
+	</div>
+</div>
+</body>
+</html>

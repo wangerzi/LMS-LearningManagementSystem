@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>主页</title>
+    <link rel="stylesheet" href="__PUBLIC__/css/reset.css" />
+    <link rel="stylesheet" href="__PUBLIC__/css/basic.css" />
+    <link rel="stylesheet" href="__PUBLIC__/css/index.css" />
+    <script src="__PUBLIC__/js/jquery.min.js"></script>
+    <script src="__PUBLIC__/js/basic.func.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__PUBLIC__/js/index.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+    	
+    </script>
+</head>
+<body>
+	<div id="main" class="clearfix">
+		<div id="banner" class="clearfix">
+			<div id="logo">
+			</div>
+			<dl class="option">
+				<dd><a alt=''>选项1</a></dd>
+				<dd><a alt=''>选项2</a></dd>
+				<dd><a href='{:U("Index/Login/logout")}'>退出登录</a></dd>
+			</dl>
+		</div>
+		<div id="left-banner">
+			<dl class="option">
+				<dt>服务器管理</dt>
+				<dd><a alt='{:U(GROUP_NAME."/Server/index")}'>服务器信息</a></dd>
+			</dl>
+			<dl class="option">
+				<dt>用户管理</dt>
+				<dd><a alt='{:U(GROUP_NAME."/User/index")}'>用户列表</a></dd>
+				<dd><a alt='{:U(GROUP_NAME."/User/feedBack")}'>用户反馈</a></dd>
+				<dd><a alt='{:U(GROUP_NAME."/User/admin")}'>管理员设置</a></dd>
+			</dl>
+			<dl class="option">
+				<dt>系统设置</dt>
+				<dd><a alt='{:U(GROUP_NAME."/System/web")}'>网站设置</a></dd>
+				<dd><a alt='{:U(GROUP_NAME."/System/register")}'>登录/注册设置</a></dd>
+				<dd><a alt='{:U(GROUP_NAME."/System/verify")}'>验证码设置</a></dd>
+			</dl>
+			<if condition="C('EMAIL_UID') eq session('uid')">
+				<dl class="option">
+					<dt>邮件管理</dt>
+					<dd><a alt="{:U(GROUP_NAME.'/Mailer/index')}">内置邮件发送</a></dd>
+					<dd><a alt="{:U(GROUP_NAME.'/Mailer/email')}">邮件参数设置</a></dd>
+					<dd><a alt="{:U(GROUP_NAME.'/Mailer/spy')}">邮件总监控</a></dd>
+					<dd><a alt="{:U(GROUP_NAME.'/Mailer/dealEmailTime')}">定时邮件监控</a></dd>
+					<dd><a alt="{:U(GROUP_NAME.'/Mailer/sendEmails')}">邮件发送监控</a></dd>
+				</dl>
+			</if>
+		</div>
+		<iframe id="right-content" src="{:U(GROUP_NAME.'/Server/index')}">
+		</iframe>
+	</div>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<extend name="./LMS/Models/Index/Tpl/base.html" />
+<block name="title">
+	修改邮箱
+</block>
+<block name="CSS_AND_JS">
+	<script type="text/javascript">
+		emailCodeUrl="{:U(GROUP_NAME.'/Account/sendEmailCode',array('uniqid'=>$url_uniqid,'type'=>'originEmail'))}";
+		//邮箱验证码的长度。
+		CODE_LEN={:C('ACCOUNT_CODE_LEN')};
+
+		//验证码检验地址.
+		codeCheckUrl="{:U(GROUP_NAME.'/Account/CheckCode',array('type'=>'originEmail'))}";
+	</script>
+	<!--特色JS/CSS-->
+	<link rel="stylesheet" href="__PUBLIC__/css/bootstrap/bootstrapValidator.min.css">
+	<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/bootstrapValidator.min.js'></script>
+	<script type="text/javascript" src='__PUBLIC__/js/account/mail.js'></script>
+	<!--/特色JS/CSS-->
+</block>
+<block name="body">
+	<h2>修改邮箱</h2>
+	<form action="{:U(GROUP_NAME.'/Account/mailHandle')}" method="post" id="emailCheck" role="form">
+		{$__UNIQID__}
+		<div class="form-group">
+			<label>
+				发送验证码
+			</label>
+			<div>
+				<!--考虑到用户可能重新发送验证码，这里还是不做限制了！-->
+				<button type="button" onclick="sendEmailCode(this)" class="btn btn-primary">发送邮箱验证码</button>
+				<p class="help-block">
+					点击‘发送邮箱验证码‘后，我们会发送唯一验证密匙至您的绑定邮箱(<span class="text-info">{:hiddenKey($email)}</span>)，输入密匙后方可更改邮箱。
+				</p>
+			</div>
+			<div class="row">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>
+							输入密匙
+						</label>
+						<input type="text"  name="code" class="form-control" />
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<button class="btn btn-success" type="submit">下一步</button>
+			<button class="btn btn-danger" onclick="history.back();" type="button">取消</button>
+		</div>
+	</form>
+</block>

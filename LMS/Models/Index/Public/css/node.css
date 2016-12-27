@@ -1,0 +1,11 @@
+.addButton{
+    width:auto;
+
+    color:#fff;
+
+    padding:6px 9px;
+    border-radius: 4px;
+    
+    background: #9b864a;
+    display: inline-block;
+}

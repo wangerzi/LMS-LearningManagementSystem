@@ -1,0 +1,65 @@
+<script type="text/javascript">
+    var url_uniqid='{$url_uniqid}';
+    var deleteFriendUrl="{:U(GROUP_NAME.'/Friend/delete')}";
+</script>
+<if condition="count($data) lt 1">
+    <h2>
+        您还没有好友哦，点击 ‘找朋友’ 进行搜索，或者( ﹁ ﹁ ) ~→
+        <button onclick="loadThis(this,$('#result'));activeLeader($('#result-leader').find('li a').eq(0));" alt="{:U(GROUP_NAME.'/Friend/findHandle',array('type'=>'fate'))}" class="btn btn-success">
+            <span class="glyphicon glyphicon-search"></span>
+            寻找有缘人
+        </button>
+        <!--<button onclick="loadThis(this,$('#result'))" alt="{:U(GROUP_NAME.'/Friend/find')}" class="btn btn-primary">
+            <span class="glyphicon glyphicon-globe"></span>
+            找朋友
+        </button>-->
+    </h2>
+    <else/>
+    <table class="table">
+        <thead>
+        <tr>
+            <th></th>
+            <th>用户基本信息</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+            <foreach name="data" item="val">
+                <tr>
+                    <td>
+                        <img src="{$val.user.face}" alt="" class="img-circle img-thumbnail img-responsive center-block" style="width:80px;" />
+                    </td>
+                    <td width="50%">
+                        {$val.user.username}
+                        <p class="help-block">
+                            {$val.user.info}
+                        </p>
+                    </td>
+                    <td>
+                        <span class="btn-group">
+                            <a href="" class="btn btn-info">
+                                <span class="glyphicon glyphicon-list"></span>
+                                详细信息
+                            </a>
+                            <a href="{:U(GROUP_NAME.'/Message/send',array('uid'=>$val['user']['id']))}" target="_blank" class="btn btn-info">
+                                <span class="glyphicon glyphicon-comment"></span>
+                                私信好友
+                            </a>
+                            <button onclick="deleteFriend(this)" data="{$val.id}" class="btn btn-danger">
+                                <span class="glyphicon glyphicon-trash"></span>
+                                删除
+                            </button>
+                        </span>
+                    </td>
+                </tr>
+            </foreach>
+        <tr>
+            <td colspan="3">
+                <ul class="pagination">
+                    {$page}
+                </ul>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</if>

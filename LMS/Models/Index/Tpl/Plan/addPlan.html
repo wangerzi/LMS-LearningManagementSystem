@@ -1,0 +1,192 @@
+<extend name="./LMS/Models/Index/Tpl/base.html" />
+<block name="title">
+	添加学习计划
+</block>
+<block name="CSS_AND_JS">
+	<link rel="stylesheet" href="__PUBLIC__/css/bootstrap/bootstrapValidator.min.css">
+	<!--特色JS/CSS-->
+	<script type="text/javascript">
+		var PLAN_MIN_NAME={:C('PLAN_MIN_NAME')};
+		var PLAN_MAX_NAME={:C('PLAN_MAX_NAME')};
+		var STAGE_MIN_NAME={:C('STAGE_MIN_NAME')};
+		var STAGE_MAX_NAME={:C('STAGE_MAX_NAME')};
+		var STAGE_MAX_INFO={:C('STAGE_MAX_INFO')};//阶段描述最多字数
+		var MISSION_MIN_NAME={:C('MISSION_MIN_NAME')};
+		var MISSION_MAX_NAME={:C('MISSION_MAX_NAME')};
+		var MISSION_MAX_INFO={:C('MISSION_MAX_INFO')};//任务描述最多字数
+		var yesterday='{:date("Y-m-d",time()-86400)}';
+		var successUrl='{:U(GROUP_NAME."/Plan/index")}';
+		var n=0;//第几阶段
+	</script>
+	<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/bootstrapValidator.min.js'></script>
+	<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/moment-with-locales.min.js'></script>
+	<!--涉及到异步文件上传，所以引入了jquery.form.js-->
+	<script type="text/javascript" src='__PUBLIC__/js/penguin/jquery.form.js'></script>
+	<script type="text/javascript" src='__PUBLIC__/js/plan/add.js'></script>
+	<style type="text/css">
+		#main-body{
+			background-color:transparent;
+		}
+	</style>
+	<!--/特色JS/CSS-->
+</block>
+<block name="body">
+	<if condition="$haveMore">
+		<form action="{:U(GROUP_NAME.'/Plan/addPlanHandle')}" method="post" role="form" enctype="multipart/form-data" id="addPlan">
+			{$__UNIQID__}
+			<!--基本设置-->
+			<div class="panel panel-success">
+				<div class="panel-heading">
+					<div class="panel-title">
+						基本设置
+					</div>
+				</div>
+				<div class="panel-body">
+					<div class="row">
+						<!--计划名称-->
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="planName" class="control-label">计划名称</label>
+								<input type="text" class="form-control" name="name" id="planName" />
+							</div>
+						</div>
+						<!--开启时间-->
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label">开始时间</label>
+								<input type="date" name="startTime" value="{:date('Y-m-d',time())}" class="form-control"/>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<!--是否公开-->
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="control-label">是否公开</label>
+								<div class="radio">
+									<label onclick="showTips(this)" alt="公开模式下，其他人可通过 分享链接或搜索关键字 找到您的计划并加入学习。">
+										<input type="radio" name="open" value="1" checked="checked" />
+										公开
+									</label>
+									<label onclick="showTips(this)" alt="私密模式下，其他人则不能查看或加入你的计划。">
+										<input type="radio" name="open" value="0" />
+										私密
+									</label>
+									<span class="help-block small">
+                                    公开模式下，其他人可通过 分享链接或搜索关键字 找到您的计划并加入学习。
+                                </span>
+								</div>
+							</div>
+						</div>
+						<!--两种模式-->
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="control-label">计划模式</label>
+								<div class="radio">
+									<label onclick="showTips(this)" alt="顺序模式下，未完成的任务将有部分会被锁定，您只能一步一步往后进行。">
+										<input type="radio" name="mode" value="1" checked="checked" />
+										顺序模式
+									</label>
+									<label onclick="showTips(this)" alt="列表模式下，您可以跨阶段,自由的完成任务，未完成的任务不会被锁定。">
+										<input type="radio" name="mode" value="0" />
+										列表模式
+									</label>
+									<span class="help-block small">
+                                    顺序模式下，未完成的任务将有部分会被锁定，您只能一步一步往后进行。
+                                </span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--学习阶段和任务！-->
+			<div class="panel panel-success">
+				<div class="panel-heading">
+					<div class="panel-title">添加学习阶段和任务</div>
+				</div>
+				<div class="panel-body">
+					<div class="col-md-12" style="margin-bottom:10px;">
+						<!--添加阶段就在这里！-->
+						<div class="col-md-12" id="addStageArea" style="margin-bottom:10px;">
+						</div>
+						<!--添加阶段的按钮！-->
+						<div class="col-md-12">
+							<button type="button" class="btn btn-success" id="addStage">
+								<span class="glyphicon glyphicon-plus-sign"></span>
+								添加阶段
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="panel-footer">
+					您可以点击 <a href="javascript:add_stage();">添加阶段</a> 添加一个学习阶段，并可以在学习阶段下添加许多任务，学习任务可以设置完成时长，我们会根据您每日的可学习时间计算出完成计划的总时间，每日可学习时间可以在 <a
+						href="">系统设置</a>里设置。
+				</div>
+			</div>
+			<div class="panel panel-success">
+				<div class="panel-heading">
+					<div class="panel-title">
+						监督人邀请
+					</div>
+				</div>
+				<!--好友的组合-->
+				<div class="panel-body">
+					<div class="form-inline">
+						<foreach name="friends" item="value">
+							<div class="form-group" style="padding-right:10px;">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="supervision[]" value="{$value.user.id}" />
+										{$value.user.username}
+									</label>
+								</div>
+							</div>
+						</foreach>
+					</div>
+				</div>
+				<div class="panel-footer">
+					我们会向选中好友发出监督申请，好友接受申请后即可开始监督（<span class="text-warning">监督者拥有查看学习记录，查看计划详情的权限</span>），每个学习计划只能各有一个监督者，此项可以创建完成后再做更改！
+				</div>
+			</div>
+			<div class="panel panel-success">
+				<div class="panel-heading">
+					<div class="panel-title">
+						选择封面图片并提交（<span class="text-warning">封面比例9:5最佳，选填</span>）
+					</div>
+				</div>
+				<div class="panel-body">
+					<div class="form-group col-md-6">
+						<label class="control-label">
+							选择图片：
+						</label>
+						<input type="file" name="face" class="form-control" />
+					</div>
+				</div>
+			</div>
+			<fieldset>
+				<legend>
+					提交学习计划<!--点击提交就可以啦 ↖(^ω^)↗-->
+				</legend>
+				<div class="col-md-12">
+					<div class="form-group">
+						<button type="submit" class="btn btn-success" id="submit">
+							<span class="glyphicon glyphicon-ok"></span>
+							提交
+						</button>
+						<!--<button type="button" class="btn btn-info" id="validateBtn">
+							验证
+						</button>-->
+						<button type="button" onclick="wq_confirm('确认离开此页？您的计划将不会被保存！',function(){history.back();})" class="btn btn-danger">
+							<span class="glyphicon glyphicon-remove"></span>
+							取消
+						</button>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+		<else/>
+        <h3>计划已达您所处等级上限(<span	class="text-warning">{$level['plan_num']}</span>)，无法继续添加</h3>
+        <p class="help-block">您可以 <a href="{:U(GROUP_NAME.'/Plan/index')}">删除某些计划</a> 或者 <a href="">提升您的等级</a>!</p>
+	</if>
+</block>

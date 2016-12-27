@@ -1,0 +1,128 @@
+<extend name="./LMS/Models/Index/Tpl/base.html" />
+<block name="title">
+	待处理报告
+</block>
+<block name="CSS_AND_JS">
+	<script type="text/javascript">
+        submitCheckUrl="{:U(GROUP_NAME.'/Supervision/checkSubmit')}";
+        uniqid="{$url_uniqid}";
+	</script>
+	<script type="text/javascript" src="__PUBLIC__/js/supervision/waiting.js"></script>
+</block>
+<block name="body">
+	<div class="text-center">
+		<div class="btn-group btn-group-lg" style="margin-top:20px;display:inline-block;">
+			<a href="{:U(GROUP_NAME.'/Supervision/index')}" class="btn btn-success">
+				<span class="glyphicon glyphicon-calendar"></span>
+				全部监督计划
+				<if condition="$page_num['all']">
+					<span class="badge">{$page_num['all']}</span>
+				</if>
+			</a>
+			<a href="{:U(GROUP_NAME.'/Supervision/request')}" class="btn btn-success">
+				<span class="glyphicon glyphicon-list-alt"></span>
+				监督申请
+				<if condition="$page_num['request']">
+					<span class="badge request">{$page_num['request']}</span>
+				</if>
+			</a>
+			<a href="{:U(GROUP_NAME.'/Supervision/waiting')}" class="btn btn-warning">
+				<span class="glyphicon glyphicon-file"></span>
+				待处理报告
+				<if condition="$page_num['waiting']">
+					<span class="badge">{$page_num['waiting']}</span>
+				</if>
+			</a>
+		</div>
+	</div>
+	<hr>
+	<div class="panel panel-success">
+		<div class="panel-heading">
+			<div class="panel-title">
+				待处理报告
+			</div>
+		</div>
+		<div class="panel-body">
+			<table class="table">
+				<thead>
+				<tr>
+					<th></th>
+					<th>报告信息</th>
+					<th>操作</th>
+				</tr>
+				</thead>
+				<tbody>
+				<if condition="count($data) lt 1">
+					<tr>
+                        <td colspan="3">
+                            <h1>您还没有未处理报告哦！</h1>
+                        </td>
+                    </tr>
+					<else/>
+					<foreach name="data" item="val">
+						<tr>
+							<td>
+								<img src="{:get_thumb_file($val['face'],'s_')}" alt="" class="img-thumbnail img-responsive center-block" style="width:150px;" />
+								<p class="text-center">
+									<a href="{:U(GROUP_NAME.'/Plan/detail',array('pcid'=>$val['pcid']))}">{$val.name}</a>
+								</p>
+							</td>
+							<td width="50%">
+								<p class="text-primary">
+									{$val.title}
+								</p>
+                                <p class="text-muted small">
+                                    <span class="glyphicon glyphicon-time"></span>
+                                    {:show_time($val['complete_time'])}
+                                </p>
+								<p class="help-block">
+									{$val.info}
+								</p>
+								<p class="text-warning">
+									监督状态：
+									<if condition="$val['status']">
+										已检阅 (
+										<span class="text-success">
+											<for start="0" end="$val['star']">
+												<span class="glyphicon glyphicon-star"></span>
+											</for>
+											<for start="$val['star']" end="5">
+												<span class="glyphicon glyphicon-star-empty"></span>
+											</for>
+										</span> )
+										<p class="text-muted">回复：{$val.reply}</p>
+										<else/>
+										待检阅
+									</if>
+								</p>
+							</td>
+							<td>
+								<span class="btn-group pull-right">
+									<if condition="$val['status']">
+										<button class="btn btn-success" disabled="disabled">
+											已检阅
+										</button>
+										<else/>
+										<button class="btn btn-success checkSchedule" data="{$val.id}" onclick="checkSchedule(this)">
+											<span class="glyphicon glyphicon-indent-left"></span>
+											检阅进度
+										</button>
+									</if>
+									<a class="btn btn-info" href="{:U(GROUP_NAME.'/Plan/detail',array('pcid'=>$val['pcid']))}" target="_blank">
+										<span class="glyphicon glyphicon-list-alt"></span>
+										计划详情
+									</a>
+									<a class="btn btn-info" href="{:U(GROUP_NAME.'/Message/send',array('uid'=>$val['uid']))}" target="_blank">
+										<span class="glyphicon glyphicon-comment"></span>
+										私信交流
+									</a>
+								</span>
+							</td>
+						</tr>
+					</foreach>
+				</if>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</block>

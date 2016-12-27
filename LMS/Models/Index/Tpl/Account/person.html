@@ -1,0 +1,225 @@
+<extend name="./LMS/Models/Index/Tpl/base.html" />
+<block name="title">
+	个性化
+</block>
+<block name="CSS_AND_JS">
+	<script type="text/javascript">
+		var yesterday='{:date("Y-m-d",time()-86400)}';
+	</script>
+	<!--特色JS/CSS-->
+	<link rel="stylesheet" href="__PUBLIC__/css/bootstrap/bootstrapValidator.min.css">
+	<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/bootstrapValidator.min.js'></script>
+	<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/moment-with-locales.min.js'></script>
+	<script type="text/javascript" src='__PUBLIC__/js/account/personal.js'></script>
+	<!--/特色JS/CSS-->
+</block>
+<block name="body">
+	<h2>个性化设置</h2>
+	<form action="{:U(GROUP_NAME.'/Account/personHandle')}" id="personInfo" method="post" role="form">
+		{$__UNIQID__}
+		<fieldset>
+			<legend>好友设置</legend>
+			<div class="row">
+				<div class="col-md-5">
+					<div class="form-group">
+						<label>
+							拒绝所有好友请求：
+						</label>
+						<div class="">
+							<if condition="$data['fri_rej_all']">
+								<label class="checkbox-inline">
+									<input type="radio" name="fri_rej_all" value="1" checked="checked" />
+									开启
+								</label>
+								<label class=" checkbox-inline">
+									<input type="radio" name="fri_rej_all" value="1" />
+									关闭
+								</label>
+								<else/>
+								<label class="checkbox-inline">
+									<input type="radio" name="fri_rej_all" value="1" />
+									开启
+								</label>
+								<label class=" checkbox-inline">
+									<input type="radio" name="fri_rej_all" value="1" checked="checked" />
+									关闭
+								</label>
+							</if>
+						</div>
+					</div>
+				</div>
+			</div>
+		</fieldset>
+		<br>
+		<fieldset>
+			<legend>学习计划设置</legend>
+			<div class="row">
+				<div class="col-md-5">
+					<div class="form-group">
+						<label>
+							每日学习时间：
+						</label>
+						<select name="stu_time" class="form-control">
+							<for start="3" end="16">
+								<if condition="$i==$data['stu_time']">
+									<option value="{$i}" selected="selected">{$i}</option>
+									<else/>
+									<option value="{$i}">{$i}</option>
+								</if>
+							</for>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					 <p class="help-block">
+						通过设置此时间（单位：h），我们可以预测学习计划完成时间，以及为您排出每日需要完成的任务！
+					</p>
+				</div>
+			</div>
+		</fieldset>
+		<br>
+		 <fieldset>
+			<legend>提醒设置</legend>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<label>
+							站内信邮箱通知：
+						</label>
+						<div class="">
+							<if condition="$data['rem_message']">
+								<label class="checkbox-inline">
+									<input type="radio" name="rem_message" value="1" checked="checked" />
+									开启
+								</label>
+								<label class=" checkbox-inline">
+									<input type="radio" name="rem_message" value="0" />
+									关闭
+								</label>
+								<else/>
+								<label class="checkbox-inline">
+									<input type="radio" name="rem_message" value="1" />
+									开启
+								</label>
+								<label class=" checkbox-inline">
+									<input type="radio" name="rem_message" value="0" checked="checked" />
+									关闭
+								</label>
+							</if>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<p class="help-block">
+						开启此功能后，每当有新的站内信时，我们都会以邮箱的形式通知你。
+					</p>
+				</div>
+			</div>
+			 <br>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<label>
+							每日提醒：
+						</label>
+						<div class="">
+							<if condition="$data['rem_evd']">
+								<label class="checkbox-inline" onclick="showObj('#every-input-warp-top');">
+									<input type="radio" name="rem_evd" value="1" checked="checked" />
+									开启
+								</label>
+								<label class=" checkbox-inline" onclick="hideObj('#every-input-warp-top');">
+									<input type="radio" name="rem_evd" value="0" />
+									关闭
+								</label>
+								<else/>
+								<label class="checkbox-inline" onclick="showObj('#every-input-warp-top');">
+									<input type="radio" name="rem_evd" value="1" />
+									开启
+								</label>
+								<label class=" checkbox-inline" onclick="hideObj('#every-input-warp-top');">
+									<input type="radio" name="rem_evd" value="0" checked="checked" />
+									关闭
+								</label>
+							</if>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3" id="every-input-warp-top" <if condition="!$data['rem_evd']">style='display:none;'</if>>
+					<div class="form-group">
+						<label>
+							提醒时间
+						</label>
+						<input type="time" name="rem_evd_time" class="form-control" value="{:date('H:i',$data['rem_evd_time'])}" />
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<p class="help-block">
+						开启此功能后，在您设置的时间点，每天我们都会以邮件的形式提醒您需要完成的任务！
+					</p>
+				</div>
+			</div>
+			 <br>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<label>
+							警告提醒：
+						</label>
+						<div class="">
+							<if condition="$data['rem_warn']">
+								<label class="checkbox-inline" onclick="showObj('#warning-input-warp-top');">
+									<input type="radio" name="rem_warn" value="1" checked="checked" />
+									开启
+								</label>
+								<label class=" checkbox-inline" onclick="hideObj('#warning-input-warp-top');">
+									<input type="radio" name="rem_warn" value="0" />
+									关闭
+								</label>
+								<else/>
+								<label class="checkbox-inline" onclick="showObj('#warning-input-warp-top');">
+									<input type="radio" name="rem_warn" value="1" />
+									开启
+								</label>
+								<label class=" checkbox-inline" onclick="hideObj('#warning-input-warp-top');">
+									<input type="radio" name="rem_warn" value="0" checked="checked" />
+									关闭
+								</label>
+							</if>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3" id="warning-input-warp-top" <if condition="!$data['rem_warn']">style='display:none;'</if>>
+					<div class="form-group">
+						<label>
+							提醒时间
+						</label>
+						<input type="time" name="rem_warn_time" class="form-control" value="{:date('H:i',$data['rem_warn_time'])}" />
+					</div>
+				</div>
+			</div>
+			 <div class="row">
+				<div class="col-md-12">
+					 <p class="help-block">
+						开启此功能后，每当您在设置的时间点前没有完成任务，我们会自动给您发送邮件以告知您需要完成的任务！
+					</p>
+				</div>
+			 </div>
+			 <br>
+		 </fieldset>
+		 <div class="row">
+			 <div class="col-md-12">
+				 <div class="form-group">
+					 <button class="btn btn-success" type="submit">保存</button>
+					 <button class="btn btn-danger" type="button" onclick="cancle_back();">取消</button>
+				 </div>
+			 </div>
+		 </div>
+	</form>
+</block>
