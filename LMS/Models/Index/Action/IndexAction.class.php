@@ -8,6 +8,10 @@
  */
 class IndexAction extends CommonAction
 {
+    /*展示向外的主页*/
+    public function show_index(){
+        $this->display();
+    }
     public function index(){
         $uid=session('uid');
         //加载函数库！

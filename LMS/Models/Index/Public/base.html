@@ -10,7 +10,11 @@
 	<script type="text/javascript" src='./js/jquery.min.js'></script>
 	<script type="text/javascript" src='./js/bootstrap.min.js'></script>
 
+	<script type="text/javascript">
+		left_row='index';
+	</script>
 	<script type="text/javascript" src='./js/base.js'></script>
+	<script type="text/javascript" src='./js/basic.func.js'></script>
 	<style type="text/css">
 	</style>
 </head>
@@ -69,6 +73,42 @@
 		</div>
 	</form>
 </nav>
+<div class="scroll-top">
+	<ul class="nav nav-pills nav-stacked bg-info pull-right">
+		<li id="to-top">
+			<a href="javascript:scrollTo('html,body');" title="回到顶部">
+				<span class="glyphicon glyphicon-chevron-up"></span>
+				<!--弹出来的备注信息-->
+			</a>
+		</li>
+		<li>
+			<a href="" title="分享">
+				<span class="glyphicon glyphicon-qrcode"></span>
+				<div class="alt bg-success">
+					<img src="./images/face.jpg" class="img-responsive" alt="分享二维码">
+				</div>
+			</a>
+		</li>
+		<li>
+			<a href="" title="发邮件">
+				<span class="glyphicon glyphicon-envelope"></span>
+				<div class="alt bg-success">
+					给我发邮件
+					<span class="glyphicon glyphicon-hand-right"></span>
+				</div>
+			</a>
+		</li>
+		<li>
+			<a href="" title="我的建议">
+				<span class="glyphicon glyphicon-comment"></span>
+				<div class="alt bg-success">
+					我的建议
+					<span class="glyphicon glyphicon-hand-right"></span>
+				</div>
+			</a>
+		</li>
+	</ul>
+</div>
 <div class="container " style="width:100%;">
 	<div class="row" id="leaderPic">
 		<div class="col-md-12" style="margin-top:30px">
@@ -144,8 +184,8 @@
 		</div>
 		<!--右侧的操作区-->
 		<div class="col-md-10">
-			<span class="col-md-11 col-offset-1">
-			</span>
+			<div class="col-md-11 col-offset-1" style="background:#fff;">
+			</div>
 		</div>
 	</div>
 	<div class="row" id="footer">

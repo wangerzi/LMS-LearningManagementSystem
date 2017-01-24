@@ -348,7 +348,47 @@ function hiddenKey($str,$start=3,$length=5,$replace='*'){
  * @return mixed
  */
 function get_user_info($uid){
-    $data=M('user_info')->field(array('fri_rej_all'))->where("uid='%d'",$uid)->limit(1)->select();
-    return $data[0];
+    $data=M('user_config')->where("uid='%d'",$uid)->find();
+    return $data;
+}
+
+/**
+ * 返回$uid对应的用户的未完成任务的邮件content，用于邮件发送。
+ * @param $uid
+ * @return mixed|null
+ */
+function get_uncomplete_plan($uid){
+    $plan=M('plan_clone')
+        ->table(C('DB_PREFIX').'plan_clone AS pc')
+        ->join(C('DB_PREFIX').'plan AS p ON p.id=pc.pid')
+        ->where("pc.complete_time IS null")
+        ->field('p.name,pc.id')
+        ->select();
+    $plans='';
+    $db=M('mission_complete');
+    $user_config=M('user_config')->find($uid);
+
+    $map=array(
+        'mc.time' =>  array('between',get_time(0).','.time()),
+        'mc.uid'   =>  $uid
+    );
+    foreach($plan as $val){
+        $map['mc.pcid']=$val['id'];
+        $sum=$db
+            ->table(C('DB_PREFIX').'mission_complete AS mc')
+            ->where($map)
+            ->join(C('DB_PREFIX').'mission AS m ON m.id=mc.mid')
+            ->sum('m.time');
+        //如果今天的学习
+        if($sum>$user_config['stu_time'])
+            continue;
+        $plans.='《'.$val['name'].'》、';
+    }
+    if(empty($plans))
+        return null;
+    $content=file_get_contents(APP_PATH.'data/mail/info.html');
+    $content=str_replace('{__INFO__}','您还有计划<span style="color:#90ed7d">'.$plans.'</span>今日未完成，不要忘记了哦！',$content);
+    //p($content);
+    return $content;
 }
 ?>

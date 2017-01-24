@@ -78,6 +78,47 @@ class LoginAction extends CommonAction{
         else
             $this->error('用户名或密码错误！');
     }
+    /*用户名检测的AJAX处理*/
+    public function usernameCheck(){
+        if(!IS_AJAX||!IS_POST)
+            _404('页面不存在！');
+        $username=I('post.username');
+        $map=array(
+            'username'  =>  array('eq',$username),
+            'email'     =>  array('eq',$username),
+            '_logic'    =>  'or',
+        );
+        $user=M('user')->field('id,username')->where($map)->find();
+        if(empty($user))
+            $this->ajaxReturn(array('valid'=>false));
+        else
+            $this->ajaxReturn(array('valid'=>true));
+    }
+    /*密码检测的ajax处理*/
+    public function pwdCheck(){
+        if(!IS_AJAX||!IS_POST)
+            _404('页面不存在！');
+        $username=I('post.username');
+        $pwd=I('post.password');
+        $map=array(
+            'username'  =>  array('eq',$username),
+            'email'     =>  array('eq',$username),
+            '_logic'    =>  'or',
+        );
+        $user=M('user')->field('id,password,username')->where($map)->find();
+        if(empty($user)||$user['password']!=calc_password($pwd))
+            $this->ajaxReturn(array('valid'=>false));
+        else
+            $this->ajaxReturn(array('valid'=>true));
+    }
+    /*验证码检测*/
+    public function verifyCheck(){
+        if(!IS_AJAX||!IS_POST)
+            _404('页面不存在！');
+        $verify=I('post.verify');
+        $valid=(md5($verify)==session('login_verify'));
+        $this->ajaxReturn(array('valid'=>$valid));
+    }
     public function logout(){
         if(is_login()) {
             logout();
@@ -89,8 +130,8 @@ class LoginAction extends CommonAction{
     public function verify(){
         import('ORG.Util.Image');
         if(C('VERIFY_TYPE')==4)
-            Image::GBVerify(C('VERIFY_LEN'),'png',180,50,'simhei.ttf','login_verify');
+            Image::GBVerify(C('VERIFY_LEN'),'png',100,30,'simhei.ttf','login_verify');
         else
-            Image::buildImageVerify(C('VERIFY_LEN'),C('VERIFY_TYPE'),'png',180,50,'login_verify');
+            Image::buildImageVerify(C('VERIFY_LEN'),C('VERIFY_TYPE'),'png',100,30,'login_verify');
     }
 }

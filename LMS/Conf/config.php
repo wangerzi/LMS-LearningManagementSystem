@@ -6,8 +6,8 @@ return array(
     'APP_GROUP_MODE' => 1,
     'APP_GROUP_PATH' => 'Models',
     'DB_HOST' => 'localhost',
-    'DB_USER' => '',
-    'DB_PWD' => '',
+    'DB_USER' => 'root',
+    'DB_PWD' => 'root',
     'DB_NAME' => 'think_lms',
     'DB_PREFIX' => 'wq_',
 
@@ -19,28 +19,45 @@ return array(
     //加载其他的配置文件
     'LOAD_EXT_CONFIG' => 'verify,mail,register,web,plan,message,account',
 
+    //修改默认方法为show_index
+    'DEFAULT_ACTION' => 'show_index',
+
 
     'CSSF_STRING' => 'liDI@90s!@',
     //默认过滤函数！
     'DEFAULT_FILTER' => 'htmlspecialchars',
     //某些控制器不用登陆即可访问！
     'NO_LOGIN_ROUTE' => array(
+        //主页
+        'Index/Index/show_index',
+
         //登录界面
         'Index/Login/index',
         //登录界面提交
         'Index/Login/loginHandle',
         //登录界面验证码
         'Index/Login/verify',
+        //检查用户名的
+        'Index/Login/usernameCheck',
+        //检查密码
+        'Index/Login/pwdCheck',
+        //检查验证码的。
+        'Index/Login/verifyCheck',
+
         //注册页面
         'Index/Register/index',
         //注册页面提交
         'Index/Register/register',
         //注册的验证码
         'Index/Register/verify',
+        //检查验证码。
+        'Index/Register/verifyCheck',
+        //检测用户名
+        'Index/Register/checkUsername',
+        //检测邮箱
+        'Index/Register/checkEmail',
         //激活页面
         'Index/Register/active',
-        //检查页面
-        'Index/Register/check',
     ),
     //某些分组需要管理员权限才能访问！
     'NEED_ADMIN_GROUP' => array(
@@ -56,7 +73,8 @@ return array(
     'FRIEND_SEARCH_MAX' => 19,
     'FRIEND_SEARCH_MIN' => 2,
 	
-	'URL_MODEL'=>3,
+	//兼容模式，否则有是有图片显示不出来
+	'URL_MODEL'	=>	3,
 
     //用户账户相关
     'USER_BASE_PATH'    =>  APP_PATH.'data/user/',

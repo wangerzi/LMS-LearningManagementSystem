@@ -5,6 +5,7 @@
 	<title><block name="title"></block>-{:C('WEB_NAME')}</title>
 	<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/bootstrap.min.css" />
 	<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/base.css" />
+	<link href="/favicon.ico" rel="icon" type="image/x-icon" />
 
 	<script type="text/javascript" src='__PUBLIC__/js/jquery.min.js'></script>
 	<script type="text/javascript" src='__PUBLIC__/js/bootstrap.min.js'></script>
@@ -17,6 +18,7 @@
     <block name="CSS_AND_JS"><!--JS和CSS处理区域！-->
     </block>
 	<script type="text/javascript" src='__PUBLIC__/js/base.js'></script>
+	<script type="text/javascript" src='__PUBLIC__/js/basic.func.js'></script>
 	<style type="text/css">
 	</style>
 </head>
@@ -50,7 +52,7 @@
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 	<!--最前边的标题-->
 	<div class="navbar-header navbar-nav navbar-left" style="margin-right:20px;">
-		<a href="{:U('Index/Index/index')}" class="navbar-brand" style="color:#fff;">
+		<a href="{:U('Index/Index/show_index')}" class="navbar-brand" style="color:#fff;">
 			<span class="glyphicon glyphicon-tasks"></span>
 			{:C('WEB_NAME')}
 		</a>
@@ -95,6 +97,43 @@
 		</div>
 	</form>
 </nav>
+<!--回到顶部-->
+<div class="scroll-top">
+	<ul class="nav nav-pills nav-stacked bg-info pull-right">
+		<li id="to-top">
+			<a href="javascript:scrollTo('html,body');" title="回到顶部">
+				<span class="glyphicon glyphicon-chevron-up"></span>
+				<!--弹出来的备注信息-->
+			</a>
+		</li>
+		<li>
+			<a href="" title="分享">
+				<span class="glyphicon glyphicon-qrcode"></span>
+				<div class="alt bg-success">
+					<img src="__PUBLIC__/images/face.jpg" class="img-responsive" alt="分享二维码">
+				</div>
+			</a>
+		</li>
+		<li>
+			<a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=zfT5_fv19fn1-428vOOuoqA" title="发邮件" target="_blank">
+				<span class="glyphicon glyphicon-envelope"></span>
+				<div class="alt bg-success">
+					给我发邮件
+					<span class="glyphicon glyphicon-hand-right"></span>
+				</div>
+			</a>
+		</li>
+		<li>
+			<a href="" title="我的建议">
+				<span class="glyphicon glyphicon-comment"></span>
+				<div class="alt bg-success">
+					我的建议
+					<span class="glyphicon glyphicon-hand-right"></span>
+				</div>
+			</a>
+		</li>
+	</ul>
+</div>
 <div class="container " style="width:100%;">
 	<block name="leader">
 		<div class="row" id="leaderPic">

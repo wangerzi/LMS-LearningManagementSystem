@@ -54,7 +54,7 @@ class SupervisionAction extends CommonAction {
             $data['text']='表单验证码不匹配，请刷新重试！';
             $this->ajaxReturn($data);
         }
-        $plan_clone=M('plan_clone')->field('svid')->find($pcid);
+        $plan_clone=M('plan_clone')->field('svid,pid')->find($pcid);
         if($plan_clone['svid']!=$uid){
             $data['text']='无权操作';
             $this->ajaxReturn($data);
@@ -63,7 +63,11 @@ class SupervisionAction extends CommonAction {
             $data['text']='不满足鞭笞条件';
             $this->ajaxReturn($data);
         }
-        if(!empty(M('mission_complete')->where("pcid='%d'",$pcid)->find())){
+		$map=array(
+			"pcid"	=>	array("eq",$pcid),
+			"time"	=>	array("between",get_time(0).','.time()),
+		);
+        if(!empty(M('mission_complete')->where($map)->find())){
             $data['text']='好友今天完成过任务，就不要再鞭笞TA了！';
             $this->ajaxReturn($data);
         }

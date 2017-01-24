@@ -27,7 +27,7 @@ class RegisterAction extends CommonAction
 
         //唯一标识码验证。
         if (!checkFormUniqid(I('post.uniqid')))
-            $this->error("表单唯一标识码不匹配！即将重载页面！", U('index'));
+            $this->error("表单唯一标识码不匹配，为了您的账号安全，请刷新重试！", U('index'));
 
         //验证码验证
         if (C('REG_VERIFY') && session("reg_verify") != md5(I("post.verify")))
@@ -47,13 +47,10 @@ class RegisterAction extends CommonAction
         if (!$user = $db->create())
             $this->error($db->getError());
         else {
-            $year = I('post.year', 0, 'intval');
-            $mouth = I('post.mouth', 0, 'intval');
-            $day = I('post.day', 0, 'intval');
-
-            if ($year < C('MIN_YEAR') || $year > C('MAX_YEAR') || !checkdate($mouth, $day, $year))
-                $this->error('时间输入不符合标准！');
-            $user['birth'] = strtotime("{$year}-{$mouth}-{$day}");
+            $birth = strtotime(I('post.birth'));
+            if($birth > time())
+                $this->error('生日需要在今天之前');
+            $user['birth']=$birth;
             if (!$user = M('user')->add($user)) {
                 add_log("用户{$data['username']}加入数据库失败");
                 $this->error('加入数据库失败！');
@@ -78,22 +75,18 @@ class RegisterAction extends CommonAction
                 'rem_evd_time' =>  get_time(0)+9*3600,
                 'rem_warn_time' => get_time(0)+16*3600,
             );
-            M('user_config')->add($info);
+            if(!M('user_config')->add($info)) {
+                $db->delete($user);
+                rmdir($dir);
+                $this->error('默认配置入库失败，请重试！');
+            }
 
+            //清除标识码。
+            clearUniqid();
             //发送邮件
             $this->sendRegisterEmail($data['email'],$data['username'],$active);
-            $this->success("注册成功，请前往邮箱激活！", U(GROUP_NAME . "/Login/index"));//注册成功的跳转。        }
+            $this->success("注册成功，请前往邮箱激活！", U(GROUP_NAME . "/Login/index"));//注册成功的跳转。
         }
-    }
-    /*ajax检查方法！*/
-    public function check(){
-        if(!IS_AJAX)
-            _404("页面不存在");
-        $data=array(
-            'status' => 1,
-            'info' => '测试测试'
-        );
-        $this->ajaxReturn($data,'json');
     }
     public function checkEmail(){
         if(!IS_AJAX||!IS_POST)
@@ -109,7 +102,7 @@ class RegisterAction extends CommonAction
             'email' =>  array('eq',$email),
         );
 
-        $user=$db->where($map)->limit(1)->select();
+        $user=$db->where($map)->find();
         if(empty($user))
             $arr['valid']=true;
         $this->ajaxReturn($arr);
@@ -131,13 +124,21 @@ class RegisterAction extends CommonAction
         $data['is_admin']=is_admin();*/
         $this->ajaxReturn($data);
     }
+    /*验证码检测*/
+    public function verifyCheck(){
+        if(!IS_AJAX||!IS_POST)
+            _404('页面不存在！');
+        $verify=I('post.verify');
+        $valid=(md5($verify)==session('reg_verify'));
+        $this->ajaxReturn(array('valid'=>$valid));
+    }
     /*生成验证码方法！*/
     public function verify(){
         import('ORG.Util.Image');
         if(C('VERIFY_TYPE')==4)
-            Image::GBVerify(C('VERIFY_LEN'),'png',180,50,'simhei.ttf','reg_verify');
+            Image::GBVerify(C('VERIFY_LEN'),'png',100,30,'simhei.ttf','reg_verify');
         else
-            Image::buildImageVerify(C('VERIFY_LEN'),C('VERIFY_TYPE'),'png',180,50,'reg_verify');
+            Image::buildImageVerify(C('VERIFY_LEN'),C('VERIFY_TYPE'),'png',100,30,'reg_verify');
     }
     public function active(){
         if(!isset($_GET['active']))

@@ -59,6 +59,7 @@ class AccountAction extends CommonAction
         $upload->thumbRemoveOrigin = true;
         if (!$upload->upload()) {
             //捕获上传异常
+			p($uid);
             $this->error($upload->getErrorMsg());
             //echo $upload->getErrorMsg();
         } else {
@@ -157,7 +158,11 @@ class AccountAction extends CommonAction
 
         //这个时间戳是今天那个时间点的时间戳
         $evd_time=strtotime($_POST['rem_evd_time']);
+        if($evd_time<time())
+            $evd_time+=86400;//如果在现在的时间之前，就加一天，避免重复发送。
         $warn_time=strtotime($_POST['rem_warn_time']);
+        if($warn_time<time())
+            $warn_time+=86400;//如果在现在的时间之前，就加一天，避免重复发送。
 
         $data=array(
             'stu_time'      =>  intval(I('post.stu_time'))%16,
@@ -172,6 +177,18 @@ class AccountAction extends CommonAction
         if(!$db->where("uid='%d'",$uid)->limit(1)->save($data)){
             //p($db->getLastSql());
             $this->error('没有任何数据被修改，请重试！');
+        }
+        $user=M('user')->field('email')->find($uid);
+        load('@/email');
+        //如果开启每日提醒，重设重复邮件
+        delEmailTimeQueue($uid,'evd',true);
+        if($data['rem_evd']){
+            addEmailTimeQueue($user['email'],'每日提醒邮件',C('WEB_NAME'),'get_uncomplete_plan',$evd_time,'evd',1,true);
+        }
+        //如果开启每日警告，重设重复邮件
+        delEmailTimeQueue($uid,'warn',true);
+        if($data['rem_warn']){
+            addEmailTimeQueue($user['email'],'每日警告邮件',C('WEB_NAME'),'get_uncomplete_plan',$warn_time,'warn',1,true);
         }
         $this->success('修改成功！',U(GROUP_NAME.'/Account/index'));
     }

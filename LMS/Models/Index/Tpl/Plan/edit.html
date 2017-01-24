@@ -66,7 +66,7 @@
 		<div class="panel panel-success">
 			<div class="panel-heading">
 				<div class="panel-title">
-					基本信息设置(<span class="text-danger">所有者特权-您的更改将生效于所有加入计划的用户</span>)
+					基本信息设置(<span class="text-danger">所有者特权</span>)
 				</div>
 			</div>
 			<div class="panel-body">
@@ -175,10 +175,10 @@
                                 <span class="glyphicon glyphicon-ok"></span>
                                 保存
                             </button>
-                            <button type="reset" class="btn btn-warning">
+                            <!--<button type="reset" class="btn btn-warning">
                                 <span class="glyphicon glyphicon-repeat"></span>
                                 重置
-                            </button>
+                            </button>-->
                         </div>
                     </div>
                 </div>
@@ -336,18 +336,22 @@
 						</div>
 					</div>
 					<else/>
-					<div class="form-inline">
-						<foreach name="friends" item="value">
-							<div class="form-group" style="padding-right:10px;">
-								<div class="checkbox">
-									<label>
-										<input type="checkbox" name="supervision[]" value="{$value.user.id}" />
-										{$value.user.username}
-									</label>
+					<if condition="empty($friends)">
+						您还没有好友哦，快去找找志同道合的伙伴吧！<a class="btn btn-success" href="{:U(GROUP_NAME.'/Friend/index')}" target="_blank">-->找朋友</a>
+						<else/>
+						<div class="form-inline">
+							<foreach name="friends" item="value">
+								<div class="form-group" style="padding-right:10px;">
+									<div class="checkbox">
+										<label>
+											<input type="checkbox" name="supervision[]" value="{$value.user.id}" />
+											{$value.user.username}
+										</label>
+									</div>
 								</div>
-							</div>
-						</foreach>
-					</div>
+							</foreach>
+						</div>
+					</if>
 					<div class="row">
 						<div class="col-md-12">
 							<hr>

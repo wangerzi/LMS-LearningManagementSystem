@@ -43,7 +43,10 @@ class FriendAction extends CommonAction
         $this->page=$page->show();
 
 
-        //$users=$db->join("LEFT JOIN wq_friend fri ON (fri.fid={$uid} AND fri.rid=user.id) OR (fri.fid=user.id AND fri.rid=2) LEFT JOIN wq_friend_request fri_req ON (fri_req.fid={$uid} AND fri_req.rid=user.id) OR (fri_req.fid=user.id AND fri_req.rid={$uid})")->where("user.id!={$uid} AND fri.id is null AND fri_req.id is null")->select();
+        /*$users=$db
+            ->join("LEFT JOIN wq_friend fri ON (fri.fid={$uid} AND fri.rid=user.id) OR (fri.fid=user.id AND fri.rid=2) LEFT JOIN wq_friend_request fri_req ON (fri_req.fid={$uid} AND fri_req.rid=user.id) OR (fri_req.fid=user.id AND fri_req.rid={$uid})")
+            ->where("user.id!={$uid} AND fri.id is null AND fri_req.id is null")
+            ->select();*/
         $users=$db->where("username LIKE '%%%s%%' OR email LIKE '%%%s%%'",$content,$content)->limit($page->firstRow,$page->listRows)->select();
 
         $data=merge_friend_status($uid,$users);
@@ -143,24 +146,40 @@ class FriendAction extends CommonAction
         $this->initUniqid();
         $uid=session('uid');
         $db=M('user');
-        $user=$db->field(array('id','birth','reg_time'))->find($uid);
-        $birth=date('m-d',$user['birth']);
+        $user=$db->field(array('id','birth','reg_time','last_time'))->find($uid);
+        $birth=$user['birth'];//出生日期都是固定在某一天的，所以不必转化
+        $reg_time=strtotime(date('Y-m-d',$user['reg_time']));//转换成当天00:00的时间戳！
+        $last_time=strtotime(date('Y-m-d',$user['reg_time']));//转换成当天00:00的时间戳！
 
         $data=array();
 
         //首先，查看生日相同的
         $map=array(
-            'id' => array('neq',$uid),
-            "FROM_UNIXTIME(birth,'%m-%d')"=>array('eq',$birth),
+            'user.id'    =>  array('neq',$uid),
         );
         //$birth=$db->field(array('id','username','info','email'))->where($map)->limit(4)->select();
-        $birth=$db->query("SELECT `id`,`username`,`face`,`info`,`email` 
+        /*$birth=$db->query("SELECT `id`,`username`,`face`,`info`,`email`
                           FROM `wq_user` 
                           WHERE 
                             id <> '{$uid}'
                             AND
                             FROM_UNIXTIME(birth,'%m-%d')='{$birth}' 
-                          LIMIT 4;");
+                          LIMIT 4;");*/
+
+        //生日相同的，注册时间相近的，最后登录时间相近的。
+        $birth=$db
+            ->table(C('DB_PREFIX').'user AS user')
+            //->join(C('DB_PREFIX')."friend AS fri ON (fri.fid={$uid} AND fri.rid=user.id) OR (fri.fid=user.id AND fri.rid={$uid})")
+            ->where($map)
+            ->where("
+            user.birth='%s' 
+            OR user.reg_time BETWEEN '%s' AND '%s' 
+            OR user.last_time BETWEEN '%s' AND '%s'
+            ",$birth,$reg_time,$reg_time+86400,$last_time,$last_time+86400)
+            ->field('user.id,user.username,user.face,user.info,user.email')
+            ->limit(4)
+            ->select();
+        //p($birth);
         //p($db->getLastSql());
         $data=array_merge($data,$birth);
 
@@ -213,11 +232,14 @@ class FriendAction extends CommonAction
             $this->ajaxReturn($data);
         }
         //检查对方的info
-        $info=get_user_info($uid);
+        $info=get_user_info($rid);
         if($info['fri_rej_all']){
             $data['text']='对方已设置拒绝所有好友请求，您可以通过私信与他交流';
             $this->ajaxReturn($data);
         }
+        /*$data['info']=$info;
+        $data['sql']=M('user_config')->getLastSql();
+        $this->ajaxReturn($data);*/
 
         $temp=array(
             'fid'   =>  $uid,

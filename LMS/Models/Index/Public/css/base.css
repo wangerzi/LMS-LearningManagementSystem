@@ -98,3 +98,38 @@ body{
 	margin-top:40%;
 	opacity:0;
 }
+/*回到顶部的CSS*/
+.scroll-top{
+	position: fixed;
+	right:20px;
+	bottom:40px;
+
+	z-index: 1000;
+}
+.scroll-top .nav{
+	width:60px;
+
+	text-align: center;
+
+	-webkit-border-radius:4px;
+	-moz-border-radius:4px;
+	border-radius:4px;
+}
+.scroll-top > ul.nav > li > a{
+	position: relative;
+}
+.scroll-top > ul.nav > li > a div.alt{
+	width:100px;
+
+	padding:10px;
+
+	-webkit-border-radius:4px;
+	-moz-border-radius:4px;
+	border-radius:4px;
+
+	position: absolute;
+	top:0;
+	right:62px;
+
+	display: none;
+}

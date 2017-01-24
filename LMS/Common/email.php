@@ -7,6 +7,7 @@
  */
 /**
  * 数据库版的加入发送队列
+ * 如果要用函数的话，函数需要是公共区的函数，否则不会自动调用。
  * @param $email
  * @param $name
  * @param $title
@@ -16,7 +17,7 @@
  * @param int $repeat
  * @return mixed
  */
-function addEmailTimeQueue($email,$name,$title,$content,$time,$for=null,$repeat=0){
+function addEmailTimeQueue($email,$name,$title,$content,$time,$for=null,$repeat=0,$is_function=false){
     if(empty($email))
         return false;
     $db=M('email_time');
@@ -35,7 +36,8 @@ function addEmailTimeQueue($email,$name,$title,$content,$time,$for=null,$repeat=
         'content' => $content,
         'send_time' => $time,
         'repeat'    =>  $repeat,
-        'for'   =>  $for
+        'for'   =>  $for,
+        'is_function'=>$is_function,
     );
     return $db->add($data);
 }
@@ -58,15 +60,26 @@ function dealEmailTimeQueue(){
     );
 
     foreach ($queue as $key => $val){
-        $arr['add']++;
+        //检查$content是否是函数.
+        if($val['is_function']&&function_exists($val['content'])){//这里主要是担心有用户写私信导致函数执行，repeat只能是系统内部才能创建的。
+            $content=$val['content']($val['uid']);
+        }else{
+            $content=$val['content'];
+        }
+        //处理不用发邮件的情况
+        if(empty($content)){
+            $db->where("id='%d'",$val['id'])->setField('send_time',time() + 86400);
+            continue;
+        }
         //添加进入马上发送的email队列中。
-        if(addEmailQueue($val['uid'],$val['email'],$val['name'],$val['title'],$val['content'])) {
+        if(addEmailQueue($val['uid'],$val['email'],$val['name'],$val['title'],$content)) {
             $arr['add']++;
+
             //如果是每天重复的话，就定时time()+86400后发。
             if ($val['repeat']) {
                 $tmp = array(
                     'id' => $val['id'],
-                    'send_tine' => time() + 86400,
+                    'send_time' => time() + 86400,
                 );
                 $db->save($tmp);
             } else {
@@ -141,6 +154,18 @@ function dealEmailQueue(){
     }
 
     return $arr;//返回发送了多少条邮件。
+}
+function delEmailTimeQueue($uid,$for,$onlyOne=false){
+    $db=M('email_time');
+    $map=array(
+        'uid'   =>  array('eq',$uid),
+        'for'   =>  array('eq',$for)
+    );
+    if($onlyOne)
+        $db->where($map)->limit(1)->delete();
+    else
+        $db->where($map)->delete();
+    return true;
 }
 
 /**

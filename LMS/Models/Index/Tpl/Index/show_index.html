@@ -1,0 +1,467 @@
+<html lang='en'>
+<head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width,initial-scale=1.0'>
+    <title>LMS学习管理系统-主页</title>
+
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__//css/bootstrap.min.css" />
+
+    <script type="text/javascript" src='__PUBLIC__//js/jquery.min.js'></script>
+    <script type="text/javascript" src='__PUBLIC__//js/bootstrap.min.js'></script>
+    <script type="text/javascript" src='__PUBLIC__//js/basic.func.js'></script>
+
+    <script type="text/javascript">
+        $(function(){
+            var mainPic=$('#mainPic');
+            $(window).scroll(function(e){
+                var top=$(document).scrollTop();
+                console.log(top+':'+$(mainPic).height()+$(mainPic).scrollTop());
+                var obj;
+                if(top<mainPic.height()+mainPic.scrollTop()){
+                    obj=$('#indexHref')
+                }else{
+                    obj=$('#introduceHref');
+                }
+                $(obj).parent().addClass('active').siblings().removeClass('active');
+            });
+        });
+    </script>
+
+    <style type="text/css">
+        .container{
+            width:100%;
+        }
+        /*将左右转换的那个转成透明的，否则不好看。*/
+        #introduce .carousel-control{
+            background:transparent;
+        }
+        /*悬浮的时候，恢复成阴影状态。。。*/
+        #introduce .carousel-control.left:hover,#introduce .carousel-control.right:hover{
+            background-color: rgba(0,0,0,0);
+            opacity:0.5;
+            background-image: -webkit-linear-gradient(left,rgba(0,0,0,.5) 0,rgba(0,0,0,.0001) 100%);
+            background-image: -o-linear-gradient(left,rgba(0,0,0,.5) 0,rgba(0,0,0,.0001) 100%);
+            background-image: -webkit-gradient(linear,left top,right top,from(rgba(0,0,0,.5)),to(rgba(0,0,0,.0001)));
+            background-image: linear-gradient(to right,rgba(0,0,0,.5) 0,rgba(0,0,0,.0001) 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#80000000', endColorstr='#00000000', GradientType=1);
+            background-repeat: repeat-x;
+        }
+        #introduce .carousel-control.right:hover{
+            background-image: linear-gradient(to right,rgba(0,0,0,.0001) 0,rgba(0,0,0,.5) 100%);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column" style="padding:0;"><!--包含导航条和滚动区-->
+            <!--导航条-->
+            <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+                    <a class="navbar-brand" href="{:U(GROUP_NAME.'/Index/show_index')}">LMS学习管理系统</a>
+                </div>
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li class="active">
+                            <a href="javascript:scrollTo('body,html');" id="indexHref">首页</a>
+                        </li>
+                        <li>
+                            <a href="javascript:scrollTo('#introduce');" id="introduceHref">介绍</a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/wangerzi/LMS-LearningManagementSystem.git">源码下载</a>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="{:U(GROUP_NAME.'/Login/index')}">登录</a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">更多功能<strong class="caret"></strong></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="{:U(GROUP_NAME.'/Register/index')}">注册</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=zfT5_fv19fn1-428vOOuoqA">联系作者</a>
+                                </li>
+                                <li>
+                                    <a href="#" onclick="wq_alert('还没做好，后边补上。^_^')">意见反馈</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <!--图片切换区-->
+            <div class="carousel slide" data-interval="3000" data-ride="carousel" data-pause="hover" id="mainPic" style="margin-top:50px;">
+                <ol class="carousel-indicators">
+                    <li class="active" data-slide-to="0" data-target="#mainPic">
+                    </li>
+                    <li data-slide-to="1" data-target="#mainPic">
+                    </li>
+                    <li data-slide-to="2" data-target="#mainPic">
+                    </li>
+                </ol>
+                <div class="carousel-inner">
+                    <div class="item active">
+                        <img alt="" src="__PUBLIC__/images/index/1.jpg" />
+                        <div class="carousel-caption">
+                            <h4>
+                                我要握住一个最美的梦给未来的自己
+                                <p>
+                                    I want to hold one of the most beautiful dreams for the future
+                                </p>
+                            </h4>
+                            <p>
+                                系统拥有别具一格的“学习计划监督管理体系”，通过每日提醒，计划未完成警告 等方式 竭尽全力的帮助您实现计划，为梦想助力。
+                            </p>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <img alt="" src="__PUBLIC__/images/index/2.jpg" />
+                        <div class="carousel-caption">
+                            <h4>
+                                不必每分钟都学习，但求学习中每分钟都有收获
+                                <p>
+                                    Do not have to learn every minute, but every minute for learning must have harvest
+                                </p>
+                            </h4>
+                            <p>
+                                在系统中，开发者开发了较为完善的“找朋友系统”和“好友系统”，通过“寻找有缘人”的方式，能在茫茫人海中找出符合您需求的学习伙伴，您可以通过“私信”与其谈天论地、海阔天空，还可以通过“学习监督体系”共同学习，共同进步。
+                            </p>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <img alt="" src="__PUBLIC__/images/index/3.jpg" />
+                        <div class="carousel-caption">
+                            <h4>
+                                曾经的苦，现在的痛，都是将来的笑颜
+                                <p>
+                                    Once the bitter and now the pain is the smile of the future
+                                </p>
+                            </h4>
+                            <p>
+                                学习过程中，人们很容易产生惰性，所以我们也需要必要的鞭笞，避免让惰性主导我们的思维，本系统中的“学习计划监督体系”会定时告诉您计划完成情况，计划监督者也有权利向您发送“鞭笞邮件”来督促您的学习。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!--左右切换的控制-->
+                <a class="left carousel-control" href="#mainPic" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
+                <a class="right carousel-control" href="#mainPic" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+            </div>
+        </div>
+    </div>
+    <div class="row clearfix">
+        <!--对各个系统的介绍-->
+        <div class="col-md-12 clearfix" id="introduce" style="margin-top:15px;">
+            <div class="page-header">
+                <h2>
+                    系统介绍 <p class="small">主要针对系统中各个子系统进行介绍，包括：计划管理，每日签到，私信管理，好友管理，监督管理，个性化设置 等</p>
+                </h2>
+            </div>
+            <!--主页的介绍！-->
+            <div class="row clearfix"><!--用重新排序的方式，颠倒顺序。-->
+                <div class="col-md-5 col-md-push-7 column">
+                    <h3>主页</h3>
+                    <p>
+                        在主页中，用户能方便快捷的查看自己任务的完成曲线和各个子系统的统计信息，如：私信，监督报告等。
+                    </p>
+                </div>
+                <div class="col-md-7 col-md-pull-5 column">
+                    <div class="carousel slide" id="index-introduce" data-interval="3000" data-ride="carousel" style="margin-top:50px;">
+                        <div class="carousel-inner">
+                            <div class="item active">
+                                <img alt="" src="__PUBLIC__/images/index/models/index/1.jpg" />
+                                <div class="carousel-caption">
+                                    主页曲线图
+                                </div>
+                            </div>
+                        </div>
+                        <!--左右切换的控制-->
+                        <a class="left carousel-control" href="#index-introduce" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
+                        <a class="right carousel-control" href="#index-introduce" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <!--计划的介绍！-->
+            <div class="row clearfix">
+                <div class="col-md-5 column">
+                    <h3>计划管理</h3>
+                    <p>
+                        在计划管理中，用户能快速的“创建、删除、修改、查看”学习计划，并选择合适的好友监督计划的实施，对计划的管理是整个系统的核心部分。
+                    </p>
+                </div>
+                <div class="col-md-7 column">
+                    <div class="carousel slide" id="plan-introduce" data-interval="3000" data-ride="carousel" style="margin-top:50px;">
+                        <ol class="carousel-indicators">
+                            <li class="active" data-slide-to="0" data-target="#plan-introduce">
+                            </li>
+                            <li data-slide-to="1" data-target="#plan-introduce">
+                            </li>
+                            <li data-slide-to="2" data-target="#plan-introduce">
+                            </li>
+                            <li data-slide-to="3" data-target="#plan-introduce">
+                            </li>
+                        </ol>
+                        <div class="carousel-inner">
+                            <div class="item active">
+                                <img alt="" src="__PUBLIC__/images/index/models/plan/1.png" />
+                                <div class="carousel-caption">
+                                    计划管理主界面
+                                </div>
+                            </div>
+                            <div class="item">
+                                <img alt="" src="__PUBLIC__/images/index/models/plan/2.png" />
+                                <div class="carousel-caption">
+                                    计划详情界面
+                                </div>
+                            </div>
+                            <div class="item">
+                                <img alt="" src="__PUBLIC__/images/index/models/plan/3.png" />
+                                <div class="carousel-caption">
+                                    完成任务界面
+                                </div>
+                            </div>
+                            <div class="item">
+                                <img alt="" src="__PUBLIC__/images/index/models/plan/4.png" />
+                                <div class="carousel-caption">
+                                    计划新建界面
+                                </div>
+                            </div>
+                        </div>
+                        <!--左右切换的控制-->
+                        <a class="left carousel-control" href="#plan-introduce" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
+                        <a class="right carousel-control" href="#plan-introduce" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <!--好友的介绍-->
+            <div class="row clearfix">
+                <div class="col-md-5 col-md-push-7 column">
+                    <h3>好友管理</h3>
+                    <p>
+                        在好友管理中，用户能对自己的好友进行聊天互动，更能通过“有缘人系统” 在茫茫人海中 寻找与到能与你共同学习，共同进步的人。
+                    </p>
+                </div>
+                <div class="col-md-7 col-md-pull-5 column">
+                    <div class="carousel slide" id="friend-introduce" data-interval="3000" data-ride="carousel" style="margin-top:50px;">
+                        <ol class="carousel-indicators">
+                            <li class="active" data-slide-to="0" data-target="#friend-introduce">
+                            </li>
+                            <li data-slide-to="1" data-target="#friend-introduce">
+                            </li>
+                            <li data-slide-to="2" data-target="#friend-introduce">
+                            </li>
+                            <li data-slide-to="3" data-target="#friend-introduce">
+                            </li>
+                        </ol>
+                        <div class="carousel-inner">
+                            <div class="item active">
+                                <img alt="" src="__PUBLIC__/images/index/models/friend/4.jpg" />
+                                <div class="carousel-caption">
+                                    找好友
+                                </div>
+                            </div>
+                            <div class="item">
+                                <img alt="" src="__PUBLIC__/images/index/models/friend/1.jpg" />
+                                <div class="carousel-caption">
+                                    加好友
+                                </div>
+                            </div>
+                            <div class="item">
+                                <img alt="" src="__PUBLIC__/images/index/models/friend/2.png" />
+                                <div class="carousel-caption">
+                                    好友列表
+                                </div>
+                            </div>
+                            <div class="item">
+                                <img alt="" src="__PUBLIC__/images/index/models/friend/3.jpg" />
+                                <div class="carousel-caption">
+                                    好友申请
+                                </div>
+                            </div>
+                        </div>
+                        <!--左右切换的控制-->
+                        <a class="left carousel-control" href="#friend-introduce" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
+                        <a class="right carousel-control" href="#friend-introduce" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <!--监督的介绍！-->
+            <div class="row clearfix">
+                <div class="col-md-5 column">
+                    <h3>计划监督</h3>
+                    <p>
+                        在这里，能够对被监督者的学习计划进行监督，并能根据其完成情况，对他的学习报告进行打分，或者使用“鞭笞”按钮 提醒 不及时完成计划的人。
+                    </p>
+                </div>
+                <div class="col-md-7 column">
+                    <div class="carousel slide" id="supervision-introduce" data-interval="3000" data-ride="carousel" style="margin-top:50px;">
+                        <ol class="carousel-indicators">
+                            <li class="active" data-slide-to="0" data-target="#supervision-introduce">
+                            </li>
+                            <li data-slide-to="1" data-target="#supervision-introduce">
+                            </li>
+                            <li data-slide-to="2" data-target="#supervision-introduce">
+                            </li>
+                        </ol>
+                        <div class="carousel-inner">
+                            <div class="item active">
+                                <img alt="" src="__PUBLIC__/images/index/models/supervision/1.jpg" />
+                                <div class="carousel-caption">
+                                    监督的计划
+                                </div>
+                            </div>
+                            <div class="item">
+                                <img alt="" src="__PUBLIC__/images/index/models/supervision/2.jpg" />
+                                <div class="carousel-caption">
+                                    监督申请
+                                </div>
+                            </div>
+                            <div class="item">
+                                <img alt="" src="__PUBLIC__/images/index/models/supervision/3.jpg" />
+                                <div class="carousel-caption">
+                                    监督报告处理
+                                </div>
+                            </div>
+                        </div>
+                        <!--左右切换的控制-->
+                        <a class="left carousel-control" href="#supervision-introduce" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
+                        <a class="right carousel-control" href="#supervision-introduce" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <!--私信的介绍-->
+            <div class="row clearfix">
+                <div class="col-md-5 col-md-push-7 column">
+                    <h3>私信管理</h3>
+                    <p>
+                        好友的回信和系统通知都会在这里出现，如果开启了邮件通知，那么收到的私信将会以邮件的形式通知您。
+                    </p>
+                </div>
+                <div class="col-md-7 col-md-pull-5 column">
+                    <div class="carousel slide" id="message-introduce" data-interval="3000" data-ride="carousel" style="margin-top:50px;">
+                        <ol class="carousel-indicators">
+                            <li class="active" data-slide-to="0" data-target="#message-introduce">
+                            </li>
+                            <li data-slide-to="1" data-target="#message-introduce">
+                            </li>
+                        </ol>
+                        <div class="carousel-inner">
+                            <div class="item active">
+                                <img alt="" src="__PUBLIC__/images/index/models/message/1.jpg" />
+                                <div class="carousel-caption">
+                                    私信列表
+                                </div>
+                            </div>
+                            <div class="item">
+                                <img alt="" src="__PUBLIC__/images/index/models/message/2.jpg" />
+                                <div class="carousel-caption">
+                                    新建私信
+                                </div>
+                            </div>
+                        </div>
+                        <!--左右切换的控制-->
+                        <a class="left carousel-control" href="#message-introduce" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
+                        <a class="right carousel-control" href="#message-introduce" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <!--账户管理的介绍-->
+            <div class="row clearfix">
+                <div class="col-md-5 column">
+                    <h3>账户管理</h3>
+                    <p>
+                        在这里，能够对自己的个人信息做修改，比如昵称，个人简介，邮箱改绑，消息提醒，未完成计划每日提醒等。
+                    </p>
+                </div>
+                <div class="col-md-7 column">
+                    <div class="carousel slide" id="account-introduce" data-interval="3000" data-ride="carousel" style="margin-top:50px;">
+                        <ol class="carousel-indicators">
+                            <li class="active" data-slide-to="0" data-target="#account-introduce">
+                            </li>
+                            <li data-slide-to="1" data-target="#account-introduce">
+                            </li>
+                            <li data-slide-to="2" data-target="#account-introduce">
+                            </li>
+                            <li data-slide-to="3" data-target="#account-introduce">
+                            </li>
+                        </ol>
+                        <div class="carousel-inner">
+                            <div class="item active">
+                                <img alt="" src="__PUBLIC__/images/index/models/account/1.jpg" />
+                                <div class="carousel-caption">
+                                    设置主页
+                                </div>
+                            </div>
+                            <div class="item">
+                                <img alt="" src="__PUBLIC__/images/index/models/account/2.jpg" />
+                                <div class="carousel-caption">
+                                    更改邮箱
+                                </div>
+                            </div>
+                            <div class="item">
+                                <img alt="" src="__PUBLIC__/images/index/models/account/3.jpg" />
+                                <div class="carousel-caption">
+                                    更改基本信息
+                                </div>
+                            </div>
+                            <div class="item">
+                                <img alt="" src="__PUBLIC__/images/index/models/account/4.jpg" />
+                                <div class="carousel-caption">
+                                    个性化设置
+                                </div>
+                            </div>
+                        </div>
+                        <!--左右切换的控制-->
+                        <a class="left carousel-control" href="#account-introduce" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
+                        <a class="right carousel-control" href="#account-introduce" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+                    </div>
+                </div>
+            </div>
+            <hr>
+        </div>
+    </div>
+    <div class="row clearfix"><!--系统介绍-->
+        <div class="col-md-4 column">
+            <h2>
+                创新过程
+            </h2>
+            <p>
+                &nbsp;&nbsp;做这个系统的初衷，是希望能做一个帮助 用户 学习的辅助系统，当 用户 每天到网站签到打卡，记录学习进度的时候，我都能及时知道并给予回复。<br>
+                &nbsp;&nbsp;在实际开发的过程中，开发者针对这一核心功能进行了必要的扩展和调整，经过思维的发散和各个难关的攻克，一个较为完善的学习计划管理系统就这样出炉了。
+            </p>
+        </div>
+        <div class="col-md-4 column">
+            <h2>
+                系统架构
+            </h2>
+            <p>
+                &nbsp;&nbsp;后台使用thinkPHP框架+MySql搭建 <br>
+                &nbsp;&nbsp;前台使用bootstrap框架布局并辅以jQuery，jquery.form插件，bootstrapValidator插件，时间轴插件等 <br>
+            </p>
+        </div>
+        <div class="col-md-4 column">
+            <h2>
+                源码和反馈
+            </h2>
+            <p>
+                &nbsp;&nbsp;此项目已开源：<a href="https://github.com/wangerzi/LMS-LearningManagementSystem.git">https://github.com/wangerzi/LMS-LearningManagementSystem.git</a><br>
+                &nbsp;&nbsp;欢迎对此系统提出建议和发表想法，作者邮箱：<a href="email:admin@wj2015.com.cn">admin@wj2015.com.cn</a> <br>
+            </p>
+        </div>
+    </div>
+    <hr>
+    <h6 class="text-center">Copyright &copy; 2016-2017 <a href="http://wj2015.com.cn">wj2015.com.cn</a> All Rights Reserved.</h6>
+</div>
+</body>
+</html>

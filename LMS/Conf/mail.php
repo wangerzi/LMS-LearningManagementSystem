@@ -8,9 +8,9 @@
 return array(
     'MAIL_HOST' => 'smtp.qq.com',
     'MAIL_SMTPAUTH' => true,
-    'MAIL_USERNAME' => '',
+    'MAIL_USERNAME' => 'admin@wj2015.com.cn',
     'MAIL_PASSWORD' => '',
-    'MAIL_FROM' => '',
+    'MAIL_FROM' => 'admin@wj2015.com.cn',
     'MAIL_FROM_NAME' => 'Wang',
     'MAIL_IS_HTML' => true,
     'MAIL_CHARSET' => 'utf-8',
