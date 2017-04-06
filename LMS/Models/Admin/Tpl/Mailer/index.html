@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>验证码设置</title>
+    <link rel="stylesheet" href="__PUBLIC__/css/reset.css" />
+    <link rel="stylesheet" href="__PUBLIC__/css/basic.css" />
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script type="text/javascript">
+    	
+    </script>
+	<style type="text/css">
+		table{
+			width:100%;
+		}
+		th{
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+	<form action="{:U(GROUP_NAME.'/Mailer/indexHandle')}" method="post">
+		<input type="hidden" name="uniqid" value="{$uniqid}">
+		<table>
+			<tr>
+				<td>发给</td>
+				<td><input type="text" name="email" value="{$data['email']}"/></td>
+			</tr>
+			<tr>
+				<td>标题</td>
+				<td><input type="text" name="title" value="{$data['title']}"></td>
+			</tr>
+			<tr>
+				<td>收件人姓名</td>
+				<td><input type="text" name="name" value="{$data['username']}"></td>
+			</tr>
+			<tr>
+				<td>内容</td>
+				<td>
+					<textarea name="content" id="" cols="30" rows="10">{$data['content']}</textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>延时发送</td>
+				<td><input type="text" name="time">{$data['delay']}</td>
+			</tr>
+			<tr>
+				<td colspan="2"><input type="submit" value="发送"></td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>

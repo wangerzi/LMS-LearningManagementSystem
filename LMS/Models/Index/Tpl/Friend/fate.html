@@ -1,0 +1,82 @@
+<script type="text/javascript">
+    fate=1;
+    url_uniqid='{$url_uniqid}';
+    addFriendUrl='{:U(GROUP_NAME."/Friend/add")}';//添加好友的链接！
+</script>
+<if condition="count($data) lt 1">
+    <h2>
+        缘分没有准备好(。﹏。)，点击 ‘寻找有缘人’ 重试!
+        <button onclick="loadThis(this,$('#result'))" alt="{:U(GROUP_NAME.'/Friend/fate')}" class="btn btn-success">
+            <span class="glyphicon glyphicon-search"></span>
+            寻找有缘人
+        </button>
+        <button onclick="loadThis(this,$('#result'))" alt="{:U(GROUP_NAME.'/Friend/find')}" class="btn btn-primary">
+            <span class="glyphicon glyphicon-refresh"></span>
+            定向搜索
+        </button>
+    </h2>
+    <else/>
+    <table class="table">
+        <thead>
+        <tr>
+            <th></th>
+            <th>用户基本信息</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+            <foreach name="data" item="val">
+                <tr>
+                    <td>
+                        <img src="{$val.face}" alt="{$val.username}" class="img-circle img-thumbnail img-responsive center-block" style="width:80px;" />
+                    </td>
+                    <td width="50%">
+                        {$val.username}
+                        <p class="help-block">
+                            {$val.info}
+                        </p>
+                        <p class="help-block">
+                            <span class="text-primary">
+                                {:hiddenKey($val['email'])}
+                            </span>
+                        </p>
+                    </td>
+                    <td>
+                <span class="btn-group">
+                    <switch name="val['status']">
+                        <case value="1">
+                             <button class="btn btn-success" disabled="disabled">
+                                <span class="glyphicon glyphicon-ok"></span>
+                                已为好友
+                            </button>
+                        </case>
+                        <case value="2">
+                             <button class="btn btn-success" disabled="disabled">
+                                <span class="glyphicon glyphicon-ok"></span>
+                                已申请
+                            </button>
+                        </case>
+                        <default/>
+                             <button data="{$val.id}" onclick="addFriend(this)" class="btn btn-success">
+                                <span class="glyphicon glyphicon-plus"></span>
+                                加为好友
+                            </button>
+                    </switch>
+                    <a href="{:U(GROUP_NAME.'/Message/send',array('uid'=>$val['id']))}" class="btn btn-info">
+                        <span class="glyphicon glyphicon-comment"></span>
+                        私信
+                    </a>
+                </span>
+                    </td>
+                </tr>
+            </foreach>
+        <tr>
+            <td colspan="3">
+                <ul class="pagination">
+                    {$page}
+                </ul>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</if>

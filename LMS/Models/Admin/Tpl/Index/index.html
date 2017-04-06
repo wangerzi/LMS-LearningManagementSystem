@@ -1,0 +1,20 @@
+<extend name="./LMS/Models/Admin/Tpl/base.html" />
+<block name="title">服务器信息</block>
+<block name="body">
+	<table class="bordered highlight">
+		<thead>
+			<tr>
+				<th>项目</th>
+				<th>描述</th>
+			</tr>
+		</thead>
+		<tbody>
+			<foreach name="data" item="v" key="k">
+				<tr>
+					<td>{$k}</td>
+					<td>{$v}</td>
+				</tr>
+			</foreach>
+		</tbody>
+	</table>
+</block>

@@ -1,0 +1,92 @@
+<html lang='en'>
+<head>
+	<meta charset='utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1.0'>
+	<title>反馈-LMS学习管理系统</title>
+
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/base.css" />
+
+	<script type="text/javascript" src='__PUBLIC__/js/jquery.min.js'></script>
+	<script type="text/javascript" src='__PUBLIC__/js/bootstrap.min.js'></script>
+	<script type="text/javascript" src='__PUBLIC__/js/penguin/jquery.form.js'></script>
+	<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/bootstrapValidator.min.js'></script>
+    <script type="text/javascript">
+        verifyCheckUrl='{:U(GROUP_NAME."/Show/feedbackVerifyCheck")}';
+        //successUrl='{:U(GROUP_NAME."/Show/index")}';
+
+        verifyLen={:C('FDBCK_VERIFY_LEN')};
+		nameMinLen={:C('FDBCK_NAME_MIN_LEN')};
+        nameMaxLen={:C('FDBCK_NAME_MAX_LEN')};
+        contentMaxLen={:C('FDBCK_CONTENT_MAX_LEN')};
+    </script>
+
+	<script type="text/javascript" src='__PUBLIC__/js/basic.func.js'></script>
+	<script type="text/javascript" src='__PUBLIC__/js/show/feedback.js'></script>
+	<style type="text/css">
+	</style>
+</head>
+<body>
+<div class="container">
+	<div class="col-md-8 col-md-offset-2 well"  style="background:#fff;">
+		<h1 class="text-center">反馈意见</h1>
+		<form action="{:U(GROUP_NAME.'/Show/feedbackHandle')}" method="post" enctype="multipart/form-data" id="feedback">
+			{$__UNIQID__}
+			<div class="row">
+				<div class="col-md-10 col-md-offset-1">
+					<div class="form-group">
+						<label class="control-label">留名</label>
+						<input type="text" name="name" class="form-control">
+					</div>
+					<div class="form-group">
+						<label class="control-label">反馈内容！</label>
+						<textarea name="content" class="form-control" rows="10"></textarea>
+					</div>
+					<div class="form-group">
+						<label class="control-label">图片凭证（选填-可多选）</label>
+						<input type="file" name="pic" multiple="multiple" accept="image/*" class="form-control">
+					</div>
+					<div class="form-group">
+						<label class="control-label">联系方式（选填）</label>
+						<input type="text" class="form-control" name="connect">
+					</div>
+					<!--<div class="form-group">&lt;!&ndash;仅登录显示&ndash;&gt;
+						<label class="control-label">是否匿名</label>
+						<div class="form-group">
+							<label>
+								<input type="radio" name="hide" value="0" checked="checked">
+								不匿名
+							</label>
+							<label>
+								<input type="radio" name="hide" value="1">
+								匿名
+							</label>
+						</div>
+					</div>-->
+					<div class="row">
+						<div class="col-md-4">
+							<div class="form-group">
+								<label>验证码</label>
+								<input type="text" name="verify" class="form-control" />
+							</div>
+						</div>
+						<div class="col-md-6 col-md-offset-2">
+                            <div class="form-group">
+                                <label>　</label><br>
+                                <img src="{:U(GROUP_NAME.'/Show/feedbackVerify')}" alt="" id="code" style="cursor:pointer;">
+                                <p class="help-block">点击切换</p>
+                            </div>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+					<div>
+						<button class="btn btn-success" id="submit" type="submit">提交</button>
+						<button class="btn btn-warning" type="reset">重置</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+</body>
+</html>

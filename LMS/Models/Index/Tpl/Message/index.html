@@ -1,0 +1,130 @@
+<extend name="./LMS/Models/Index/Tpl/base.html" />
+<block name="title">
+    私信管理
+</block>
+<block name="CSS_AND_JS">
+    <!--每个页面特色的CSS区域-->
+    <script type="text/javascript">
+        readMessageUrl='{:U(GROUP_NAME."/Message/read")}';
+        deleteMessageUrl='{:U(GROUP_NAME."/Message/delete")}';
+        url_uniqid='{$url_uniqid}';
+    </script>
+    <script type="text/javascript" src="__PUBLIC__/js/message/index.js"></script>
+    <style type="text/css">
+        .message-content span{
+            height:40px;
+            display:inline-block;
+            overflow:hidden;
+            margin-bottom:5px;
+        }
+        #message-content tr{
+            position:relative;
+        }
+    </style>
+    <!--/每个页面特色的CSS区域-->
+</block>
+<block name="body">
+    <div class="center-block" style="margin:10px 0;">
+        <a href="{:U(GROUP_NAME.'/Message/send')}" class="btn btn-success">
+            <span class="glyphicon glyphicon-plus"></span>
+            新建私信
+        </a>
+        <a href="{:U(GROUP_NAME.'/Message/index',array('onlyRead'=>false))}" class="btn btn-success {$_GET['onlyRead']?'':'disabled'}">
+            <span class="glyphicon glyphicon-th"></span>
+            所有私信
+        </a>
+        <a href="{:U(GROUP_NAME.'/Message/index',array('onlyRead'=>true))}" class="btn btn-success {$_GET['onlyRead']?'disabled':''}">
+            <span class="glyphicon glyphicon-th-large"></span>
+            未读私信
+            <if condition="$number['message']">
+                <span class="badge number-message">
+                    {$number['message']}
+                </span>
+            </if>
+        </a>
+        <a href="{:U(GROUP_NAME.'/Message/readAll',array('uniqid'=>$url_uniqid))}" class="btn btn-default">
+            <span class="glyphicon glyphicon-saved"></span>
+            全部设为已读
+        </a>
+        <!--<button class="btn btn-danger" data="{:U(GROUP_NAME.'/Message/deleteAll',array('uniqid'=>$url_uniqid))}" onclick="deleteAll(this);">
+            <span class="glyphicon glyphicon-trash"></span>
+            清空私信
+        </button>-->
+    </div>
+    <table class="table" id="message-content">
+        <thead>
+        <tr>
+            <th></th>
+            <th>所有站内信</th>
+            <th>发信时间</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <if condition="count($data) lt 1">
+            <tr>
+                <td colspan="3">
+                    <h1>您暂时没有未处理私信哦！</h1>
+                </td>
+            </tr>
+            <else/>
+            <foreach name="data" item="value">
+                <tr>
+                    <td>
+                        <img src="{$value.user.face}" alt="" class="img-circle img-thumbnail img-responsive center-block" style="width:80px;" />
+                        <a class="btn-block text-center" href="">
+                            {$value.user.username}
+                        </a>
+                    </td>
+                    <td width="50%">
+                        <!--<a href="">
+                            {$value.user.username}
+                        </a>-->
+                        <p class="text-primary">
+                            {$value.title}
+                        </p>
+                        <p class="help-block message-content">
+                            <span>{$value.content}</span>
+                            <button class="btn-link btn-block" onclick="showMessageDetail(this)">显示详情</button>
+                        </p>
+                    </td>
+                    <td>
+                        <p class="help-block small">
+                            {:date('Y-m-d',$value['time'])}
+                        </p>
+                    </td>
+                    <td>
+                        <span class="btn-group pull-right">
+                            <if condition="$value['status']">
+                                 <button href="" class="btn btn-success" disabled="disabled">
+                                     已阅读
+                                 </button>
+                                <else/>
+                                <button data="{$value.id}" onclick="readMessage(this)" class="btn btn-success">
+                                    <span class="glyphicon glyphicon-ok"></span>
+                                    设为已读
+                                </button>
+                            </if>
+                            <a href="{:U(GROUP_NAME.'/Message/send',array('uid'=>$value['user']['id']))}" target="_blank" class="btn btn-info">
+                                <span class="glyphicon glyphicon-comment"></span>
+                                回复
+                            </a>
+                            <button data="{$value.id}" onclick="deleteMessage(this)" data="{$val.id}" class="btn btn-danger">
+                                <span class="glyphicon glyphicon-trash"></span>
+                                删除
+                            </button>
+                        </span>
+                    </td>
+                </tr>
+            </foreach>
+            <tr>
+                <td colspan="4">
+                    <ul class="pagination">
+                        {$page}
+                    </ul>
+                </td>
+            </tr>
+        </if>
+        </tbody>
+    </table>
+</block>

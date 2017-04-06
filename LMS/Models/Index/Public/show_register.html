@@ -1,0 +1,158 @@
+<html lang='en'>
+<head>
+	<meta charset='utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1.0'>
+		<title>LMS学习管理系统-登录</title>
+
+	<link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css" />
+
+	<script type="text/javascript" src='./js/jquery.min.js'></script>
+	<script type="text/javascript" src='./js/bootstrap.min.js'></script>
+	<script type="text/javascript" src='./js/penguin/bootstrap/bootstrapValidator.min.js'></script>
+	<script type="text/javascript" src='./js/penguin/jquery.form.js'></script>
+	<script type="text/javascript" src='./js/penguin/bootstrap/moment-with-locales.min.js'></script>
+
+	<script type="text/javascript" src='./js/basic.func.js'></script>
+	<script type="text/javascript" src='./js/show/register.js'></script>
+
+	<script type="text/javascript">
+		/*用户名范围*/
+		USER_MIN_NAME=2;
+		USER_MAX_NAME=10;
+
+		/*密码范围*/
+		MIN_PAS=2;
+		MAX_PAS=6;
+		today='2017-1-23';//今天的日期，让生日不得超过今天。
+
+		//检查邮箱是否重复
+		mailCheckUrl='';
+		nameCheckUrl='';
+		verifyLen=2;
+		verifyCheckUrl='';//检测验证码是否正确。
+		successUrl='';//处理成功后跳转页面。
+	</script>
+
+	<style type="text/css">
+		.container{
+			width:100%;
+		}
+	</style>
+</head>
+<body>
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column" style="padding:0;"><!--包含导航条和滚动区-->
+			<!--导航条-->
+			<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#">LMS学习管理系统</a>
+				</div>
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+					<ul class="nav navbar-nav">
+						<li class="active">
+							<a href="javascript:scrollTo('body,html');" id="indexHref" onclick="$(this).parent().addClass('active').siblings().removeClass('active');">首页</a>
+						</li>
+						<li>
+							<a href="javascript:scrollTo('#introduce');" id="introduceHref" onclick="$(this).parent().addClass('active').siblings().removeClass('active');">介绍</a>
+						</li>
+						<li>
+							<a href="#">源码下载</a>
+						</li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li>
+							<a href="#">登录</a>
+						</li>
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">更多功能<strong class="caret"></strong></a>
+							<ul class="dropdown-menu">
+								<li>
+									<a href="#">注册</a>
+								</li>
+								<li class="divider"></li>
+								<li>
+									<a href="#">联系作者</a>
+								</li>
+								<li>
+									<a href="#">意见反馈</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</nav>
+		</div>
+	</div>
+	<div class="row clearfix" style="margin-top:100px;"><!--名言警句和登录框-->
+		<div class="col-md-7 column">
+			<div style="height:80px;"></div>
+			<blockquote>
+				<p>
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.
+				</p>
+				<small>Someone famous <cite>Source Title</cite></small>
+			</blockquote>
+		</div>
+		<div class="col-md-4 column">
+			<form action="" id="register" method="post">
+				<input type="hidden" name="uniqid" value="{$uniqid}"><!--表单唯一标识码！-->
+				<div class="form-group">
+					<label>您的用户名：</label>
+					<input type="text" name="username" class="form-control" />
+				</div>
+				<div class="form-group">
+					<label>常用邮箱：</label>
+					<input type="text" name="email" class="form-control" />
+				</div>
+				<div class="form-group">
+					<label>性别：</label>
+					<select name="sex" class="form-control">
+						<option value="1" selected="selected">男</option>
+						<option value="0">女</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label>生日：</label>
+					<input type="date" name="birth" class="form-control" />
+					<div class="help-block">
+						生日能帮助“有缘人系统”为您寻找有缘分的伙伴
+					</div>
+				</div>
+				<div class="form-group">
+					<label>登录密码：</label>
+					<input type="password" name="password" class="form-control" />
+				</div>
+				<div class="form-group">
+					<label>确定密码：</label>
+					<input type="password" name="password_2" class="form-control" />
+				</div>
+				<!--验证码-->
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>
+								验证码
+							</label>
+							<input type="text" name="verify" class="form-control" />
+						</div>
+					</div>
+					<div class="col-md-6">
+						<label>　</label>
+						<img src="http://wj2015.com.cn/index.php?s=/Index/Login/verify" alt="" id="code">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12 column">
+						<input type="submit" id="submit" class="btn btn-primary" value="注册"/>
+						<!--<a href="#" class="btn btn-link">已有账号？前往登录</a>-->
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<hr>
+	<h6 class="text-center">Copyright &copy; 2016-2017 <a href="http://wj2015.com.cn">wj2015.com.cn</a> All Rights Reserved.</h6>
+</div>
+</body>
+</html>

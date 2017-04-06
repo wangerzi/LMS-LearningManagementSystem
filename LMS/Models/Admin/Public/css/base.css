@@ -1,0 +1,15 @@
+.page-footer.active{
+    padding-left:240px;
+}
+.side-nav .collapsible-body{
+    padding:0;
+}
+/*显示左侧边栏的按钮*/
+#button-show-left{
+    padding:0 1rem;
+    border:1px solid #eee;
+
+    position: fixed;
+    top:50%;
+    left:0;
+}

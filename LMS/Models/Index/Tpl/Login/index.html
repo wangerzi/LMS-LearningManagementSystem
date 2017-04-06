@@ -1,0 +1,163 @@
+<html lang='en'>
+<head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width,initial-scale=1.0'>
+    <title>登录 - LMS学习管理系统</title>
+
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/css/base.css" />
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/css/bootstrapValidator.css" />
+
+    <script type="text/javascript" src='__PUBLIC__/js/jquery.min.js'></script>
+    <script type="text/javascript" src='__PUBLIC__/js/bootstrap.min.js'></script>
+    <script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/bootstrapValidator.min.js'></script>
+    <script type="text/javascript" src='__PUBLIC__/js/penguin/jquery.form.js'></script>
+    <script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/moment-with-locales.min.js'></script>
+
+
+    <script type="text/javascript" src='__PUBLIC__/js/basic.func.js'></script>
+    <script type="text/javascript" src='__PUBLIC__/js/show/login.js?r=1'></script>
+
+    <script type="text/javascript">
+        /*用户名范围*/
+        USER_MIN_NAME={:C('MIN_NAME')};
+        USER_MAX_NAME={:C('MAX_NAME')};
+
+        /*密码范围*/
+        MIN_PAS={:C('MIN_PAS')};
+        MAX_PAS={:C('MAX_PAS')};
+
+        userNameCheckUrl='{:U(GROUP_NAME."/Login/usernameCheck")}';//检测是否能用这个用户名/邮箱登录。
+        pwdCheckUrl='{:U(GROUP_NAME."/Login/pwdCheck")}';
+
+        verifyLen={:C('VERIFY_LEN')};
+        verifyCheckUrl='{:U(GROUP_NAME."/Login/verifyCheck")}';
+
+        successUrl="{:U(GROUP_NAME.'/Index/index')}";
+    </script>
+
+    <style type="text/css">
+        .container{
+            width:100%;
+            background:#fff;
+        }
+        /*解决与base.css中的冲突*/
+        .navbar-nav>li:hover {
+            background: transparent;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column" style="padding:0;"><!--包含导航条和滚动区-->
+            <!--导航条-->
+            <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+                    <a class="navbar-brand" href="{:U(GROUP_NAME.'/Index/show_index')}">LMS学习管理系统</a>
+                </div>
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="{:U(GROUP_NAME.'/Index/Show/index')}" id="indexHref">首页</a>
+                        </li>
+                        <li>
+                            <a href="{:U(GROUP_NAME.'/Index/Show/index')}" id="introduceHref">介绍</a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/wangerzi/LMS-LearningManagementSystem.git">源码下载</a>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="active">
+                            <a href="{:U(GROUP_NAME.'/Login/index')}">登录</a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">更多功能<strong class="caret"></strong></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="{:U(GROUP_NAME.'/Register/index')}">注册</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=zfT5_fv19fn1-428vOOuoqA" title="发邮件" target="_blank">
+                                        联系作者
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" onclick="wq_alert('还没做好，后边补上。^_^')">意见反馈</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <div class="row clearfix" style="margin-top:30px;"><!--名言警句和登录框-->
+        <div class="col-md-7 column">
+            <div style="height:80px;"></div>
+            <blockquote>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.
+                </p>
+                <small>Someone famous <cite>Source Title</cite></small>
+            </blockquote>
+        </div>
+        <div class="col-md-4 column well">
+            <div class="row">
+                <div class="col-md-12 text-center" style="font-size:40px;font-family: hakuyoxingshu7000;@font-face {
+                font-family: 'hakuyoxingshu7000';
+                src: url('__PUBLIC__/fonts/hakuyoxingshu7000.TTF');
+                font-weight: normal;
+                font-style: normal;
+                };
+                margin-bottom:10px;">
+                    LMS学习管理系统
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <form action="{:U(GROUP_NAME.'/Login/loginHandle')}" method="post" role="form" id="login"><!--登录表单-->
+                        {$__UNIQID__}
+                        <div class="form-group">
+                            <label for="inputName">用户名/邮箱</label>
+                            <input type="text" class="form-control" name="username" id="inputName" />
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword">密码</label>
+                            <input type="password" class="form-control" name="password" id="inputPassword" />
+                        </div>
+                        <!--如果开启登录验证码，则显示-->
+                        <IF condition="intval(C('LOGIN_VERIFY'))">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>
+                                            验证码
+                                        </label>
+                                        <input type="text" name="verify" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">　</label><br>
+                                        <img src="{:U(GROUP_NAME.'/Login/verify')}" alt="" id="code">
+                                        <p class="help-block">点击切换</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </IF>
+                        <button type="submit" id="submit" class="btn btn-success">登录</button>
+                        <a href="{:U(GROUP_NAME.'/Register/index')}" class="btn btn-primary" style="margin-left:10px;">注册</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <h6 class="text-center">Copyright &copy; 2016-2017 <a href="http://wj2015.com.cn">wj2015.com.cn</a> All Rights Reserved.</h6>
+</div>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<extend name="./LMS/Models/Admin/Tpl/base.html"/>
+<block name="title">验证码设置</block>
+<block name="CSS_AND_JS">
+    <link rel="stylesheet" href="__PUBLIC__/css/nouislider.css">
+
+    <script>
+        MIN_NAME = {:C('MIN_NAME')};
+        MAX_NAME = {:C('MAX_NAME')};
+
+        MIN_PAS = {:C('MIN_PAS')};
+        MAX_PAS = {:C('MAX_PAS')};
+
+        MIN_YEAR= {:C('MIN_YEAR')};
+        MAX_YEAR= {:C('MAX_YEAR')};
+    </script>
+    <script type="text/javascript" src="__PUBLIC__/js/nouislider.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/js/system/register.js"></script>
+</block>
+<block name="body">
+    <form action="{:U(GROUP_NAME.'/System/updateRegister')}" method="post">
+        <h4><b>注册/登录 设置</b></h4>
+        {$__UNIQID__}
+        <input type="hidden" name="MIN_NAME" value="{:C('MIN_NAME')}" />
+        <input type="hidden" name="MAX_NAME" value="{:C('MAX_NAME')}" />
+        <input type="hidden" name="MIN_PAS" value="{:C('MIN_PAS')}" />
+        <input type="hidden" name="MAX_PAS" value="{:C('MAX_PAS')}" />
+        <input type="hidden" name="MIN_YEAR" value="{:C('MIN_YEAR')}" />
+        <input type="hidden" name="MAX_YEAR" value="{:C('MAX_YEAR')}" />
+        <div class="row">
+            <div class="col s12">
+                <div class="">
+                    <label>是否开启注册</label>
+                    <div class="switch">
+                        <label>
+                            off
+                            <input type="hidden" name="REG_OPEN" value="0">
+                            <input type="checkbox" name="REG_OPEN" value="1" <if condition="C('REG_OPEN')">checked='checked'</if>>
+                            <span class="lever"></span>
+                            on
+                        </label>
+                    </div>
+                </div>
+                <p></p>
+                <div class="">
+                    <label>用户名长度范围</label>
+                    <p></p>
+                    <div id="nameLen"></div>
+                </div>
+                <p></p>
+                <div class="">
+                    <label>密码长度范围</label>
+                    <p></p>
+                    <div id="pwdLen"></div>
+                </div>
+                <p></p>
+                <div class="">
+                    <label>生日年份范围</label>
+                    <p></p>
+                    <div id="yearLen"></div>
+                </div>
+                <p></p>
+                <div class="input-field">
+                    <label>禁止注册的用户名（中间用逗号隔开）</label>
+                    <p></p>
+                    <textarea name="FORBID_NAME" class="materialize-textarea" cols="30" rows="10">{:C('FORBID_NAME')}</textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12">
+                <button type="submit" class="btn waves-effect waves-light green">提交更改 <i class="material-icons right">send</i></button>
+                <button type="reset" class="btn waves-effect waves-light">重置</button>
+            </div>
+        </div>
+    </form>
+</block>

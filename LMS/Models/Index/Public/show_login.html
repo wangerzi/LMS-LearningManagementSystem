@@ -1,0 +1,120 @@
+<html lang='en'>
+<head>
+	<meta charset='utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1.0'>
+		<title>LMS学习管理系统-登录</title>
+
+	<link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css" />
+
+	<script type="text/javascript" src='./js/jquery.min.js'></script>
+	<script type="text/javascript" src='./js/bootstrap.min.js'></script>
+	<script type="text/javascript" src='./js/penguin/bootstrap/bootstrapValidator.min.js'></script>
+	<script type="text/javascript" src='./js/penguin/jquery.form.js'></script>
+	<script type="text/javascript" src='./js/penguin/bootstrap/moment-with-locales.min.js'></script>
+
+
+	<script type="text/javascript" src='./js/basic.func.js'></script>
+	<script type="text/javascript" src='./js/show/login.js'></script>
+
+	<script type="text/javascript">
+		userNameCheckUrl='';//检测是否能用这个用户名/邮箱登录。
+		pwdCheckUrl='';
+		verifyCheckUrl='';
+		codeUrl='';
+	</script>
+
+	<style type="text/css">
+		.container{
+			width:100%;
+		}
+	</style>
+</head>
+<body>
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column" style="padding:0;"><!--包含导航条和滚动区-->
+			<!--导航条-->
+			<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#">LMS学习管理系统</a>
+				</div>
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+					<ul class="nav navbar-nav">
+						<li class="active">
+							<a href="javascript:scrollTo('body,html');" id="indexHref" onclick="$(this).parent().addClass('active').siblings().removeClass('active');">首页</a>
+						</li>
+						<li>
+							<a href="javascript:scrollTo('#introduce');" id="introduceHref" onclick="$(this).parent().addClass('active').siblings().removeClass('active');">介绍</a>
+						</li>
+						<li>
+							<a href="#">源码下载</a>
+						</li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li>
+							<a href="#">登录</a>
+						</li>
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">更多功能<strong class="caret"></strong></a>
+							<ul class="dropdown-menu">
+								<li>
+									<a href="#">注册</a>
+								</li>
+								<li class="divider"></li>
+								<li>
+									<a href="#">联系作者</a>
+								</li>
+								<li>
+									<a href="#">意见反馈</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</nav>
+		</div>
+	</div>
+	<div class="row clearfix" style="margin-top:100px;"><!--名言警句和登录框-->
+		<div class="col-md-7 column">
+			<div style="height:80px;"></div>
+			<blockquote>
+				<p>
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.
+				</p>
+				<small>Someone famous <cite>Source Title</cite></small>
+			</blockquote>
+		</div>
+		<div class="col-md-4 column">
+			<form action="" role="form"><!--登录表单-->
+				<div class="form-group">
+					<label for="inputEmail1">用户名/邮箱</label>
+					<input type="email" class="form-control" name="username" id="inputEmail1" />
+				</div>
+				<div class="form-group">
+					<label for="inputPassword">密码</label>
+					<input type="password" class="form-control" name="password" id="inputPassword" />
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>
+								验证码
+							</label>
+							<input type="text" name="verify" class="form-control" />
+						</div>
+					</div>
+					<div class="col-md-6">
+						<label>　</label>
+						<img src="http://wj2015.com.cn/index.php?s=/Index/Login/verify" alt="" id="code">
+					</div>
+				</div>
+				<button type="submit" class="btn btn-success">登录</button>
+				<button type="button" class="btn btn-primary">注册</button>
+			</form>
+		</div>
+	</div>
+	<hr>
+	<h6 class="text-center">Copyright &copy; 2016-2017 <a href="http://wj2015.com.cn">wj2015.com.cn</a> All Rights Reserved.</h6>
+</div>
+</body>
+</html>

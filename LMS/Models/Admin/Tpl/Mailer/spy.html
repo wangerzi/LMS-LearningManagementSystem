@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>监控</title>
+    <script type="text/javascript" src="__PUBLIC__/js/jquery.min.js"></script>
+    <script type="text/javascript">
+        //一直刷新。。。
+        function reloadIframe(obj){
+            setTimeout(function(){
+                $(obj).after('<iframe src="'+$(obj).attr('src')+'" onload="reloadIframe(this)" frameborder="1"></iframe>');
+                $(obj).remove();
+            },1000);
+        }
+    </script>
+</head>
+<body>
+<iframe src="{:U(GROUP_NAME.'/Mailer/sendEmails')}" onload="reloadIframe(this)" frameborder="0"></iframe>
+<iframe src="{:U(GROUP_NAME.'/Mailer/dealEmailTime')}" onload="reloadIframe(this)" frameborder="0"></iframe>
+</body>
+</html>

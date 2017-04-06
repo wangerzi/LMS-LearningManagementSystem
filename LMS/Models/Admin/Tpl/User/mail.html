@@ -1,0 +1,44 @@
+<extend name="./LMS/Models/Admin/Tpl/base.html"/>
+<block name="title">管理员邮件</block>
+<block name="CSS_AND_JS">
+    <link rel="stylesheet" href="__INDEX_PUBLIC__/css/bootstrap/bootstrap-datepicker.min.css">
+
+    <script type="text/javascript" src='__INDEX_PUBLIC__/js/penguin/bootstrap/moment-with-locales.min.js'></script>
+    <script type="text/javascript" src="__INDEX_PUBLIC__/js/penguin/bootstrap/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="__INDEX_PUBLIC__/js/penguin/bootstrap/bootstrap-datepicker.zh-CN.min.js"></script>
+</block>
+<block name="body">
+    <h4 class="center-align"><b>发送管理员邮件</b></h4>
+    <form action="{:U(GROUP_NAME.'/User/mailHandle')}" method="post">
+        {$__UNIQID__}
+        <div class="input-field">
+            <label>收件邮箱</label>
+            <input type="email" name="to" value="{$mail}" class="validate" data-error="请输入正确的邮箱" />
+        </div>
+        <div class="input-field">
+            <label>邮件主题</label>
+            <input type="text" name="subject" value="一封来自管理员的邮件" class="validate" data-length="20" data-error="主题不能为空">
+        </div>
+        <div class="input-field">
+            <label>发件时间</label>
+            <input type="text" name="time" value="{:date('Y-m-d H:i:s')}" class="validate" data-error="发送时间需要符合格式">
+        </div>
+        <div class="input-field">
+            <label>内容</label>
+            <textarea class="materialize-textarea" name="content" cols="30" rows="10" data-length="300"></textarea>
+        </div>
+        <div style="margin:0 0 20px 0;">
+            <button type="submit" class="btn">发送 <i class="material-icons right">send</i></button>
+            <button type="reset" class="btn green">重置</button>
+        </div>
+    </form>
+    <div id="ipDetail" class="modal">
+        <div class="modal-content">
+            <h4>获取IP信息</h4>
+            <p>调用接口中...</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">继续</a>
+        </div>
+    </div>
+</block>

@@ -1,0 +1,10 @@
+#main-top-leader > li > a{
+
+    border-right:1px dashed #999;
+}
+#main-top-leader > li > a > p{
+    color:#333;
+}
+#main-top-leader > li > a.no-right{
+    border-right:0;
+}

@@ -1,0 +1,448 @@
+<html lang='en'>
+<head>
+	<meta charset='utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1.0'>
+		<title>LMS学习管理系统-主页</title>
+
+	<link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="./css/base.css" />
+
+	<script type="text/javascript" src='./js/jquery.min.js'></script>
+	<script type="text/javascript" src='./js/bootstrap.min.js'></script>
+
+	<script type="text/javascript" src='./js/base.js'></script>
+
+	<!--引入的JS/CSS-->
+
+	<!--/引入的JS/CSS-->
+	<style type="text/css">
+	</style>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+	<!--最前边的标题-->
+	<div class="navbar-header navbar-nav navbar-left" style="margin-right:20px;">
+		<a href="" class="navbar-brand" style="color:#fff;"><span class="glyphicon glyphicon-tasks"></span> LMS学习管理系统</a>
+	</div>
+	<!--快速点击的链接（左）-->
+	<ul class="navbar-nav  nav nav-pills navbar-left">
+		<li><a href="">管理学习计划</a></li>
+		<li><a href="">寻找有缘人</a></li>
+		<li><a href="">下载APP</a></li>
+	</ul>
+	<!--用户的个人信息消息-->
+	<ul class="navbar-nav nav nav-pills navbar-right" style="padding-right: 20px;">
+		<li class="dropdown" id="messageArea">
+			<p class="dropdown-toggle clearfix navbar-text">
+				消息
+			</p>
+			<ul class="dropdown-menu" role="menu">
+				<li class="alert alert-info alert-dismissable">
+					<button class="close" data-dismiss="alert" aria-hidden="true">x</button>
+					{:C('WEB_NAME')}
+				</li>
+				<li class="alert alert-warning alert-dismissable">
+					<button class="close" data-dismiss="alert" aria-hidden="true">x</button>
+					消息2
+				</li>
+				<li class="alert alert-danger alert-dismissable">
+					<button class="close" data-dismiss="alert" aria-hidden="true">x</button>
+					消息3
+				</li>
+			</ul>
+		</li>
+		<li class="dropdown">
+			<div class="dropdown-toggle clearfix">
+				<img src="images/face.jpg" width="30px" height="30px" class="img-circle img-responsive pull-left" style="margin:10px 0 0 0" />
+				<p class="navbar-text pull-left">王二子<span class="caret"></span></p>
+			</div>
+			<ul class="dropdown-menu" role="menu">
+				<li><a href="">我的私信</a></li>
+				<li><a href="">账户设置</a></li>
+				<li><a href="">退出登录</a></li>
+			</ul>
+		</li>
+	</ul>
+	<!--搜索框-->
+	<form class="navbar-form navbar-right">
+		<div class="input-group input-group-sm">
+			<span class="input-group-addon">
+				<span class="glyphicon glyphicon-search"></span>
+			</span>
+			<input type="text" class="form-control" placeholder="Search" />
+		</div>
+	</form>
+</nav>
+<div class="container " style="width:100%;">
+	<div class="row" style="padding:30px 0;">
+		<!--左边的-->
+		<!--<div class="col-md-2">
+			<ul class="nav nav-pills nav-stacked" id="left-leader">
+				<li class="active">
+					<a href="">
+						<span class="glyphicon glyphicon-home"></span>
+						我的首页
+					</a>
+				</li>
+				<li class="">
+					<a href="">
+						<span class="glyphicon glyphicon-align-left"></span>
+						我的学习计划
+					</a>
+				</li>
+				<li class="">
+					<a href="">
+						<span class="glyphicon glyphicon-user"></span>
+						好友管理
+					</a>
+				</li>
+				<li class="">
+					<a href="">
+						<span class="glyphicon glyphicon-eye-open"></span>
+						我监督的人
+					</a>
+				</li>
+				<li class="">
+					<a href="">
+						<span class="glyphicon glyphicon-envelope"></span>
+						私信管理
+					</a>
+				</li>
+				<li class="">
+					<a href="">
+						<span class="glyphicon glyphicon-cog"></span>
+						账户管理
+					</a>
+				</li>
+			</ul>
+		</div>-->
+		<!--右侧的操作区-->
+		<div class="col-md-12">
+			<span class="col-md-12" style="background:#fff;">
+				<!--展示封面和各种信息-->
+				<div class="row">
+					<div class="col-md-5">
+						<div class="thumbnail" style="margin-top:15px;">
+							<img src="./images/test.jpg" alt="" />
+							<div class="caption">
+								<button class="btn">
+									<span class="glyphicon glyphicon-user"></span>
+									5人参加
+								</button>
+								<button class="btn btn-success">
+									<span class="glyphicon glyphicon-thumbs-up"></span>
+									赞(1000)
+								</button>
+                                <a class="btn btn-warning" href="">
+                                    <span class="glyphicon glyphicon-flag"></span>
+                                    查看评论(1)
+                                </a>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-7">
+						<h3>李炎恢ThinkPHP视频学习计划</h3>
+						<ul class="list-inline">
+							<li>
+								<span class="glyphicon glyphicon-eye-open"></span>
+								1200
+							</li>
+							<li class="text-success">
+								<span class="glyphicon glyphicon-star"></span>
+								<span class="glyphicon glyphicon-star"></span>
+								<span class="glyphicon glyphicon-star"></span>
+								<span class="glyphicon glyphicon-star-empty"></span>
+								<span class="glyphicon glyphicon-star-empty"></span>
+								<span class="text-info">(48)</span>
+							</li>
+							<li>
+								创建者：<a href="">李炎恢</a>
+							</li>
+							<li class="pull-right">
+								分享链接：
+								<a href="">http://www.baidu.com</a>
+							</li>
+						</ul>
+						<hr>
+                        <div class="well clearfix">
+						<!--各种时间信息-->
+						<table class="col-md-6">
+							<tr>
+								<td>
+									创建时间：
+								</td>
+								<td>
+									2016年11月23日
+								</td>
+							</tr>
+							<tr>
+								<td>开始时间：</td>
+								<td>2016年11月23日</td>
+							</tr>
+							<tr>
+								<td>预计结束时间：</td>
+								<td>2016年11月23日</td>
+							</tr>
+						</table>
+						<!--完成情况和延期情况！-->
+						<table class="col-md-6">
+							<tr>
+								<td>
+									已完成：
+								</td>
+								<td>
+									<span class="text-success">3个任务</span>
+								</td>
+							</tr>
+							<tr>
+								<td>延期：</td>
+								<td class="text-danger">12小时</td>
+							</tr>
+							<tr>
+								<td>学习总时长：</td>
+								<td>33天</td>
+							</tr>
+							<tr class="text-warning">
+								<td>监督人：</td>
+								<td>Wang</td>
+							</tr>
+						</table>
+                        </div>
+					</div>
+				</div>
+				<hr>
+				<div class="row">
+					<div class="well clearfix" style="padding-bottom:5px;">
+						<div class="col-md-10 pull-left">
+							<div class="progress">
+								<div class="progress-bar progress-bar-success" style="width:60%;"></div>
+							</div>
+						</div>
+						<div class="col-md-2">
+							计划完成度：<span class="text-success">60%</span>
+						</div>
+						<div class="help-block col-md-12">
+							目前已完成 <span class="text-success">3</span> 个任务，继续努力吧！
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<table class="table table-responsive table-hover plan-list">
+							<tr class="stage">
+								<td class="first">
+									阶段
+								</td>
+								<td class="circle-warp col-md-1 text-center">
+									<span class="circle-md">
+										1
+									</span>
+								</td>
+								<td>框架入门</td>
+                                <td></td>
+							</tr>
+							<tr>
+								<td class="first">
+									任务
+								</td>
+								<td class="circle-warp text-center">
+									<span class="circle-sm center-block">
+										1
+									</span>
+								</td>
+								<td>
+                                    为什么要学习框架(6h)
+                                </td>
+								<td class="col-md-4">
+									<button class="btn btn-success">
+										<span class="glyphicon glyphicon-ok"></span>
+										已完成
+									</button>
+                                    <button class="btn btn-default">
+                                        <span class="glyphicon glyphicon-time"></span>
+                                        2016年11月23日19:14:57
+                                    </button>
+								</td>
+							</tr>
+                            <tr>
+								<td class="first">
+									任务
+								</td>
+								<td class="circle-warp text-center">
+									<span class="circle-sm center-block">
+										2
+									</span>
+								</td>
+								<td>为什么要学习框架</td>
+								<td>
+									<button class="btn btn-success">
+										<span class="glyphicon glyphicon-ok"></span>
+										已完成
+									</button>
+                                    <button class="btn btn-default">
+                                        <span class="glyphicon glyphicon-time"></span>
+                                        2016年11月23日19:14:57
+                                    </button>
+								</td>
+							</tr>
+                            <tr>
+								<td class="first">
+									任务
+								</td>
+								<td class="circle-warp text-center">
+									<span class="circle-sm center-block">
+										3
+									</span>
+								</td>
+								<td>为什么要学习框架</td>
+								<td>
+									<button class="btn btn-warning" data="1" onclick="complate_plan(this)">
+										<span class="glyphicon glyphicon-screenshot"></span>
+										待完成
+									</button>
+								</td>
+							</tr>
+                            <tr>
+								<td class="first">
+									任务
+								</td>
+								<td class="circle-warp text-center">
+									<span class="circle-sm center-block">
+										4
+									</span>
+								</td>
+								<td>为什么要学习框架</td>
+								<td>
+									<button class="btn disabled">
+										<span class="glyphicon glyphicon-lock"></span>
+										已锁定
+									</button>
+								</td>
+							</tr>
+                            <tr class="stage">
+								<td class="first">
+									阶段
+								</td>
+								<td class="circle-warp col-md-1 text-center">
+									<span class="circle-md">
+										2
+									</span>
+								</td>
+								<td>初识MVC</td>
+                                <td></td>
+							</tr>
+                            <tr>
+								<td class="first">
+									任务
+								</td>
+								<td class="circle-warp text-center">
+									<span class="circle-sm center-block">
+										1
+									</span>
+								</td>
+								<td>什么是MVC</td>
+								<td>
+									<button class="btn disabled">
+										<span class="glyphicon glyphicon-lock"></span>
+										已锁定
+									</button>
+								</td>
+							</tr>
+                            <tr>
+								<td class="first">
+									任务
+								</td>
+								<td class="circle-warp text-center">
+									<span class="circle-sm center-block">
+										2
+									</span>
+								</td>
+								<td>MVC的工作机制</td>
+								<td>
+									<button class="btn disabled">
+										<span class="glyphicon glyphicon-lock"></span>
+										已完成
+									</button>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<!--列表组有点不好看！-->
+					<!--<ul class="list-group">
+						<li class="list-group-item active">
+							<h4 class="list-group-item-heading">阶段1：为什么要学习框架</h4>
+							<p class="list-group-item-text">
+								了解为什么要学习框架，框架能为我们带来什么？
+							</p>
+						</li>
+						<li class="list-group-item list-group-item-success">
+							<h4 class="list-group-item-heading">
+								任务：
+							</h4>
+							<p class="list-group-item-text">
+								了解框架的历史
+								<span class="badge">5h</span>
+							</p>
+						</li>
+						<li class="list-group-item">
+							<h4 class="list-group-item-heading">
+								任务：
+							</h4>
+							<p class="list-group-item-text">
+								了解什么是MVC
+							</p>
+						</li>
+					</ul>-->
+				</div>
+			</span>
+		</div>
+	</div>
+	<div class="row" id="footer">
+		<div class="col-md-5">
+			<h1><span class="glyphicon glyphicon-tasks"></span> LMS学习管理系统</h1>
+			<small>
+				<p>
+					本系统由Wang自主开发，系统以学习计划管理为核心，帮助您获得全新的个人发展和能力提升，本系统完全免费，有什么意见或建议可以通过以下方式联系我：
+				</p>
+				<ul class="">
+					<li class="">
+						<span class="glyphicon glyphicon-envelope"></span>
+						<a href="mailto:944688482@qq.com">944688482@qq.com</a>
+					</li>
+					<li class="">
+						<span class="glyphicon glyphicon-earphone"></span>
+						<a href="#">150xxxxx921</a>
+					</li>
+				</ul>
+				<p>
+					本站资源大部分均来自互联网，若侵删
+				</p>
+				<p>
+					&copy;2015-2016 Wang 版权所有
+				</p>
+			</small>
+		</div>
+		<div class="col-md-5 col-md-offset-2">
+			<h2>友情链接</h2>
+			<small>
+				<dl class="list-inline">
+					<dt>
+						特别感谢：
+					</dt>
+					<dd>
+						<a href="http://www.thinkphp.cn/" target="_blank">ThinkPHP</a>
+						<a href="http://study.163.com/" target="_blank">网易云课堂</a>
+						<a href="http://getbootstrap.com/" target="_blank">Bootstrap</a>
+						<a href="http://www.bootcss.com/" target="_blank">Bootstrap中文网</a>
+						<a href="http://www.runoob.com/" target="_blank">菜鸟教程</a>
+					</dd>
+				</dl>
+				<p>
+					在本系统制作的过程中，在网上查找了很多资料，并取经优秀网站，特此鸣谢！
+				</p>
+			</small>
+		</div>
+	</div>
+</div>
+</body>
+</html>

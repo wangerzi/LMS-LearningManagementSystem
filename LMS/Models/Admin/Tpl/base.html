@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><block name="title"></block></title>
+    <link rel="stylesheet" href="__PUBLIC__/css/materialize.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/css/base.css">
+    <link href="__PUBLIC__/css/material-icons.css" rel="stylesheet"><!--否则无法使用图标-->
+    <script type="text/javascript" src="__PUBLIC__/js/jquery.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/js/materialize.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/js/init.js"></script>
+    <block name="CSS_AND_JS"></block>
+</head>
+<body>
+<!--顶部固定导航条-->
+<div class="navbar-fixed">
+    <nav>
+        <div class="nav-wrapper">
+            <a class="brand-logo" href="#!">{$user['username']}のがくや</a>
+            <a href="#!" class="button-collapse left" data-activates="left-nav"><i class="material-icons">menu</i></a>
+            <ul class="right hide-on-med-and-down " id="nav-menu">
+                <li>
+                    <a class="dropdown-button" data-activates="nav-message-new" data-beloworigin="true">消息 <span class="badge new">4</span></a>
+                    <ul class="dropdown-content" id="nav-message-new">
+                        <li>
+                            <a href="#!">消息1</a>
+                        </li>
+                        <li>
+                            <a href="#!">消息2</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#!" class="dropdown-button" data-activates="nav-more" data-beloworigin="true"><i class="material-icons">more_vert</i></a>
+                    <ul class="dropdown-content" id="nav-more">
+                        <li>
+                            <a href="{:U('Index/Index/index')}">前台主页</a>
+                        </li>
+                        <li>
+                            <a href="{:U('Index/Account/index')}">个人设置</a>
+                        </li>
+                        <li>
+                            <a href="#!">退出登录</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+<!--左侧导航栏-->
+<ul class="side-nav" id="left-nav" style="">
+    <li>
+        <div class="userView">
+            <div class="background">
+                <img src="__PUBLIC__/images/bg.jpg" alt="" style="width: 100%;height:100%;">
+            </div>
+            <div>
+                <img src="{$user['face']}" class="circle" alt="">
+            </div>
+            <a href="{:U('Index/Account/index')}" class="name white-text">{$user['username']}</a>
+            <a href="mailto:{$user['email']}" class="email white-text">{$user['email']}</a>
+        </div>
+    </li>
+    <li>
+        <a href="{:U(GROUP_NAME.'/Index/index')}" class="collapsible-header waves-effect"><i class="material-icons">home</i>服务器概览</a>
+    </li>
+    <li>
+        <ul class="collapsible">
+            <li>
+                <a href="#!" class="collapsible-header waves-effect"><i class="material-icons">assignment_ind</i>用户管理 <i class="material-icons right">arrow_drop_down</i></a>
+                <div class="collapsible-body">
+                    <a href="{:U(GROUP_NAME.'/User/index')}" class="waves-effect">用户列表</a>
+                    <a href="{:U(GROUP_NAME.'/User/admin')}" class="waves-effect">管理员设置</a>
+                </div>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <ul class="collapsible">
+            <li>
+                <a href="#!" class="collapsible-header waves-effect"><i class="material-icons">message</i>系统设置 <i class="material-icons right">arrow_drop_down</i></a>
+                <div class="collapsible-body">
+                    <a href="{:U(GROUP_NAME.'/System/verify')}" class="waves-effect">验证码设置</a>
+                    <a href="{:U(GROUP_NAME.'/System/register')}" class="waves-effect">注册设置</a>
+                </div>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <a href="{:U(GROUP_NAME.'/System/web')}" class="collapsible-header waves-effect"><i class="material-icons">cloud</i>WEB设置</a>
+    </li>
+    <li>
+        <a href="#!" class="collapsible-header waves-effect"><i class="material-icons">person</i>个人设置</a>
+    </li>
+    <li class="hide-on-large-only">
+        <a href="#!" class="collapsible-header waves-effect"><i class="material-icons">input</i>退出登录</a>
+    </li>
+</ul>
+<!--右下角固定按钮-->
+<div class="fixed-action-btn hide-on-med-and-down" id="to-top" style="display: none;">
+    <a href="body,html" class="btn-floating red scroll-to" title="回到顶部">
+        <i class="material-icons">keyboard_capslock</i>
+    </a>
+</div>
+<main>
+    <div class="btn btn-flat button-collapse waves-effect" data-activates="left-nav" id="button-show-left">
+        >>
+    </div>
+    <div class="container">
+        <block name="body"></block>
+    </div>
+</main>
+<footer class="page-footer" style="bottom:0;right:0; width:100%;" id="footer">
+    <div class="container">
+        <h4 class="white-text">{$user['username']}の后台管理</h4>
+        <p class="white-text">本页仅限{$user['username']}管理学习计划管理系统，请勿随意进入修改配置及内容。</p>
+    </div>
+    <div class="footer-copyright">
+        <div class="container">
+            &copy;2017 Copyright wj2015.com.cn
+            <span class="grey-text text-lighten-4 right">Powered by <a href="http://materializecss.com" target="_blank">materialize</a></span>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

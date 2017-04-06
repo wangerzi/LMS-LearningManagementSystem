@@ -1,0 +1,40 @@
+<extend name="./LMS/Models/Index/Tpl/base.html" />
+<block name="title">
+    好友管理
+</block>
+<block name="CSS_AND_JS">
+    <script type="text/javascript" src="__PUBLIC__/js/friend/index.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/js/friend/function.js"></script>
+</block>
+<block name="body">
+    <div class="center-block">
+        <!--将需要加载的链接放在alt中，由js进行加载！-->
+        <ul class="nav nav-pills nav-justified" id="result-leader" style="cursor: default;">
+            <li class="navbar navbar-btn active">
+                <a alt="{:U(GROUP_NAME.'/Friend/find')}">
+                    <span class="glyphicon glyphicon-globe"></span>
+                    找朋友
+                </a>
+            </li>
+            <li class="navbar navbar-btn">
+                <a alt="{:U(GROUP_NAME.'/Friend/friendList')}">
+                    <span class="glyphicon glyphicon-user"></span>
+                    好友列表
+                </a>
+            </li>
+            <li class="navbar navbar-btn">
+                <a alt="{:U(GROUP_NAME.'/Friend/friendRequest')}">
+                    <span class="glyphicon glyphicon-bullhorn"></span>
+                    申请列表
+                    <if condition="$number['friend']">
+                        <span class="badge number-friend">
+                            {$number['friend']}
+                        </span>
+                    </if>
+                </a>
+            </li>
+        </ul>
+        <div id="result">
+        </div>
+    </div>
+</block>

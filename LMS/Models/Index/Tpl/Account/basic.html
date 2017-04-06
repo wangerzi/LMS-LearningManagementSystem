@@ -1,0 +1,80 @@
+<extend name="./LMS/Models/Index/Tpl/base.html" />
+<block name="title">
+	修改基本信息
+</block>
+<block name="CSS_AND_JS">
+	<script type="text/javascript">
+		nameCheckUrl="{:U(GROUP_NAME.'/Register/checkUsername')}";
+		MIN_NAME={:C('MIN_NAME')};
+		MAX_NAME={:C('MAX_NAME')};
+		var yesterday='{:date("Y-m-d",time()-86400)}';
+	</script>
+	<!--加载bootstrapValidator和时间插件-->
+	<link rel="stylesheet" href="__PUBLIC__/css/bootstrap/bootstrapValidator.min.css">
+	<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/bootstrapValidator.min.js'></script>
+	<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/moment-with-locales.min.js'></script>
+	<script type="text/javascript" src="__PUBLIC__/js/account/basic.js"></script>
+</block>
+<block name="body">
+	<h2>基本信息修改</h2>
+	<form action="{:U(GROUP_NAME.'/Account/basicHandle')}" id="basicInfo" method="post" role="form">
+		{$__UNIQID__}
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group">
+					<label>
+						用户名：
+					</label>
+					<input type="text" name="username" value="{$data['username']}" class="form-control">
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group">
+					<label>
+						自我简介：
+					</label>
+					<input type="text" name="info" value="{$data['info']}" class="form-control">
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>
+								性别
+							</label>
+							<select name="sex" class="form-control">
+								<if condition="$data['sex']">
+									<option value="1" selected="selected">男</option>
+									<option value="0">女</option>
+									<else/>
+									<option value="1">男</option>
+									<option value="0" selected="selected">女</option>
+								</if>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>
+								生日
+							</label>
+							<input type="date" name="birth" class="form-control" value="{:date('Y-m-d',$data['birth'])}" />
+						</div>
+					</div>
+				</div>
+				<p class="help-block">
+					提醒：更改性别和生日会影响寻找有缘人的结果。
+				</p>
+			</div>
+		</div>
+		<div class="form-group">
+			<button class="btn btn-success" type="submit">保存</button>
+			<button class="btn btn-danger" type="button" onclick="cancle_back();">取消</button>
+		</div>
+	</form>
+</block>

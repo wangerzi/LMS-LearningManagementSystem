@@ -1,0 +1,292 @@
+2016-12-21 02:04:27	./LMS/Models/Admin/Mailer   944688483@qq.com:邀请你监督他（她）的学习计划 邮件222 ，<a href='/ThinkPHP/index.php/Index/Supervision/request.html'>前往</a>看看吧！
+2016-12-21 02:04:32	./LMS/Models/Admin/Mailer   wangjie-520520520@qq.com:邀请你监督他（她）的学习计划 邮件222 ，<a href='/ThinkPHP/index.php/Index/Supervision/request.html'>前往</a>看看吧！
+2016-12-21 06:48:55	./LMS/Models/Admin/Mailer   944688482@qq.com:对方在2016-12-21 18:26:10解除了和您的计划 <a href="/ThinkPHP/index.php/Index/Plan/detail/pcid/17.html" target="_blanks">测试监督而已。。。</a>解除监督关系！
+2016-12-21 06:48:58	./LMS/Models/Admin/Mailer   944688482@qq.com:对方在2016-12-21 18:03:07解除了和您的计划 <a href="/ThinkPHP/index.php/Index/Plan/detail/pcid/19.html" target="_blanks">邮件222</a>解除监督关系！
+2016-12-21 06:49:00	./LMS/Models/Admin/Mailer   944688482@qq.com:对方在2016-12-21 18:20:05同意了您的计划 <a href="/ThinkPHP/index.php/Index/Plan/detail.html" target="_blanks">2221</a>的监督申请！
+2016-12-23 01:01:48	./LMS/Models/Admin/Mailer   wangjie-520520520@qq.com:admin在2016-12-23 12:58:46拒绝您的计划 <a href="/ThinkPHP/index.php/Index/Plan/detail/pcid/21.html" target="_blanks">111231312</a>的监督申请！
+2016-12-23 01:02:21	./LMS/Models/Admin/Mailer   944688482@qq.com:邀请你监督他（她）的学习计划 《111231312》 ，<a href='/ThinkPHP/index.php/Index/Supervision/request.html'>前往</a>看看吧！
+2016-12-23 01:02:23	./LMS/Models/Admin/Mailer   944688482@qq.com:邀请你监督他（她）的学习计划 《111111》 ，<a href='/ThinkPHP/index.php/Index/Supervision/request.html'>前往</a>看看吧！
+2016-12-23 01:25:12	./LMS/Models/Admin/Mailer   wangjie-520520520@qq.com:admin在2016-12-23 13:25:06同意了您的计划 <a href="http://localhost/ThinkPHP/index.php/Index/Plan/detail" target="_blanks">2221</a>的监督申请！
+2016-12-23 01:27:43	./LMS/Models/Admin/Mailer   944688482@qq.com:admin在北京时间2016年12月23日 13:27:38对您使用了鞭笞，提醒您应该执行您的学习计划《2221》了！
+2016-12-23 01:54:43	./LMS/Models/Admin/Mailer   944688482@qq.com:在北京时间 2016年12月23日 13:54:38 对您的计划《邮件》做出评论：<br>666!!!!
+2016-12-23 02:02:11	./LMS/Models/Admin/Mailer   944688482@qq.com:在北京时间 2016年12月23日 14:02:06 对您的计划《邮件》做出评论：<br>回复admin:<br>呃呃，我在回复一次！！！
+2016-12-23 02:27:47	./LMS/Models/Admin/Mailer   944688483@qq.com:admin邀请你监督他（她）的学习计划 《111111》 ，<a href='http://localhost/ThinkPHP/index.php/Index/Supervision/request.html'>前往</a>看看吧！
+2016-12-23 02:27:49	./LMS/Models/Admin/Mailer   wangjie-520520520@qq.com:admin邀请你监督他（她）的学习计划 《111111》 ，<a href='http://localhost/ThinkPHP/index.php/Index/Supervision/request.html'>前往</a>看看吧！
+2016-12-23 02:38:30	./LMS/Models/Admin/Mailer   wangjie-520520520@qq.com:admin邀请你监督他（她）的学习计划 《2222》 ，<a href='http://localhost/ThinkPHP/index.php/Index/Supervision/request.html'>前往</a>看看吧！
+2016-12-23 02:39:48	./LMS/Models/Admin/Mailer   1105998080@qq.com:admin邀请你监督他（她）的学习计划 《22222》 ，<a href='http://localhost/ThinkPHP/index.php/Index/Supervision/request.html'>前往</a>看看吧！
+2016-12-23 02:39:51	./LMS/Models/Admin/Mailer   wangjie-520520520@qq.com:admin邀请你监督他（她）的学习计划 《22222》 ，<a href='http://localhost/ThinkPHP/index.php/Index/Supervision/request.html'>前往</a>看看吧！
+2016-12-23 02:56:04	./LMS/Models/Admin/Mailer   wangjie-520520520@qq.com:admin邀请你监督他（她）的学习计划 《重复提交测试！！！》 ，<a href='http://localhost/ThinkPHP/index.php/Index/Supervision/request.html'>前往</a>看看吧！
+2016-12-23 02:56:31	./LMS/Models/Admin/Mailer   1105998080@qq.com:admin邀请你监督他（她）的学习计划 《重复提交测试！！！》 ，<a href='http://localhost/ThinkPHP/index.php/Index/Supervision/request.html'>前往</a>看看吧！
+2017-01-01 04:27:18	./LMS/Models/Admin/Mailer   1234@qq.com.cn:<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册邮件</title>
+</head>
+<body>
+<h1>尊敬的王二子n，您好！</h1>
+
+
+<p>点击链接即可激活您的慕课账号,</p>
+
+<a href="http://localhost/ThinkPHP/index.php/Index/Register/active/active/1d5492458f28b8184a040a53222d02393f9b1265">http://localhost/ThinkPHP/index.php/Index/Register/active/active/1d5492458f28b8184a040a53222d02393f9b1265</a>
+<p>为保障您的帐号安全，请在24小时内点击该链接，您也可以将链接复制到浏览器地址栏访问。如果您并未尝试激活邮箱，请忽略本邮件，由此给您带来的不便请谅解。</p>
+
+
+<p>本邮件由系统自动发出，请勿直接回复！</p>
+</body>
+</html>
+2017-01-01 04:27:20	./LMS/Models/Admin/Mailer   1234@qq.com.cn:<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册邮件</title>
+</head>
+<body>
+<h1>尊敬的王二子n，您好！</h1>
+
+
+<p>点击链接即可激活您的慕课账号,</p>
+
+<a href="http://localhost/ThinkPHP/index.php/Index/Register/active/active/6037ae3360f0fc744e0b720e636039675dabea22">http://localhost/ThinkPHP/index.php/Index/Register/active/active/6037ae3360f0fc744e0b720e636039675dabea22</a>
+<p>为保障您的帐号安全，请在24小时内点击该链接，您也可以将链接复制到浏览器地址栏访问。如果您并未尝试激活邮箱，请忽略本邮件，由此给您带来的不便请谅解。</p>
+
+
+<p>本邮件由系统自动发出，请勿直接回复！</p>
+</body>
+</html>
+2017-01-01 04:27:22	./LMS/Models/Admin/Mailer   1234@qq.com.cn:<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册邮件</title>
+</head>
+<body>
+<h1>尊敬的王二子n，您好！</h1>
+
+
+<p>点击链接即可激活您的慕课账号,</p>
+
+<a href="http://localhost/ThinkPHP/index.php/Index/Register/active/active/377b2c9616b9d1deb19705d41f5952ddc315e54c">http://localhost/ThinkPHP/index.php/Index/Register/active/active/377b2c9616b9d1deb19705d41f5952ddc315e54c</a>
+<p>为保障您的帐号安全，请在24小时内点击该链接，您也可以将链接复制到浏览器地址栏访问。如果您并未尝试激活邮箱，请忽略本邮件，由此给您带来的不便请谅解。</p>
+
+
+<p>本邮件由系统自动发出，请勿直接回复！</p>
+</body>
+</html>
+2017-01-01 04:27:24	./LMS/Models/Admin/Mailer   wangjie-520520520@qq.com:admin在北京时间 2016年12月26日 20:34:35 对您的计划《111111》做出评论：<a href="/ThinkPHP/index.php/Index/Plan/comment/pid/27.html">回复</a><br>老王回话！！！
+2017-01-01 04:27:29	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:27:35	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:27:39	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:27:41	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:30:05	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:30:07	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:30:08	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:30:10	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:30:14	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:30:15	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:30:19	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:30:20	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:30:24	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:30:26	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:30:30	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:30:31	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:30:36	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:30:38	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:30:42	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:30:44	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:30:48	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:30:49	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:30:53	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:30:54	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:30:58	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:30:59	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:31:03	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:31:04	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:31:08	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:31:09	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:31:13	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:31:15	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:31:19	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:31:20	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:31:27	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:31:29	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:31:34	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:31:36	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:31:41	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:31:43	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:31:50	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:31:52	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:31:57	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:31:58	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:32:03	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:32:05	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:32:09	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:32:10	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:32:21	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:32:23	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:32:28	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:32:29	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:32:34	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:32:35	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:32:40	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:32:41	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:32:45	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:32:46	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:32:50	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:32:51	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:32:55	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:32:56	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:33:01	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:33:02	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:33:06	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:33:08	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:33:13	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:33:15	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:39:56	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:39:58	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:40:02	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 04:40:03	./LMS/Models/Admin/Mailer   944688482@qq.com:get_uncomplete_email
+2017-01-01 06:39:44	./LMS/Models/Admin/Mailer   944688482@qq.com:<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>提醒邮件</title>
+</head>
+<body>
+<h1>尊敬的用户，您好！</h1>
+<p>
+    您好！感谢您使用wj2015.com.cn的服务，您还有<span style="color:#90ed7d">《1111》、《331》、《这是一个未开》、《我的计划》、《计划xxxxxxx》、《111》、《监督人测试！！！！》、《测试监督而已。。。》、《邮件》、《邮件222》、《111111》、《111231312》、《11111》、《2222》、《111》、</span>未完成，不要忘记了哦！
+</p>
+<p>退订此邮件，请在 个性化设置 中修改</p>
+<p>本邮件由系统自动发出，请勿直接回复！</p>
+</body>
+</html>
+2017-01-01 06:44:42	./LMS/Models/Admin/Mailer   944688482@qq.com:<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>提醒邮件</title>
+</head>
+<body>
+<h1>尊敬的用户，您好！</h1>
+<p>
+    您好！感谢您使用<a href="http://wj2015.com.cn">wj2015.com.cn</a>的服务，您还有计划<span style="color:#90ed7d">《1111》、《331》、《这是一个未开》、《我的计划》、《计划xxxxxxx》、《111》、《监督人测试！！！！》、《测试监督而已。。。》、《邮件》、《邮件222》、《111111》、《111231312》、《11111》、《2222》、《111》、</span>今日未完成，不要忘记了哦！
+</p>
+<p>退订此邮件，请在 个性化设置 中修改</p>
+<p>本邮件由系统自动发出，请勿直接回复！</p>
+</body>
+</html>
+2017-01-01 06:44:43	./LMS/Models/Admin/Mailer   944688482@qq.com:<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>提醒邮件</title>
+</head>
+<body>
+<h1>尊敬的用户，您好！</h1>
+<p>
+    您好！感谢您使用<a href="http://wj2015.com.cn">wj2015.com.cn</a>的服务，您还有计划<span style="color:#90ed7d">《1111》、《331》、《这是一个未开》、《我的计划》、《计划xxxxxxx》、《111》、《监督人测试！！！！》、《测试监督而已。。。》、《邮件》、《邮件222》、《111111》、《111231312》、《11111》、《2222》、《111》、</span>今日未完成，不要忘记了哦！
+</p>
+<p>退订此邮件，请在 个性化设置 中修改</p>
+<p>本邮件由系统自动发出，请勿直接回复！</p>
+</body>
+</html>
+2017-01-19 03:58:20	./LMS/Models/Admin/Mailer   1105998080@qq.com:对方在2017-01-09 15:55:33已跟你解除好友关系！
+2017-01-19 03:58:21	./LMS/Models/Admin/Mailer   wangjie-520520520@qq.com:对方在2017-01-09 15:55:36已跟你解除好友关系！
+2017-01-19 03:58:23	./LMS/Models/Admin/Mailer   wangjie-520520520@qq.com:额，啊哈哈哈哈哈！111
+2017-01-19 03:58:27	./LMS/Models/Admin/Mailer   944688482@qq.com:<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>提醒邮件</title>
+</head>
+<body>
+<h1>尊敬的用户，您好！</h1>
+<p>
+    您好！感谢您使用<a href="http://wj2015.com.cn">wj2015.com.cn</a>的服务，您还有计划<span style="color:#90ed7d">《1111》、《331》、《这是一个未开》、《我的计划》、《计划xxxxxxx》、《111》、《监督人测试！！！！》、《测试监督而已。。。》、《邮件》、《邮件222》、《111111》、《111231312》、《11111》、《2222》、《111》、</span>今日未完成，不要忘记了哦！
+</p>
+<p>退订此邮件，请在 <a href="http://wj2015.com.cn">个性化设置</a> 中修改</p>
+<p>本邮件由系统自动发出，请勿直接回复！</p>
+</body>
+</html>
+2017-01-19 03:58:28	./LMS/Models/Admin/Mailer   944688482@qq.com:<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>提醒邮件</title>
+</head>
+<body>
+<h1>尊敬的用户，您好！</h1>
+<p>
+    您好！感谢您使用<a href="http://wj2015.com.cn">wj2015.com.cn</a>的服务，您还有计划<span style="color:#90ed7d">《1111》、《331》、《这是一个未开》、《我的计划》、《计划xxxxxxx》、《111》、《监督人测试！！！！》、《测试监督而已。。。》、《邮件》、《邮件222》、《111111》、《111231312》、《11111》、《2222》、《111》、</span>今日未完成，不要忘记了哦！
+</p>
+<p>退订此邮件，请在 <a href="http://wj2015.com.cn">个性化设置</a> 中修改</p>
+<p>本邮件由系统自动发出，请勿直接回复！</p>
+</body>
+</html>
+2017-02-23 09:18:27	./LMS/Models/Admin/Mailer   944688482@qq.com:<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>提醒邮件</title>
+</head>
+<body>
+<h1>尊敬的用户，您好！</h1>
+<p>
+    您好！感谢您使用<a href="http://wj2015.com.cn">wj2015.com.cn</a>的服务，您还有计划<span style="color:#90ed7d">《1111》、《331》、《这是一个未开》、《计划xxxxxxx》、《监督人测试！！！！》、《测试监督而已。。。》、《邮件》、《邮件222》、《11111》、《2222》、《111》、</span>今日未完成，不要忘记了哦！
+</p>
+<p>退订此邮件，请在 <a href="http://wj2015.com.cn">个性化设置</a> 中修改</p>
+<p>本邮件由系统自动发出，请勿直接回复！</p>
+</body>
+</html>
+2017-02-23 09:18:31	./LMS/Models/Admin/Mailer   944688482@qq.com:<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>提醒邮件</title>
+</head>
+<body>
+<h1>尊敬的用户，您好！</h1>
+<p>
+    您好！感谢您使用<a href="http://wj2015.com.cn">wj2015.com.cn</a>的服务，您还有计划<span style="color:#90ed7d">《1111》、《331》、《这是一个未开》、《计划xxxxxxx》、《监督人测试！！！！》、《测试监督而已。。。》、《邮件》、《邮件222》、《11111》、《2222》、《111》、</span>今日未完成，不要忘记了哦！
+</p>
+<p>退订此邮件，请在 <a href="http://wj2015.com.cn">个性化设置</a> 中修改</p>
+<p>本邮件由系统自动发出，请勿直接回复！</p>
+</body>
+</html>
+2017-02-23 09:18:48	./LMS/Models/Admin/Mailer   944688482@qq.com:<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>验证码邮件</title>
+</head>
+<body>
+<h1>尊敬的用户，您好！</h1>
+<p>
+    您好！感谢您使用<a href="http://wj2015.com.cn">wj2015.com.cn</a>的服务，您在北京时间2017-01-23 17:21:30，进行邮箱验证，本次请求的验证码为：
+    <span style="color:#fff000;font-size:30px;">53ce</span>(为了您的安全，请在15min内完成验证！)
+</p>
+
+<p>本邮件由系统自动发出，请勿直接回复！</p>
+</body>
+</html>
+2017-02-23 09:19:08	./LMS/Models/Admin/Mailer   admin@wj2015.com.cn:<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册邮件</title>
+</head>
+<body>
+<h1>尊敬的Wang，您好！</h1>
+
+
+<p>点击链接即可激活您的慕课账号,</p>
+
+<a href="http://localhost/ThinkPHP/index.php?s=/Index/Register/active/active/0cc89bdce90868fdba119153613f0f5ad840ab25">http://localhost/ThinkPHP/index.php?s=/Index/Register/active/active/0cc89bdce90868fdba119153613f0f5ad840ab25</a>
+<p>为保障您的帐号安全，请在24小时内点击该链接，您也可以将链接复制到浏览器地址栏访问。如果您并未尝试激活邮箱，请忽略本邮件，由此给您带来的不便请谅解。</p>
+
+
+<p>本邮件由系统自动发出，请勿直接回复！</p>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<extend name="./LMS/Models/Index/Tpl/base.html" />
+<block name="title">
+	修改邮箱
+</block>
+<block name="CSS_AND_JS">
+	<!--特色JS/CSS-->
+	<script type="text/javascript">
+		//发送的URL
+		emailCodeUrl="{:U(GROUP_NAME.'/Account/sendNewEmailCode',array('uniqid'=>$url_uniqid,'type'=>'newEmail'))}";
+		//邮箱验证码的长度。
+		CODE_LEN={:C('ACCOUNT_CODE_LEN')};
+		//验证码检验地址.
+		codeCheckUrl="{:U(GROUP_NAME.'/Account/CheckCode',array('type'=>'newEmail'))}";
+		mailCheckUrl="{:U(GROUP_NAME.'/Register/checkEmail')}";
+		//现在的邮箱。
+		nowEmail='{$email}';
+	</script>
+	<link rel="stylesheet" href="__PUBLIC__/css/bootstrap/bootstrapValidator.min.css">
+	<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/bootstrapValidator.min.js'></script>
+	<script type="text/javascript" src='__PUBLIC__/js/account/mail_edit.js'></script>
+	<!--/特色JS/CSS-->
+</block>
+<block name="body">
+	<h2>设置新邮箱</h2>
+	<p class="help-block">
+		为了您的账号安全，本页面为一次性页面，请勿刷新本页，否则会导致重新验证邮箱！
+	</p>
+	<form action="{:U(GROUP_NAME.'/Account/mailSetNew')}" id="mailSetNew" method="post" role="form">
+		{$__UNIQID__}
+		<input type="hidden" name="nowEmail" />
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group">
+					<label>
+						输入新邮箱
+					</label>
+					<div class="input-group">
+						<input type="text" name="mail" class="form-control" />
+						<span class="input-group-btn">
+							<button type="button" onclick="sendNewEmailCode(this)" id="sendNewEmail" class="btn btn-info" disabled="disabled">校验邮箱</button>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3">
+				<div class="form-group">
+					<label>
+						输入密匙
+					</label>
+					<input type="text"  name="code" class="form-control" />
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group">
+					<button class="btn btn-success" type="submit">完成</button>
+					<button class="btn btn-danger" type="button" onclick="cancle_back();">取消</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</block>

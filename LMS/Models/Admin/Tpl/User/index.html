@@ -1,0 +1,82 @@
+<extend name="./LMS/Models/Admin/Tpl/base.html"/>
+<block name="title">用户列表</block>
+<block name="CSS_AND_JS">
+    <script type="text/javascript" src="__PUBLIC__/js/User/index.js"></script>
+</block>
+<block name="body">
+    <table class="hightlight centered responsive-table">
+        <thead>
+        <tr>
+            <th>用户名</th>
+            <th>email</th>
+            <th>注册时间</th>
+            <th>最后时间</th>
+            <th>最后IP</th>
+            <th>生日</th>
+            <th>锁定</th>
+            <th>激活</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <foreach name="data" item="v" key="k">
+            <tr>
+                <td title="{$v['username']}">{$v['username']}</td>
+                <td title="{$v['email']}">{$v['email']}</td>
+                <td title="{:date('Y-m-d H:i:s',$v['reg_time'])}">{:show_time($v['reg_time'],'Y-m-d')}</td>
+                <td title="{:date('Y-m-d H:i:s',$v['last_tim'])}">{:show_time($v['last_time'],'Y-m-d')}</td>
+                <td><a href="#!" onclick="ipDetail(this)">{$v['login_ip']}</a></td>
+                <td title="{:date('Y-m-d',$v['birth'])}">{:date('Y-m-d',$v['birth'])}</td>
+                <td>
+                    <if condition="$v['lock']">
+                        <a href="{:U(GROUP_NAME.'/User/lock',array('uid'=>$v['id'],'lock'=>0,'uniqid'=>$url_uniqid))}">解锁</a>
+                        <else/>
+                        <a href="{:U(GROUP_NAME.'/User/lock',array('uid'=>$v['id'],'lock'=>1,'uniqid'=>$url_uniqid))}">锁定</a>
+                    </if>
+                </td>
+                <td>
+                    <if condition="$v['active']">
+                        <a onclick="activeUser(this);" alt="{:U('Index/Register/active',array('active'=>$v['active'],'uniqid'=>$url_uniqid))}" style="cursor: pointer;">激活</a>
+                        <else/>
+                        <span>已激活</span>
+                    </if>
+                </td>
+                <td>
+                    [<a href="{:U(GROUP_NAME.'/User/mail',array('mail'=>$v['email']))}">邮件</a>]
+                    [<a onclick="deleteUser(this)" alt="{:U(GROUP_NAME.'/User/delete',array('uid'=>$v['id'],'uniqid'=>$url_uniqid))}" style="cursor: pointer;">删除</a>]
+                </td>
+            </tr>
+        </foreach>
+        </tbody>
+    </table>
+    {$page}
+    <div id="userConf" class="modal">
+        <div class="modal-content">
+            <h4>确定要删除这个用户吗？</h4>
+            <p>注：这将删除该用户所有信息，且无法恢复。</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" id="userConfSure" class="modal-action modal-close waves-effect waves-green btn-flat">确定</a>
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">取消</a>
+        </div>
+    </div>
+    <div id="userActiveConf" class="modal">
+        <div class="modal-content">
+            <h4>确定要激活这个用户吗？</h4>
+            <p>注：该用户并没有通过邮箱手工认证，所以邮箱可能不存在，强行认证可能会导致邮箱更改无法执行，密码修改无法执行，邮件消息无法送达等情况，确定要激活吗？</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" id="userActiveConfSure" class="modal-action modal-close waves-effect waves-green btn-flat">确定</a>
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">取消</a>
+        </div>
+    </div>
+    <div id="ipDetail" class="modal">
+        <div class="modal-content">
+            <h4>获取IP信息</h4>
+            <p>调用接口中...</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">继续</a>
+        </div>
+    </div>
+</block>

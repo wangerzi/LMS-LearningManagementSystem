@@ -1,0 +1,84 @@
+<extend name="./LMS/Models/Admin/Tpl/base.html"/>
+<block name="title">验证码设置</block>
+<block name="body">
+	<form action="{:U(GROUP_NAME.'/System/updateVerify')}" method="post">
+		<h4><b>验证码设置</b></h4>
+		{$__UNIQID__}
+		<div class="row">
+			<div class="col s12">
+				<div class="">
+					<label>是否开启登录验证码</label>
+					<div class="switch">
+						<label>
+							off
+							<input type="hidden" name="LOGIN_VERIFY" value="0"/><!--避免出现漏传-->
+							<input type="checkbox" name="LOGIN_VERIFY" <IF condition="C('LOGIN_VERIFY')">checked='checked'</IF>/>
+							<span class="lever"></span>
+							on
+						</label>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12">
+				<div class="">
+					<label>是否开启注册验证码</label>
+					<div class="switch">
+						<label>
+							off
+							<input type="hidden" name="REG_VERIFY" value="0"/><!--避免出现漏传-->
+							<input type="checkbox" name="REG_VERIFY" <IF condition="C('REG_VERIFY')">checked='checked'</IF>/>
+							<span class="lever"></span>
+							on
+						</label>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12">
+				<div class="">
+					<label>是否开启反馈验证码</label>
+					<div class="switch">
+						<label>
+							off
+							<input type="hidden" name="FEEDBACK_VERIFY" value="0"/>
+							<input type="checkbox" name="FEEDBACK_VERIFY" <IF condition="C('FEEDBACK_VERIFY')">checked='checked'</IF>/>
+							<span class="lever"></span>
+							on
+						</label>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12">
+				<div class="input-field">
+					<label>验证码长度</label>
+					<input type="text" name="VERIFY_LEN" value="{:C('VERIFY_LEN')}" />
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12">
+				<div class="">
+					<label>验证码类型</label>
+					<select name="VERIFY_TYPE">
+						<option value="0" <IF condition="C('VERIFY_TYPE') eq 0"> selected='selected'</IF> >大小写字母</option>
+						<option value="1" <IF condition="C('VERIFY_TYPE') eq 1"> selected='selected'</IF> >数字</option>
+						<option value="2" <IF condition="C('VERIFY_TYPE') eq 2"> selected='selected'</IF> >大写字母</option>
+						<option value="3" <IF condition="C('VERIFY_TYPE') eq 3"> selected='selected'</IF> >小写字母</option>
+						<option value="4" <IF condition="C('VERIFY_TYPE') eq 4"> selected='selected'</IF> >中文</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12">
+				<button type="submit" class="btn waves-effect waves-light green">提交更改 <i class="material-icons right">send</i></button>
+				<button type="reset" class="btn waves-effect waves-light">重置</button>
+			</div>
+		</div>
+	</form>
+</block>

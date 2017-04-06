@@ -1,0 +1,127 @@
+<extend name="./LMS/Models/Index/Tpl/base.html" />
+<block name="title">
+	我的学习计划
+</block>
+<block name="CSS_AND_JS">
+	<script>
+		var uniqid='{$uniqid}';
+		var deletePlanUrl="{:U(GROUP_NAME.'/Plan/delete')}";
+	</script>
+	<script type="text/javascript" src="__PUBLIC__/js/plan/index.js"></script>
+</block>
+<block name="body">
+	<div class="btn-group btn-group-lg text-center btn-group-justified" style="margin-top:20px;">
+		<a href="{:U(GROUP_NAME.'/Plan/addPlan')}" class="btn btn-primary">
+			<span class="glyphicon glyphicon-plus"></span>
+			新建学习计划
+		</a>
+		<a href="{:U(GROUP_NAME.'/Plan/index')}" class="btn btn-info">
+			<span class="glyphicon glyphicon-th"></span>
+			全部计划
+			<span class="badge">{$plan_num['all']}</span>
+		</a>
+		<a href="{:U(GROUP_NAME.'/Plan/index',array('type'=>'today_complete'))}" class="btn btn-success">
+			<span class="glyphicon glyphicon-ok"></span>
+			今日已完成
+			<span class="badge">{$plan_num['complete']}</span>
+		</a>
+		<a href="{:U(GROUP_NAME.'/Plan/index',array('type'=>'today_not_complete'))}" class="btn btn-danger">
+			<span class="glyphicon glyphicon-bell"></span>
+			今日未完成
+			<span class="badge">{$plan_num['not_complete']}</span>
+		</a>
+		<a href="{:U(GROUP_NAME.'/Plan/index',array('type'=>'continue'))}" class="btn btn-info">
+			<span class="glyphicon glyphicon-calendar"></span>
+			进行中计划
+			<span class="badge">{$plan_num['continue']}</span>
+		</a>
+		<a href="{:U(GROUP_NAME.'/Plan/index',array('type'=>'end'))}" class="btn btn-warning">
+			<span class="glyphicon glyphicon-tower"></span>
+			已结束计划
+			<span class="badge">{$plan_num['end']}</span>
+		</a>
+	</div>
+	<hr>
+	<div class="panel panel-{$color}">
+		<div class="panel-heading">
+			<div class="panel-title">
+				{$title}
+			</div>
+		</div>
+		<div class="panel-body">
+			<if condition="count($data) gt 0">
+				<div class="clearfix row">
+					<foreach name="data" item="val">
+						<div class="col-md-4 col-sm-4 plan_detail">
+							<div class="thumbnail">
+								<img src="{$val.plan.face}" alt="" style="width:100%;"/>
+								<!--进度条-->
+								<div>
+									<span class="small text-success">
+										学习进度：已完成{$val['mission_complete']}个任务
+									</span>
+									<div class="progress" style="height:10px;margin-bottom:0;">
+										<div class="progress-bar progress-bar-success" style="width:{$val['mission_complete_rate']}%;"></div>
+									</div>
+								</div>
+								<div class="caption">
+									<h4 title="{$val['plan']['name']}">{:submore($val['plan']['name'],C('PLAN_NAME_SHOW'))}</h4>
+									<p class="help-block">
+										状态：
+										<if condition="$val['complete_time']">
+											<span class="text-primary">已完成 - {:round((time()-$val['complete_time'])/86400,1)}天前</span>
+											<elseif condition="time()-$val['start_time'] gt 0" />
+											<span class="text-success">
+												进行中({:round((time()-$val['start_time'])/86400,1)}天) -
+												<if condition="$val['today_complete']">
+													今日已完成
+													<else/>
+													<span class="text-danger">
+														今日未完成
+													</span>
+												</if>
+											</span>
+											<else />
+											<span class="text-danger">未开始 - {:round(($val['start_time']-time())/86400,1)}天</span>
+										</if>
+									</p>
+									<p class="small text-warning">监督人：{$val.supervision.username}</p>
+									<p>
+										<a href="{:U(GROUP_NAME.'/Plan/detail',array('pcid'=>$val['id'],'uniqid'=>$url_uniqid))}" type="button" target="_blank" class="btn btn-success">
+											<!--<span class="glyphicon glyphicon-search"></span>-->
+											查看详情
+										</a>
+										<a href="{:U(GROUP_NAME.'/Plan/edit',array('pcid'=>$val['id'],'uniqid'=>$url_uniqid))}" type="button" target="_blank" class="btn btn-primary">
+										<span class="glyphicon glyphicon-edit"></span>
+										修改
+										</a>
+										<button onclick="delete_plan(this)" type="button" data="{$val.id}" class="btn btn-danger del-plan">
+											<span class="glyphicon glyphicon-trash"></span>
+											删除
+										</button>
+									</p>
+								</div>
+							</div>
+						</div>
+						<if condition="++$i%3==0">
+							<div class="clearfix"></div>
+						</if>
+					</foreach>
+				</div>
+				<!--分页-->
+				<ul class="pagination pull-left">
+					{$page}
+				</ul>
+				<else/>
+				<div class="center-block">
+					<h2>您还没有{$title_info}哦！</h2>
+					<p>
+						<a href="{:U(GROUP_NAME.'/Plan/addPlan')}" class="btn btn-success">
+							快速新建
+						</a>
+					</p>
+				</div>
+			</if>
+		</div>
+	</div>
+</block>

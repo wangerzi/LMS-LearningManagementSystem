@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>登录</title>
+    <link rel="stylesheet" href="__PUBLIC__/css/reset.css" />
+    <link rel="stylesheet" href="__PUBLIC__/css/basic.css" />
+    <link rel="stylesheet" href="__PUBLIC__/css/login.css" />
+    <script src="__PUBLIC__/js/jquery.min.js"></script>
+    <script src="__PUBLIC__/js/basic.func.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__PUBLIC__/js/login.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+    	
+    </script>
+</head>
+<body>
+	<div id="main">
+		<div id="logo"></div>
+		<div class="banner">
+			<h1>一个帐户，畅享 Google 所有服务！</h1>
+			<h2>使用您的Google账号登录</h2>
+		</div>
+		<div id="login-area"><!--登录的框-->
+			<div class="user-header">
+				<div class="image-warp">
+					<img src="__PUBLIC__/images/header.png" />
+				</div>
+			</div>
+			<form action="{:U(GROUP_NAME.'/Login/loginHandle')}" method="post">
+				{$__UNIQID__}
+				<div class="input-warp">
+					<input type="text" name="username" />
+				</div>
+				<div class="input-warp">
+					<input type="password" name="password" id="password" />
+				</div>
+				<IF condition="C('LOGIN_VERIFY') eq true">
+					<div class="input-warp">
+						<input type="text" name="verify" id="imgCode" style="width:45%;" />
+						<div class="image-code"><img src="{:U(GROUP_NAME.'/Login/verify')}" /></div>
+					</div>
+				</IF>
+				<div class="operate-area">
+					<input type="submit" class="blue-button" value="登录"/>
+				</div>
+				<div class="operate-area">
+					<a href="{:U(GROUP_NAME.'/Register/index')}" style="float:right;">创建一个账号</a>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div id="footer">
+		<p class="power">Copyright @2016 Wang</p>
+	</div>
+</body>
+</html>

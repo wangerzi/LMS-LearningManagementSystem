@@ -1,0 +1,36 @@
+<extend name="./LMS/Models/Admin/Tpl/base.html"/>
+<block name="title">网站设置</block>
+<block name="CSS_AND_JS">
+</block>
+<block name="body">
+    <form action="{:U(GROUP_NAME.'/System/updateWeb')}" method="post">
+        {$__UNIQID__}
+        <h4><b>网站设置</b></h4>
+        <div class="row">
+            <div class="col s12">
+                <div class="input-field">
+                    <label>网站名称</label>
+                    <input type="text" name="WEB_NAME" value="{:C('WEB_NAME')}" />
+                </div>
+                <div class="input-field">
+                    <label>网站SEO描述</label>
+                    <textarea name="WEB_DESC" class="materialize-textarea" cols="30" rows="10">{:C('WEB_DESC')}</textarea>
+                </div>
+                <div class="input-field">
+                    <label>网站SEO关键字</label>
+                    <textarea name="WEB_KEYWORD" class="materialize-textarea" cols="30" rows="10">{:C('WEB_KEYWORD')}</textarea>
+                </div>
+                <div class="input-field">
+                    <label>屏蔽关键字</label>
+                    <textarea name="WEB_FORBID" class="materialize-textarea" cols="30" rows="10">{:C('WEB_FORBID')}</textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12">
+                <button type="submit" class="btn waves-effect waves-light green">提交更改 <i class="material-icons right">send</i></button>
+                <button type="reset" class="btn waves-effect waves-light">重置</button>
+            </div>
+        </div>
+    </form>
+</block>

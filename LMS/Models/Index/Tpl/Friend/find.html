@@ -1,0 +1,30 @@
+<script type="text/javascript">
+    var FRIEND_SEARCH_MAX="{:C('FRIEND_SEARCH_MAX')}";
+    var FRIEND_SEARCH_MIN="{:C('FRIEND_SEARCH_MIN')}";
+</script>
+<script type="text/javascript" src="__PUBLIC__/js/friend/find.js"></script>
+<div class="well" style="margin-top:15px;">
+    <form action="{:U(GROUP_NAME.'/Friend/findHandle')}" id="search-form" method="post" onsubmit="return false;">
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-addon">
+                    <span class="glyphicon glyphicon-search"></span>
+                </div>
+                {$__UNIQID__}
+                <input type="text" name="content" class="form-control" />
+                <div class="input-group-btn">
+                    <button type="button" id="search" class="btn btn-primary">搜索</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div>
+        <button onclick="loadThis(this,$('#result'));" alt="{:U(GROUP_NAME.'/Friend/fate')}" class="btn btn-success">寻找有缘人</button>
+        <p class="help-block">
+            寻找有缘人：系统通过 相同生日，相近年龄，相近注册时间等信息，随机为您筛选出有缘人，您可以以加好友的方式与他（她）共同学习，共同进步！
+        </p>
+        <p class="help-block">
+            您还可以在搜索框里输入用户名或邮箱进行模糊查找，相应的结果会显示到面板上！
+        </p>
+    </div>
+</div>

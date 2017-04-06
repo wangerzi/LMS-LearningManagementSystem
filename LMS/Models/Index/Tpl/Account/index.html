@@ -1,0 +1,78 @@
+<extend name="./LMS/Models/Index/Tpl/base.html" />
+<block name="title">
+	账户管理
+</block>
+<block name="CSS_AND_JS">
+	<!--特色JS/CSS-->
+	<style type="text/css">
+		.href-area .row{
+			margin:10px 0;
+		}
+		#face-warp{
+			width:200px;
+			overflow: hidden;
+			position: relative;
+		}
+		#edit-face{
+			width:200px;
+			height:50px;
+
+			text-align: center;
+			color:#fff;
+			line-height:50px;
+
+			background:rgba(33,33,33,0.3);
+
+			display:none;
+			margin:0 auto;
+			position: absolute;
+			bottom:0;
+		}
+	</style>
+	<script type="text/javascript" src='__PUBLIC__/js/account/index.js'></script>
+	<!--/特色JS/CSS-->
+</block>
+<block name="body">
+	<div class="thumbnail" style="margin-top:10px;">
+		<div class="row">
+			<div class="">
+				<a href="{:U(GROUP_NAME.'/Account/face')}" id="face-warp" class="center-block img-circle">
+					<img src="{$user.face}" width="200px;" class="img-responsive img-circle img-thumbnail" alt="头像" />
+					<div id="edit-face">
+						修改头像
+					</div>
+				</a>
+			</div>
+		</div>
+		<div class="href-area">
+			<div class="row">
+				<div class="col-md-6">
+					<a class="btn btn-info btn-block" href="{:U(GROUP_NAME.'/Account/password')}">
+						<span class="glyphicon glyphicon-lock"></span>
+						密码修改
+					</a>
+				</div>
+				<div class="col-md-6">
+					<a class="btn btn-info btn-block" href="{:U(GROUP_NAME.'/Account/mail')}">
+						<span class="glyphicon glyphicon-envelope"></span>
+						邮箱修改
+					</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<a class="btn btn-info btn-block" href="{:U(GROUP_NAME.'/Account/basic')}">
+						<span class="glyphicon glyphicon-briefcase"></span>
+						基本信息
+					</a>
+				</div>
+				<div class="col-md-6">
+					<a class="btn btn-info btn-block" href="{:U(GROUP_NAME.'/Account/person')}">
+						<span class="glyphicon glyphicon-heart"></span>
+						个性设置
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</block>

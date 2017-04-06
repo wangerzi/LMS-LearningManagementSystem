@@ -1,0 +1,102 @@
+<extend name="./LMS/Models/Index/Tpl/base.html" />
+<block name="title">
+	学习记录-{$plan_clone['plan']['name']}
+</block>
+<block name="leader">
+</block>
+<block name="left-bar">
+</block>
+<block name="CSS_AND_JS">
+	<!--特色JS/CSS-->
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/plan/plan_list.css" />
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/bootstrap/timeline.css" />
+	<script type="text/javascript" src='__PUBLIC__/js/plan/log.js'></script>
+	<script type="text/javascript">
+	</script>
+	<!--/特色JS/CSS-->
+</block>
+<block name="body">
+	<div class="container">
+		<div class="page-header">
+			<h1 id="timeline">{$plan_clone['plan']['name']}</h1>
+			<ul class="list-inline">
+				<li>
+					<span class="glyphicon glyphicon-eye-open"></span>
+					{$plan_clone['plan']['saw']}
+				</li>
+				<li class="text-success">
+					<for start="0" end="$plan_clone['plan']['star']">
+						<span class="glyphicon glyphicon-star"></span>
+					</for>
+					<for start="$plan_clone['plan']['star']" end="5">
+						<span class="glyphicon glyphicon-star-empty"></span>
+					</for>
+					<span class="text-info">({$plan_clone['plan']['comment_star']})</span>
+				</li>
+				<li>
+					计划执行者：<a href="">{$plan_clone['user']['username']}</a>
+				</li>
+			</ul>
+			<div class="text-warning">
+				<span>监督人：</span><a href="">{$plan_clone['supervision']['username']}</a>
+			</div>
+		</div>
+		<if condition="empty($data)">
+			<if condition="$supervision">
+				<h2>没有学习记录哦，快去监督TA学习吧！</h2>
+				<else/>
+				<h2>没有学习记录哦，快去学习吧！</h2>
+			</if>
+			<a class="btn btn-success" href="{:U(GROUP_NAME.'/Plan/detail',array('pcid'=>$plan_clone['id']))}">点此进入学习计划</a>
+			<else/>
+			<ul class="timeline">
+				<!--创建一个变量-->
+				<foreach name="data" key="key" item="value">
+					<li <if condition="$key%2 eq 1">class='timeline-inverted'</if>>
+						<!--徽章，根据完成状态的不同进行不同的工作-->
+						<div class="timeline-badge <if condition="$value['status']">success<else/>warning</if>"><i class="glyphicon glyphicon-check"></i></div>
+						<div class="timeline-panel">
+							<div class="timeline-heading">
+								<h4 class="timeline-title">{$value['title']}</h4>
+								<p>
+									<small class="text-muted">
+										<i class="glyphicon glyphicon-time"></i>
+										{:show_time($value['time'])}
+									</small>
+								</p>
+							</div>
+							<div class="timeline-body">
+								<p>
+									{$value['info']}
+								</p>
+								<hr>
+								<p class="text-danger small">
+									<if condition="$value['status']">
+										监督状态：
+										<span class="text-success">
+											已检阅(
+											<span class="text-success">
+												<for start="0" end="$value['star']">
+													<span class="glyphicon glyphicon-star"></span>
+												</for>
+												<for start="$value['star']" end="5">
+													<span class="glyphicon glyphicon-star-empty"></span>
+												</for>
+											</span> )
+										</span>
+										<if condition="!empty($value['reply'])">
+											<br>
+											监督者回复：{$value['reply']}
+										</if>
+										<else/>
+										监督状态：<span class="text-warning">未处理</span>
+									</if>
+								</p>
+							</div>
+						</div>
+					</li>
+				</foreach>
+			</ul>
+		</if>
+	</div>
+</block>

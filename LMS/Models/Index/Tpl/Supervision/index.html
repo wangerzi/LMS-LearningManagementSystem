@@ -1,0 +1,129 @@
+<extend name="./LMS/Models/Index/Tpl/base.html" />
+<block name="title">
+	全部监督计划
+</block>
+<block name="CSS_AND_JS">
+	<script type="text/javascript">
+		penalizeUrl="{:U(GROUP_NAME.'/Supervision/penalize')}";
+		uniqid='{$url_uniqid}';
+	</script>
+	<script type="text/javascript" src="__PUBLIC__/js/supervision/index.js"></script>
+</block>
+<block name="body">
+	<!--顶部导航条-->
+	<div class="text-center">
+		<div class="btn-group btn-group-lg" style="margin-top:20px;display:inline-block;">
+			<a href="{:U(GROUP_NAME.'/Supervision/index')}" class="btn btn-success">
+				<span class="glyphicon glyphicon-calendar"></span>
+				全部监督计划
+				<if condition="$page_num['all']">
+					<span class="badge">{$page_num['all']}</span>
+				</if>
+			</a>
+			<a href="{:U(GROUP_NAME.'/Supervision/request')}" class="btn btn-success">
+				<span class="glyphicon glyphicon-list-alt"></span>
+				监督申请
+				<if condition="$page_num['request']">
+					<span class="badge request">{$page_num['request']}</span>
+				</if>
+			</a>
+			<a href="{:U(GROUP_NAME.'/Supervision/waiting')}" class="btn btn-warning">
+				<span class="glyphicon glyphicon-file"></span>
+				待处理报告
+				<if condition="$page_num['waiting']">
+					<span class="badge">{$page_num['waiting']}</span>
+				</if>
+			</a>
+		</div>
+	</div>
+	<hr>
+	<div class="panel panel-info">
+		<div class="panel-heading">
+			<div class="panel-title">
+				全部监督计划
+			</div>
+		</div>
+		<div class="panel-body">
+			<if condition="count($data) gt 0">
+				<div class="clearfix row">
+					<foreach name="data" item="val">
+						<div class="col-md-4 col-sm-4">
+							<div class="thumbnail">
+								<img src="{$val.plan.face}" alt="" style="width:100%;"/>
+								<!--进度条-->
+								<div>
+									<span class="small text-success">
+										学习进度：已完成{$val['mission_complete']}个任务
+									</span>
+									<div class="progress" style="height:10px;margin-bottom:0;">
+										<div class="progress-bar progress-bar-success" style="width:{$val['mission_complete_rate']}%;"></div>
+									</div>
+								</div>
+								<div class="caption">
+									<h4 title="{$val['plan']['name']}">{:submore($val['plan']['name'],C('PLAN_NAME_SHOW'))}</h4>
+									<p class="help-block">
+										状态：
+										<if condition="$val['complete_time']">
+											<span class="text-primary">已完成 - {:round((time()-$val['complete_time'])/86400,1)}天前</span>
+											<elseif condition="time()-$val['start_time'] gt 0" />
+											<span class="text-success">
+												进行中({:round((time()-$val['start_time'])/86400,1)}天) -
+												<if condition="$val['today_complete']">
+													今日已完成
+													<else/>
+													<span class="text-danger">
+														今日未完成
+													</span>
+												</if>
+											</span>
+											<else />
+											<span class="text-danger">未开始 - {:round(($val['start_time']-time())/86400,1)}天</span>
+										</if>
+									</p>
+									<p class="small text-warning">监督人：{$val.supervision.username}</p>
+									<p>
+										<a class="btn btn-success" href="{:U(GROUP_NAME.'/Plan/detail',array('pcid'=>$val['id']))}" target="_blank">
+											<!--<span class="glyphicon glyphicon-search"></span>-->
+											查看详情
+										</a>
+										<a class="btn btn-primary"  href="{:U(GROUP_NAME.'/Plan/log',array('pcid'=>$val['id']))}" target="_blank">
+											<span class="glyphicon glyphicon-list"></span>
+											监督日志
+										</a>
+										<if condition="$val['today_complete'] OR $val['complete_time']">
+											<button class="btn btn-danger" type="button" disabled="disabled">
+												无法鞭笞
+											</button>
+											<else/>
+											<if condition="$val['penalized']">
+												<button class="btn btn-danger" type="button" disabled="disabled">
+													已鞭笞
+												</button>
+												<else/>
+												<button class="btn btn-danger" type="button" data="{$val['id']}" onclick="penalize(this)">
+													<span class="glyphicon glyphicon-pushpin"></span>
+													鞭笞
+												</button>
+											</if>
+										</if>
+									</p>
+								</div>
+							</div>
+						</div>
+						<if condition="++$i%3==0">
+							<div class="clearfix"></div>
+						</if>
+					</foreach>
+				</div>
+				<!--分页-->
+				<ul class="pagination pull-left">
+					{$page}
+				</ul>
+				<else/>
+				<div class="center-block">
+					<h2>您还没有监督他人的计划哦！</h2>
+				</div>
+			</if>
+		</div>
+	</div>
+</block>
