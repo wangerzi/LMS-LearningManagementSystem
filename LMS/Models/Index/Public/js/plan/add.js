@@ -6,17 +6,14 @@ $(function(){
     //写文本框提示
     replaceWord($('#planName'),'请输入计划名称');
 
-/*    //submit按钮一样得type='submit'，否则验证效果不佳，这样只提交一次
-    $('#submit').click(function() {
-        var form=$('#addPlan');
-        var bootstrapValidator = $("#addPlan").data('bootstrapValidator');
-        form.bootstrapValidator('validate');
-        if(bootstrapValidator.isValid()){
-            $('#submit').attr("disabled",'disabled');
-        }
-        return true;
-    });*/
-
+    //调用datepicker插件
+    $('.input-daterange').datepicker({
+        format: "yyyy-mm-dd",
+        language:'zh-CN',
+        //autoclose: true,
+        startDate: today,
+        todayHighlight: true
+    });
     /*JS表单验证*/
     $('#addPlan').bootstrapValidator({
         message: 'This value is not valid',
@@ -39,7 +36,7 @@ $(function(){
                     }
                 }
             },
-            startTime:{
+            start:{
                 validators:{
                     notEmpty:{
                         message:'开始时间不能为空！'
@@ -60,34 +57,30 @@ $(function(){
                         }
                     }
                 }
-            }
-        }/*,submitHandler:function(validator,form,submitButton){
-            //e.preventDefault();
-
-            $(submitButton).attr("disabled",'disabled');
-
-            //ajax提交
-            $(form).ajaxSubmit({
-                url:form.attr('action'),
-                dataType:'json',
-                type:'post',
-                data:form.serialize(),
-                success:function(data) {
-                    if(!data.status){
-                        wq_alert(data.info);
-                        $(submitButton).attr("disabled",'disabled');
-                        return 0;
+            },
+            end:{
+                validators:{
+                    notEmpty:{
+                        message:'结束时间不能为空！'
+                    },
+                    date:{
+                        format:'YYYY-MM-DD',
+                        message:'时间格式不匹配'
+                    },
+                    callback:{
+                        message:'结束时间不能在开始时间以前！',
+                        callback:function(value,validator){
+                            var m = new moment(value, 'YYYY-MM-DD', true);
+                            if (!m.isValid()) {
+                                return false;
+                            }
+                            // Check if the date in our range
+                            return m.isAfter($('input[name="start"]').val());//'2000-01-01' 形式的！
+                        }
                     }
-                    location.href=successUrl;
-                },
-                error:function(xml,text){
-                    wq_alert(text+'可能服务器忙，请稍后重试！');
-                    $(submitButton).removeAttr('disabled');
-                    return 0;
                 }
-            });
-            return true;
-         }*/
+            }
+        }
     }).on('success.form.bv',function(e){
         e.preventDefault();
 
@@ -102,7 +95,7 @@ $(function(){
         var stages=$('.stage');
 
         if(stages.length<1){
-            //wq_alert('一个计划至少有一个阶段，请点击[添加阶段]进行添加！');
+            //wq_alert('一个计划至少有一个阶段，请点击[添加步骤]进行添加！');
             $('#addStage').click();
             return false;
         }
@@ -115,7 +108,7 @@ $(function(){
         if(typeof flag=='number'){
             scrollTo(stages.eq(flag));
             stages.eq(flag).find('.add-mission-btn').click();
-            //wq_alert('每个阶段至少一个任务');
+            //wq_alert('每个步骤至少一个任务');
             $('#submit').removeAttr('disabled');
             return false;
         }
@@ -130,18 +123,19 @@ $(function(){
                 if(!data.status){
                     wq_alert(data.info);
                     $('#submit').attr("disabled",'disabled');
+                    //步骤中至少应该有一个任务。
                     if(typeof data.index !='undefined'){
-                        scrollTo(stages.eq(data.index-1));
-                        stages.eq(data.index-1).find('.add-mission-btn').click();
+                        wq_alert('每个步骤至少应有一个任务',function(){scrollTo(stages.eq(data.index-1));stages.eq(data.index-1).find('.add-mission-btn').click();});
                         return 0;
                     }
+                    //至少有一个步骤。
                     if(typeof data.stage !='undefined'){
-                        $('#addStage').click()
+                        wq_alert('每个计划至少有一个步骤',function(){$('#addStage').click();});
                         return 0;
                     }
                     return 0;
                 }
-                location.href=successUrl;
+                wq_alert('添加成功，点击跳转至计划管理页面',function(){location.href=successUrl;});
             },
             error:function(xml,text){
                 wq_alert(text+'可能服务器忙，请稍后重试！');
@@ -154,36 +148,46 @@ $(function(){
 function add_stage()
 {
     n++;
-    //阶段的代码！
+    //步骤的代码！
     var stage='<div class="stage">'+
-        '<label class="control-label col-md-12">第<span class="num">'+n+'</span>阶段</label>'+
+        '<label class="control-label col-md-12">步骤 <span class="num" style="display:none;">'+n+'</span></label>'+
         '<div class="col-md-6">'+
-        '<div class="form-group">'+
-            '<input type="text" name="stage&'+n+'" class="form-control" placeholder="阶段名称" style="margin-bottom:5px;" />'+
+            '<div class="form-group">'+
+                '<input type="text" name="stage&'+n+'" class="form-control" placeholder="步骤名称" style="margin-bottom:5px;" />'+
+            '</div>'+
+            '<div class="form-group">'+
+                '<textarea name="stage_info&'+n+'" cols="30" rows="3" placeholder="步骤描述（选填）" class="form-control"></textarea>'+
+            '</div>'+
         '</div>'+
-        '<div class="form-group">'+
-            '<textarea name="stage_info&'+n+'" cols="30" rows="3" placeholder="阶段描述（选填）" class="form-control"></textarea>'+
+        '<div class="col-md-6">' +
+        '<div class="col-md-12">' +
+            '<div class="form-group">' +
+                '<button type="button" class="btn btn-danger" onclick="del_stage(this)">'+
+                '<span class="glyphicon glyphicon-remove"></span>'+
+                '删除步骤'+
+                '</button> '+
+                '<button type="button" class="btn btn-success add-mission-btn" onclick="add_mission(this,false)">'+
+                '<span class="glyphicon glyphicon-plus"></span>'+
+                '添加任务'+
+                '</button>' +
+            '</div>' +
         '</div>'+
-        '</div>'+
-        '<div class="col-md-6">'+
-        '<button type="button" class="btn btn-danger" onclick="del_stage(this)">'+
-        '<span class="glyphicon glyphicon-remove"></span>'+
-        '删除阶段'+
-        '</button> '+
-        '<button type="button" class="btn btn-success add-mission-btn" onclick="add_mission(this,false)">'+
-        '<span class="glyphicon glyphicon-plus"></span>'+
-        '添加任务'+
-        '</button>'+
+        '<div class="col-md-7">'+
+            '<div class="form-group">'+
+            '<input type="text" name="stage_power&'+n+'[]" class="form-control" placeholder="权值默认10" />'+
+            '<p class="help-block">注：权值越高，分配在此步骤的时间就越多</p>'+
+            '</div>'+
+        '</div>' +
         '</div>';
     $('#addStageArea').append(stage);
 
     var validate={
         validators:{
             notEmpty:{
-                message:'阶段名不能为空！'
+                message:'步骤名不能为空！'
             },
             stringLength:{
-                message:'阶段名需要在'+STAGE_MIN_NAME+'字 到 '+STAGE_MAX_NAME+'字之间',
+                message:'步骤名需要在'+STAGE_MIN_NAME+'字 到 '+STAGE_MAX_NAME+'字之间',
                 min:STAGE_MIN_NAME,
                 max:STAGE_MAX_NAME,
             }
@@ -193,12 +197,28 @@ function add_stage()
     validate={
         validators:{
             stringLength:{
-                message:'阶段描述不能多于'+STAGE_MAX_NAME+'字！',
+                message:'步骤描述不能多于'+STAGE_MAX_NAME+'字！',
                 max:STAGE_MAX_NAME,
             }
         }
     };
     $('#addPlan').bootstrapValidator('addField','stage_info&'+n,validate);
+    validate={
+        validators:{
+            numeric:{
+                message:'权值需要是数字'
+            },
+            callback:{
+                message:'权值不得长于1000',
+                callback:function(value,validator){
+                    if(value>999)
+                        return false;
+                    return true;
+                }
+            }
+        }
+    };
+    $('#addPlan').bootstrapValidator('addField','stage_power&'+n+'[]',validate);
     //定位
     $('input[name="stage&'+n+'"]').focus();
 }
@@ -211,14 +231,15 @@ function add_mission(obj,isChild){
     //顶层任务
     var top;
     if(isChild)
-        top=$(obj).parent().parent().parent();
+        top=$(obj).parents('.mission:first');
     else
-        top=$(obj).parent();
+        top=$(obj).parents('.stage:first');
     //获取任务的数
-    var num=Number(top.parent().find('.num').text());
+    var num=Number(top.find('.num:first').text());
 
     var mission='<div class="mission">'+
-        '<label class="control-label col-md-11 col-md-offset-1">任务</label>'+
+        '<label class="control-label col-md-11 col-md-offset-1">任务</label>' +
+        '<span class="num" style="display: none;">'+num+'</span>'+
         '<div class="col-md-5 col-md-offset-1">'+
             '<div class="form-group">'+
                 '<input type="text" name="mission&'+num+'[]" class="form-control" placeholder="任务名称" />'+
@@ -238,14 +259,12 @@ function add_mission(obj,isChild){
                     '添加同级任务'+
                 '</button>'+
             '</div>'+
-            '<div class="col-md-7">'+
-                '<div class="form-group">'+
-                    '<input type="text" name="mission_time&'+num+'[]" class="form-control" placeholder="学习时间(小时),默认6" />'+
-                '</div>'+
-            '</div>'+
         '</div>'+
         '</div>';
-    top.after(mission);//用after有一个好处就是位置可以自由添加。
+    if(isChild)
+        top.after(mission);//添加同级任务。
+    else
+        top.append(mission);//用after有一个好处就是位置可以自由添加。
 
     var validate={
         validators:{
@@ -269,33 +288,20 @@ function add_mission(obj,isChild){
         }
     };
     $('#addPlan').bootstrapValidator('addField','mission_info&'+n+'[]',validate);
-    validate={
-        validators:{
-            numeric:{
-                message:'学习时间需要是数字'
-            },
-            callback:{
-                message:'学习时间不得长于48h',
-                callback:function(value,validator){
-                    if(value>48)
-                        return false;
-                    return true;
-                }
-            }
-        }
-    };
-    $('#addPlan').bootstrapValidator('addField','mission_time&'+n+'[]',validate);
     //定位
-    top.next().find('input[type="text"]:first').focus();
+    if(isChild)
+        top.next().find('input[type="text"]:first').focus();
+    else
+        top.find('.mission:last input[type="text"]:first').focus();
 }
 function del_mission(obj){
     //if(confirm('真的要删除这个任务吗？'))
-        $(obj).parent().parent().parent().remove();
+        $(obj).parents('.mission:first').remove();
    // $('#delModal').find('.name').text('任务').modal();
 }
 function del_stage(obj){
-    wq_confirm('真的要删除这个阶段吗？',function(){
-        $(obj).parent().parent().remove();
+    wq_confirm('真的要删除这个步骤吗？',function(){
+        $(obj).parents('.stage:first').remove();
     });
 }
 /**

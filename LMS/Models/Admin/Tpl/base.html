@@ -9,6 +9,16 @@
     <script type="text/javascript" src="__PUBLIC__/js/jquery.min.js"></script>
     <script type="text/javascript" src="__PUBLIC__/js/materialize.min.js"></script>
     <script type="text/javascript" src="__PUBLIC__/js/init.js"></script>
+
+    <!--分页类的优化。-->
+    <script type="text/javascript">
+        $(function(){
+            $('.pagination li:not(.active)').addClass('waves-effect');
+            var num = $('.pagination li.active span').text();
+            $('.pagination li.active').html('<a disabled="disabled">'+num+'</a>')
+        })
+    </script>
+
     <block name="CSS_AND_JS"></block>
 </head>
 <body>
@@ -20,14 +30,21 @@
             <a href="#!" class="button-collapse left" data-activates="left-nav"><i class="material-icons">menu</i></a>
             <ul class="right hide-on-med-and-down " id="nav-menu">
                 <li>
-                    <a class="dropdown-button" data-activates="nav-message-new" data-beloworigin="true">消息 <span class="badge new">4</span></a>
-                    <ul class="dropdown-content" id="nav-message-new">
-                        <li>
-                            <a href="#!">消息1</a>
-                        </li>
-                        <li>
-                            <a href="#!">消息2</a>
-                        </li>
+                    <a class="dropdown-button" data-activates="nav-message-new" data-beloworigin="true">消息 <if condition="$admin_message_num"><span class="badge new">{$admin_message_num}</span></if></a>
+                    <ul class="dropdown-content" id="nav-message-new" style="width:20rem;">
+                        <foreach name="feedbackTip" item="v" key="k">
+                            <li>
+                                <a href="{:U('Feedback/index')}">
+                                    <h6>新反馈</h6>
+                                    <h6>姓名:{$v['name']}</h6>
+                                    <h6>
+                                        <span class="grey-text">
+                                            {:show_time($v['time'])}
+                                        </span><br>
+                                    </h6>
+                                </a>
+                            </li>
+                        </foreach>
                     </ul>
                 </li>
                 <li>
@@ -40,7 +57,7 @@
                             <a href="{:U('Index/Account/index')}">个人设置</a>
                         </li>
                         <li>
-                            <a href="#!">退出登录</a>
+                            <a href="{:U('Index/Login/logout')}">退出登录</a>
                         </li>
                     </ul>
                 </li>
@@ -63,10 +80,10 @@
         </div>
     </li>
     <li>
-        <a href="{:U(GROUP_NAME.'/Index/index')}" class="collapsible-header waves-effect"><i class="material-icons">home</i>服务器概览</a>
-    </li>
-    <li>
         <ul class="collapsible">
+            <li>
+                <a href="{:U(GROUP_NAME.'/Index/index')}" class="collapsible-header waves-effect"><i class="material-icons">home</i>服务器概览</a>
+            </li>
             <li>
                 <a href="#!" class="collapsible-header waves-effect"><i class="material-icons">assignment_ind</i>用户管理 <i class="material-icons right">arrow_drop_down</i></a>
                 <div class="collapsible-body">
@@ -74,27 +91,27 @@
                     <a href="{:U(GROUP_NAME.'/User/admin')}" class="waves-effect">管理员设置</a>
                 </div>
             </li>
-        </ul>
-    </li>
-    <li>
-        <ul class="collapsible">
             <li>
                 <a href="#!" class="collapsible-header waves-effect"><i class="material-icons">message</i>系统设置 <i class="material-icons right">arrow_drop_down</i></a>
                 <div class="collapsible-body">
-                    <a href="{:U(GROUP_NAME.'/System/verify')}" class="waves-effect">验证码设置</a>
                     <a href="{:U(GROUP_NAME.'/System/register')}" class="waves-effect">注册设置</a>
+                    <a href="{:U(GROUP_NAME.'/System/plan')}" class="waves-effect">计划设置</a>
+                    <a href="{:U(GROUP_NAME.'/System/verify')}" class="waves-effect">验证码设置</a>
                 </div>
             </li>
+            <li>
+                <a href="{:U(GROUP_NAME.'/System/web')}" class="collapsible-header waves-effect"><i class="material-icons">cloud</i>WEB设置</a>
+            </li>
+            <li>
+                <a href="{:U(GROUP_NAME.'/Feedback/index')}" class="collapsible-header waves-effect"><i class="material-icons">assignment</i>反馈管理</a>
+            </li>
+            <li>
+                <a href="{:U(Index.'/Account/index')}" class="collapsible-header waves-effect"><i class="material-icons">person</i>个人设置</a>
+            </li>
+            <li class="hide-on-large-only">
+                <a href="#!" class="collapsible-header waves-effect"><i class="material-icons">input</i>退出登录</a>
+            </li>
         </ul>
-    </li>
-    <li>
-        <a href="{:U(GROUP_NAME.'/System/web')}" class="collapsible-header waves-effect"><i class="material-icons">cloud</i>WEB设置</a>
-    </li>
-    <li>
-        <a href="#!" class="collapsible-header waves-effect"><i class="material-icons">person</i>个人设置</a>
-    </li>
-    <li class="hide-on-large-only">
-        <a href="#!" class="collapsible-header waves-effect"><i class="material-icons">input</i>退出登录</a>
     </li>
 </ul>
 <!--右下角固定按钮-->

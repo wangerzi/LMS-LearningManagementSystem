@@ -23,13 +23,13 @@ function sendMessage($fid,$rid,$title,$content,$email=null){
         'fid'   =>  $fid,
         'rid'   =>  $rid,
         'title' =>  $title,
-        'content'=> cookie('username').'在北京时间'.date('Y.m.d H:m:i').'给您发私信<br>'.'<p>标题：<b>'.$title.'</b></p><p>内容：'.$content.'</p>',
+        'content'=> $content,
         'time'  => time(),
         'status'=> 0,
     );
     if(!empty($email)){
         load('@/email');
-        addEmailTimeQueue($email,C('WEB_NAME'),C('WEB_NAME').' 您有一条新消息',$data['content'],0);
+        addEmailTimeQueue($email,C('WEB_NAME'),C('WEB_NAME').' 您有一条新消息',cookie('username').'在北京时间'.date('Y.m.d H:m:i').'给您发私信<br>'.'<p>标题：<b>'.$title.'</b></p><p>内容：'.$content.'</p>',0);
     }
     return $db->add($data);
 }

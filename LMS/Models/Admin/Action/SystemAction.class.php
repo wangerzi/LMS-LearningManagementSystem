@@ -61,4 +61,19 @@ class SystemAction extends CommonAction
         else
             $this->error($res['info']);
     }
+    public function plan(){
+        $this->initUniqid(GROUP_NAME.'/System/updatePlan');
+        $this->display();
+    }
+    public function updatePlan(){
+        if(!IS_POST)
+            _404('页面不存在！');
+        $this->checkFormUniqid(I('post.uniqid'));
+
+        $res = updateConf(CONF_PATH.'plan.php',$_POST);
+        if($res['status'])
+            $this->success('修改成功');
+        else
+            $this->error($res['info']);
+    }
 }

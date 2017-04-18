@@ -1,0 +1,101 @@
+<extend name="./LMS/Models/Admin/Tpl/base.html"/>
+<block name="title">管理员列表</block>
+<block name="CSS_AND_JS">
+    <script type="text/javascript" src="__PUBLIC__/js/User/index.js"></script>
+    <style>
+        .collection .collection-item.active{
+            background-color: #fff;
+            color:rgba(0,0,0,0.870588);
+        }
+        .collapsible-header{
+            border-bottom:0;
+        }
+        .collapsible-header.active{
+            border-bottom:1px solid #ddd
+        }
+        .collection-item i{
+            margin-right: 1rem;
+        }
+    </style>
+</block>
+<block name="body">
+    <h4 class="center-align header">管理员列表</h4>
+    <ul class="collection collapsible popout">
+        <foreach name="data" item="v" key="k">
+            <li class="collection-item avatar">
+                <span class="secondary-content">
+                    <if condition="$v['level'] lt $adminLevel">
+                        <a href="#!" onclick="removeAdmin(this)" alt="{:U('adminRemove',array('uid'=>$v['id'],'uniqid'=>$ad_rm_url_uniqid))}" title="去除管理员"><i class="material-icons red-text">remove_circle</i></a>
+                    </if>
+                    <a href="#!"><i class="material-icons">assignment_ind</i></a>
+                    <a href="{:U(GROUP_NAME.'/User/mail',array('mail'=>$v['email']))}" title="管理员邮件"><i class="material-icons">mail</i></a>
+                    <if condition="$v['lock']">
+                    <a href="{:U(GROUP_NAME.'/User/lock',array('uid'=>$v['id'],'lock'=>0,'uniqid'=>$url_uniqid))}" title="解锁"><i class="material-icons">lock</i></a>
+                    <else/>
+                    <a href="{:U(GROUP_NAME.'/User/lock',array('uid'=>$v['id'],'lock'=>1,'uniqid'=>$url_uniqid))}" title="锁定"><i class="material-icons">lock_open</i></a>
+                    </if>
+                    <if condition="$v['active']">
+                        <a href="#!" title="激活" onclick="activeUser(this);" alt="{:U('Index/Register/active',array('active'=>$v['active'],'uniqid'=>$url_uniqid))}"><i class="material-icons">vpn_key</i></a>
+                    <else/>
+                        <a href="#!" title="已激活" disabled="disabled"><i class="material-icons grey-text">vpn_key</i></a>
+                    </if>
+                    <a href="#!" onclick="deleteUser(this)" alt="{:U(GROUP_NAME.'/User/delete',array('uid'=>$v['id'],'uniqid'=>$url_uniqid))}"><i class="material-icons red-text">delete_forever</i></a>
+                </span>
+                <div class="collapsible-header">
+                    <img src="{$v['face']}" style="width:40px;" alt="" class="circle">
+                    <span class="title">{$v['username']} - <b class="yellow-text text-darken-1">Lv.{$v['level']}</b></span>
+                    <p>{$v['email']} -  <a href="#!" onclick="ipDetail(this)">{$v['login_ip']}</a></p>
+                </div>
+                <div class="collapsible-body">
+                    生日：{:date('Y-m-d',$v['birth'])} <br>
+                    简介：{$v['info']} <br>
+                    注册系统时间：{:show_time($v['reg_time'],'Y-m-d')}<br>
+                    最后登录时间：{:show_time($v['last_time'],'Y-m-d')}<br>
+                    连续签到：{$v['checkout']}
+                </div>
+            </li>
+        </foreach>
+    </ul>
+    <ul class="pagination" style="padding-left:1rem;">
+        {$page}
+    </ul>
+    <div id="adminConf" class="modal">
+        <div class="modal-content">
+            <h4>确定要取消这个用户的管理员授权吗？</h4>
+            <p>注：这将消除该用户的管理员权限，该用户将无法登陆后台。</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" id="adminConfSure" class="modal-action modal-close waves-effect waves-green btn-flat">确定</a>
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">取消</a>
+        </div>
+    </div>
+    <div id="userConf" class="modal">
+        <div class="modal-content">
+            <h4>确定要删除这个用户吗？</h4>
+            <p>注：这将删除该用户所有信息，且无法恢复。</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" id="userConfSure" class="modal-action modal-close waves-effect waves-green btn-flat">确定</a>
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">取消</a>
+        </div>
+    </div>
+    <div id="userActiveConf" class="modal">
+        <div class="modal-content">
+            <h4>确定要激活这个用户吗？</h4>
+            <p>注：该用户并没有通过邮箱手工认证，所以邮箱可能不存在，强行认证可能会导致邮箱更改无法执行，密码修改无法执行，邮件消息无法送达等情况，确定要激活吗？</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" id="userActiveConfSure" class="modal-action modal-close waves-effect waves-green btn-flat">确定</a>
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">取消</a>
+        </div>
+    </div>
+    <div id="ipDetail" class="modal">
+        <div class="modal-content">
+            <h4>获取IP信息</h4>
+            <p>调用接口中...</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">继续</a>
+        </div>
+    </div>
+</block>

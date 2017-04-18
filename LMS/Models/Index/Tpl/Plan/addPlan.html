@@ -4,6 +4,7 @@
 </block>
 <block name="CSS_AND_JS">
 	<link rel="stylesheet" href="__PUBLIC__/css/bootstrap/bootstrapValidator.min.css">
+	<link rel="stylesheet" href="__PUBLIC__/css/bootstrap/bootstrap-datepicker.min.css">
 	<!--特色JS/CSS-->
 	<script type="text/javascript">
 		var PLAN_MIN_NAME={:C('PLAN_MIN_NAME')};
@@ -15,11 +16,15 @@
 		var MISSION_MAX_NAME={:C('MISSION_MAX_NAME')};
 		var MISSION_MAX_INFO={:C('MISSION_MAX_INFO')};//任务描述最多字数
 		var yesterday='{:date("Y-m-d",time()-86400)}';
+		var today='{:date("Y-m-d",time())}';
 		var successUrl='{:U(GROUP_NAME."/Plan/index")}';
 		var n=0;//第几阶段
 	</script>
 	<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/bootstrapValidator.min.js'></script>
 	<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/moment-with-locales.min.js'></script>
+	<!--时间选择插件-->
+	<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/bootstrap-datepicker.min.js'></script>
+	<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/bootstrap-datepicker.zh-CN.min.js'></script>
 	<!--涉及到异步文件上传，所以引入了jquery.form.js-->
 	<script type="text/javascript" src='__PUBLIC__/js/penguin/jquery.form.js'></script>
 	<script type="text/javascript" src='__PUBLIC__/js/plan/add.js'></script>
@@ -51,10 +56,12 @@
 							</div>
 						</div>
 						<!--开启时间-->
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label">开始时间</label>
-								<input type="date" name="startTime" value="{:date('Y-m-d',time())}" class="form-control"/>
+						<div class="col-md-6">
+							<label>执行时间</label>
+							<div class="input-group input-daterange">
+								<input class="input-sm form-control" type="text" name="start" value="{:date('Y-m-d',time())}">
+								<span class="input-group-addon">到</span>
+								<input class="input-sm form-control" type="text" name="end" value="{:date('Y-m-d',get_time(7))}">
 							</div>
 						</div>
 					</div>
@@ -87,7 +94,7 @@
 										<input type="radio" name="mode" value="1" checked="checked" />
 										顺序模式
 									</label>
-									<label onclick="showTips(this)" alt="列表模式下，您可以跨阶段,自由的完成任务，未完成的任务不会被锁定。">
+									<label onclick="showTips(this)" alt="列表模式下，您可以跨步骤,自由的完成任务，未完成的任务不会被锁定。">
 										<input type="radio" name="mode" value="0" />
 										列表模式
 									</label>
@@ -100,27 +107,27 @@
 					</div>
 				</div>
 			</div>
-			<!--学习阶段和任务！-->
+			<!--学习步骤和任务！-->
 			<div class="panel panel-success">
 				<div class="panel-heading">
-					<div class="panel-title">添加学习阶段和任务</div>
+					<div class="panel-title">添加学习步骤和任务</div>
 				</div>
 				<div class="panel-body">
 					<div class="col-md-12" style="margin-bottom:10px;">
-						<!--添加阶段就在这里！-->
+						<!--添加步骤就在这里！-->
 						<div class="col-md-12" id="addStageArea" style="margin-bottom:10px;">
 						</div>
-						<!--添加阶段的按钮！-->
+						<!--添加步骤的按钮！-->
 						<div class="col-md-12">
 							<button type="button" class="btn btn-success" id="addStage">
 								<span class="glyphicon glyphicon-plus-sign"></span>
-								添加阶段
+								添加步骤
 							</button>
 						</div>
 					</div>
 				</div>
 				<div class="panel-footer">
-					您可以点击 <a href="javascript:add_stage();">添加阶段</a> 添加一个学习阶段，并可以在学习阶段下添加许多任务，学习任务可以设置完成时长，我们会根据您每日的可学习时间计算出完成计划的总时间，每日可学习时间可以在 <a
+					您可以点击 <a href="javascript:add_stage();">添加步骤</a> 添加一个学习步骤，并可以在学习步骤下添加许多任务，学习任务可以设置完成时长，我们会根据您每日的可学习时间计算出完成计划的总时间，每日可学习时间可以在 <a
 						href="">系统设置</a>里设置。
 				</div>
 			</div>
@@ -132,6 +139,7 @@
 				</div>
 				<!--好友的组合-->
 				<div class="panel-body">
+                    <if condition="count(friends)">
 					<div class="form-inline">
 						<foreach name="friends" item="value">
 							<div class="form-group" style="padding-right:10px;">
@@ -144,6 +152,9 @@
 							</div>
 						</foreach>
 					</div>
+                    <else/>
+                        <span class="grey-text">您还没有好友哦，交完朋友再申请他们监督吧！</span>
+                    </if>
 				</div>
 				<div class="panel-footer">
 					我们会向选中好友发出监督申请，好友接受申请后即可开始监督（<span class="text-warning">监督者拥有查看学习记录，查看计划详情的权限</span>），每个学习计划只能各有一个监督者，此项可以创建完成后再做更改！

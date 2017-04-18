@@ -10,7 +10,16 @@ function get_user_file($file,$uid=null){
         $uid=session('uid');
     return C('USER_BASE_PATH').$uid.'/'.$file;
 }
-function save_user_image($uid=null){
+
+/**
+ * 保存用户图片到其自身的image文件夹，注意宽高与thumbPrefix对应。
+ * @param null $uid
+ * @param string $thumbMaxWidth
+ * @param string $thumbMaxHeight
+ * @param string $thumbPrefix
+ * @return array
+ */
+function save_user_image($uid=null,$thumbMaxWidth='900,262',$thumbMaxHeight='500,148',$thumbPrefix='m_,s_'){
     if(is_null($uid))
         $uid=session('uid');
 
@@ -35,11 +44,11 @@ function save_user_image($uid=null){
     //开启缩略图！
     $upload->thumb=true;
     //设置需要生成缩略图的文件后缀
-    $upload->thumbPrefix = 'm_,s_';  //生产2张缩略图
+    $upload->thumbPrefix = $thumbPrefix;  //默认生产2张缩略图
     //设置缩略图最大宽度
-    $upload->thumbMaxWidth = '900,262';
+    $upload->thumbMaxWidth = $thumbMaxWidth;
     //设置缩略图最大高度
-    $upload->thumbMaxHeight = '500,148';
+    $upload->thumbMaxHeight = $thumbMaxHeight;
     //设置上传文件规则
     $upload->saveRule = 'time';
     //删除原图

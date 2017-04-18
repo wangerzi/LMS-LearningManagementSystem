@@ -1,0 +1,91 @@
+<extend name="./LMS/Models/Admin/Tpl/base.html"/>
+<block name="title">验证码设置</block>
+<block name="CSS_AND_JS">
+    <link rel="stylesheet" href="__PUBLIC__/css/nouislider.css">
+
+    <script>
+        //最少计划名称
+        PLAN_MIN_NAME = {:C('PLAN_MIN_NAME')};
+        //最长计划名称
+        PLAN_MAX_NAME = {:C('PLAN_MAX_NAME')};
+
+        //列表页显示的计划名字长度！
+        PLAN_NAME_SHOW = {:C('PLAN_NAME_SHOW')};
+
+        //最小阶段名字
+        STAGE_MIN_NAME = {:C('STAGE_MIN_NAME')};
+        STAGE_MAX_NAME = {:C('STAGE_MAX_NAME')};
+        //阶段描述最大字数。。
+        STAGE_MAX_INFO = {:C('STAGE_MAX_INFO')};
+
+        //最小任务名字
+        MISSION_MIN_NAME = {:C('MISSION_MIN_NAME')};
+        MISSION_MAX_NAME = {:C('MISSION_MAX_NAME')};
+
+        //任务描述最大字数。。
+        MISSION_MAX_INFO= {:C('MISSION_MAX_INFO')};
+        //同一计划每小时最多完成任务数目
+        PLAN_MISSION_COMPLETE_TIME_HOUR= {:C('PLAN_MISSION_COMPLETE_TIME_HOUR')};
+    </script>
+    <script type="text/javascript" src="__PUBLIC__/js/nouislider.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/js/system/plan.js"></script>
+</block>
+<block name="body">
+    <form action="{:U(GROUP_NAME.'/System/updatePlan')}" method="post">
+        {$__UNIQID__}
+        <h4><b>注册/登录 设置</b></h4>
+        <input type="hidden" name="PLAN_MIN_NAME" value="{:C('PLAN_MIN_NAME')}" />
+        <input type="hidden" name="PLAN_MAX_NAME" value="{:C('PLAN_MAX_NAME')}" />
+        <input type="hidden" name="STAGE_MIN_NAME" value="{:C('STAGE_MIN_NAME')}" />
+        <input type="hidden" name="STAGE_MAX_NAME" value="{:C('STAGE_MAX_NAME')}" />
+        <input type="hidden" name="MISSION_MIN_NAME" value="{:C('MISSION_MIN_NAME')}" />
+        <input type="hidden" name="MISSION_MAX_NAME" value="{:C('MISSION_MAX_NAME')}" />
+        <div class="row">
+            <div class="col s12">
+                <br>
+                <div class="">
+                    <label>计划名长度范围</label>
+                    <br>
+                    <div id="planLen"></div>
+                </div>
+                <br>
+                <div class="input-field">
+                    <label>列表页显示的计划名称长度</label>
+                    <input type="text" name="PLAN_NAME_SHOW" value="{:C('PLAN_NAME_SHOW')}">
+                </div>
+                <br>
+                <div class="">
+                    <label>步骤名长度范围</label>
+                    <br>
+                    <div id="stageLen"></div>
+                </div>
+                <br>
+                <div class="input-field">
+                    <label>阶段描述最大字数</label>
+                    <input type="text" name="STAGE_MAX_INFO" value="{:C('STAGE_MAX_INFO')}">
+                </div>
+                <div class="">
+                    <label>任务名长度范围</label>
+                    <br>
+                    <div id="missionLen"></div>
+                </div>
+                <br>
+                <div class="input-field">
+                    <label>任务描述最大字数</label>
+                    <input type="text" name="MISSION_MAX_INFO" value="{:C('MISSION_MAX_INFO')}">
+                </div>
+                <br>
+                <div class="input-field">
+                    <label>同一计划每小时最多完成任务数目</label>
+                    <input type="text" name="PLAN_MISSION_COMPLETE_TIME_HOUR" value="{:C('PLAN_MISSION_COMPLETE_TIME_HOUR')}">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12">
+                <button type="submit" class="btn waves-effect waves-light green">提交更改 <i class="material-icons right">send</i></button>
+                <button type="reset" class="btn waves-effect waves-light">重置</button>
+            </div>
+        </div>
+    </form>
+</block>

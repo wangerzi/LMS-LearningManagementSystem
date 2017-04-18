@@ -36,8 +36,8 @@ $(function() {
                         $('#praise-btn').removeAttr('disabled');
                         return 0;
                     }
-                    $('#praise-btn').attr('disabled', 'disabled').find('span.praise').html('已赞');
-                    $('#praise-btn').find('span.num').text(
+                    $('#praise-btn').attr('disabled', 'disabled').find('span.praise').html('已赞')
+                        .find('span.num').text(
                         function (index, oldVal) {
                             return parseInt(oldVal) + 1;
                         }

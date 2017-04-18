@@ -12,7 +12,8 @@ class SupervisionAction extends CommonAction {
         $this->initUniqid(GROUP_NAME.'/Supervision/penalize');
 
         $uid=session('uid');
-        $db=M('plan_clone');
+        $db=D('plan_clone');
+        $db_s = M('penalize');
         $type=I('get.type');
 
         //气泡提醒
@@ -30,13 +31,26 @@ class SupervisionAction extends CommonAction {
         $page->setConfig('theme','%first% %upPage% %linkPage% %downPage% %end%');
         $this->page=$page->show();
 
-        //分页
-        $arr = merge_plan($db->where("svid='%d'",$uid)->order('start_time DESC')->limit($page->firstRow,$page->listRows)->select(),'s_',null,true);
-        $arr = merge_plan_mission($arr,null,true);//这里之所以merge_plan_mission，是因为需要用到里边的今日是否完成
+        $arr = $db->field('id')->where("svid='%d'",$uid)->order('complete_time ASC, start DESC')->limit($page->firstRow,$page->listRows)->select();
+        foreach($arr as $key=>$value){
+            $arr[$key] = $value['id'];
+        }
 
-        //p($arr);
-        unset($arr['config']);//继承下来的用户配置。
+        $arr = $db->detail($arr);
+
+        $map = array(
+            'time'  =>  array('gt',get_time(0)),
+        );
+        foreach($arr as $key=>$value){
+            //执行人。
+            $arr[$key]['user'] = users_cache($value['uid']);
+            //是否已使用鞭笞。
+            $map['pcid'] = $value['id'];
+            $arr[$key]['penalized'] = $db_s->where($map)->find()?true:false;
+        }
+
         $this->data=$arr;
+        //p($arr);
         $this->display();
     }
     //边吃的意思
@@ -54,23 +68,16 @@ class SupervisionAction extends CommonAction {
             $data['text']='表单验证码不匹配，请刷新重试！';
             $this->ajaxReturn($data);
         }
-        $plan_clone=M('plan_clone')->field('svid,pid')->find($pcid);
+        $plan_clone = D('plan_clone')->detail($pcid);
         if($plan_clone['svid']!=$uid){
             $data['text']='无权操作';
             $this->ajaxReturn($data);
         }
-        if($plan_clone['complete_time']){
+        if($plan_clone['complete_time'] || $plan_clone['active_status']['today_complete']){
             $data['text']='不满足鞭笞条件';
             $this->ajaxReturn($data);
         }
-		$map=array(
-			"pcid"	=>	array("eq",$pcid),
-			"time"	=>	array("between",get_time(0).','.time()),
-		);
-        if(!M('mission_complete')->where($map)->find()){
-            $data['text']='好友今天完成过任务，就不要再鞭笞TA了！';
-            $this->ajaxReturn($data);
-        }
+
         $map=array(
             'pcid'  =>  array('eq',$pcid),
             'time'  =>  array('gt',get_time(0)),

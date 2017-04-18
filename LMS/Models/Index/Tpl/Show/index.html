@@ -4,11 +4,15 @@
     <meta name='viewport' content='width=device-width,initial-scale=1.0'>
     <title>LMS学习管理系统-主页</title>
 
-    <link rel="stylesheet" type="text/css" href="__PUBLIC__//css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/css/carousel.css" />
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/css/picboxed.css" />
 
     <script type="text/javascript" src='__PUBLIC__//js/jquery.min.js'></script>
     <script type="text/javascript" src='__PUBLIC__//js/bootstrap.min.js'></script>
     <script type="text/javascript" src='__PUBLIC__//js/basic.func.js'></script>
+    <script type="text/javascript" src='__PUBLIC__//js/carousel.js'></script>
+    <script type="text/javascript" src='__PUBLIC__//js/picboxed.min.js'></script>
 
     <script type="text/javascript">
         $(function(){
@@ -24,6 +28,8 @@
                 }
                 $(obj).parent().addClass('active').siblings().removeClass('active');
             });
+            //移植Google的carousel插件。
+            $('.carousel-m').carousel_m();
         });
     </script>
 
@@ -31,23 +37,8 @@
         .container{
             width:100%;
         }
-        /*将左右转换的那个转成透明的，否则不好看。*/
-        #introduce .carousel-control{
-            background:transparent;
-        }
-        /*悬浮的时候，恢复成阴影状态。。。*/
-        #introduce .carousel-control.left:hover,#introduce .carousel-control.right:hover{
-            background-color: rgba(0,0,0,0);
-            opacity:0.5;
-            background-image: -webkit-linear-gradient(left,rgba(0,0,0,.5) 0,rgba(0,0,0,.0001) 100%);
-            background-image: -o-linear-gradient(left,rgba(0,0,0,.5) 0,rgba(0,0,0,.0001) 100%);
-            background-image: -webkit-gradient(linear,left top,right top,from(rgba(0,0,0,.5)),to(rgba(0,0,0,.0001)));
-            background-image: linear-gradient(to right,rgba(0,0,0,.5) 0,rgba(0,0,0,.0001) 100%);
-            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#80000000', endColorstr='#00000000', GradientType=1);
-            background-repeat: repeat-x;
-        }
-        #introduce .carousel-control.right:hover{
-            background-image: linear-gradient(to right,rgba(0,0,0,.0001) 0,rgba(0,0,0,.5) 100%);
+        .carousel-m .carousel-item {
+            width:75%;
         }
     </style>
 </head>
@@ -74,9 +65,15 @@
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="{:U(GROUP_NAME.'/Login/index')}">登录</a>
-                        </li>
+                        <if condition="is_login()">
+                            <li>
+                                <a href="{:U(GROUP_NAME.'/Index/index')}">个人管理中心</a>
+                            </li>
+                            <else/>
+                            <li>
+                                <a href="{:U(GROUP_NAME.'/Login/index')}">登录</a>
+                            </li>
+                        </if>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">更多功能<strong class="caret"></strong></a>
                             <ul class="dropdown-menu">
@@ -88,7 +85,7 @@
                                     <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=zfT5_fv19fn1-428vOOuoqA">联系作者</a>
                                 </li>
                                 <li>
-                                    <a href="#" onclick="wq_alert('还没做好，后边补上。^_^')">意见反馈</a>
+                                    <a href="{:U(GROUP_NAME.'/Show/feedback')}">意见反馈</a>
                                 </li>
                             </ul>
                         </li>
@@ -171,20 +168,15 @@
                         在主页中，用户能方便快捷的查看自己任务的完成曲线和各个子系统的统计信息，如：私信，监督报告等。
                     </p>
                 </div>
-                <div class="col-md-7 col-md-pull-5 column">
-                    <div class="carousel slide" id="index-introduce" data-interval="3000" data-ride="carousel" style="margin-top:50px;">
-                        <div class="carousel-inner">
-                            <div class="item active">
-                                <img alt="" src="__PUBLIC__/images/index/models/index/1.jpg" />
-                                <div class="carousel-caption">
-                                    主页曲线图
-                                </div>
-                            </div>
-                        </div>
-                        <!--左右切换的控制-->
-                        <a class="left carousel-control" href="#index-introduce" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
-                        <a class="right carousel-control" href="#index-introduce" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
-                    </div>
+                <div class="col-md-7 col-md-pull-5">
+                    <ul class="carousel-m">
+                        <li class="carousel-item">
+                            <a href="#!"><img src="__PUBLIC__/images/index/models/index/1.jpg" class="picboxed" data-header="主页曲线图" data-footer="1/2"></a><!--将图片加上.picboxed即可-->
+                        </li>
+                        <li class="carousel-item">
+                            <a href="#!"><img src="__PUBLIC__/images/index/models/index/2.jpg" class="picboxed" data-header="主页曲线图" data-footer="2/2"></a><!--将图片加上.picboxed即可-->
+                        </li>
+                    </ul>
                 </div>
             </div>
             <hr>
@@ -197,47 +189,20 @@
                     </p>
                 </div>
                 <div class="col-md-7 column">
-                    <div class="carousel slide" id="plan-introduce" data-interval="3000" data-ride="carousel" style="margin-top:50px;">
-                        <ol class="carousel-indicators">
-                            <li class="active" data-slide-to="0" data-target="#plan-introduce">
-                            </li>
-                            <li data-slide-to="1" data-target="#plan-introduce">
-                            </li>
-                            <li data-slide-to="2" data-target="#plan-introduce">
-                            </li>
-                            <li data-slide-to="3" data-target="#plan-introduce">
-                            </li>
-                        </ol>
-                        <div class="carousel-inner">
-                            <div class="item active">
-                                <img alt="" src="__PUBLIC__/images/index/models/plan/1.png" />
-                                <div class="carousel-caption">
-                                    计划管理主界面
-                                </div>
-                            </div>
-                            <div class="item">
-                                <img alt="" src="__PUBLIC__/images/index/models/plan/2.png" />
-                                <div class="carousel-caption">
-                                    计划详情界面
-                                </div>
-                            </div>
-                            <div class="item">
-                                <img alt="" src="__PUBLIC__/images/index/models/plan/3.png" />
-                                <div class="carousel-caption">
-                                    完成任务界面
-                                </div>
-                            </div>
-                            <div class="item">
-                                <img alt="" src="__PUBLIC__/images/index/models/plan/4.png" />
-                                <div class="carousel-caption">
-                                    计划新建界面
-                                </div>
-                            </div>
-                        </div>
-                        <!--左右切换的控制-->
-                        <a class="left carousel-control" href="#plan-introduce" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
-                        <a class="right carousel-control" href="#plan-introduce" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
-                    </div>
+                    <ul class="carousel-m">
+                        <li class="carousel-item">
+                            <a href="#!"><img src="__PUBLIC__/images/index/models/plan/1.png" class="picboxed" data-header="计划管理主界面" data-footer="1/4"></a><!--将图片加上.picboxed即可-->
+                        </li>
+                        <li class="carousel-item">
+                            <a href="#!"><img src="__PUBLIC__/images/index/models/plan/2.png" class="picboxed" data-header="计划详情界面" data-footer="2/4"></a><!--将图片加上.picboxed即可-->
+                        </li>
+                        <li class="carousel-item">
+                            <a href="#!"><img src="__PUBLIC__/images/index/models/plan/3.png" class="picboxed" data-header="完成任务界面" data-footer="3/4"></a><!--将图片加上.picboxed即可-->
+                        </li>
+                        <li class="carousel-item">
+                            <a href="#!"><img src="__PUBLIC__/images/index/models/plan/4.png" class="picboxed" data-header="计划新建界面" data-footer="4/4"></a><!--将图片加上.picboxed即可-->
+                        </li>
+                    </ul>
                 </div>
             </div>
             <hr>
@@ -250,47 +215,20 @@
                     </p>
                 </div>
                 <div class="col-md-7 col-md-pull-5 column">
-                    <div class="carousel slide" id="friend-introduce" data-interval="3000" data-ride="carousel" style="margin-top:50px;">
-                        <ol class="carousel-indicators">
-                            <li class="active" data-slide-to="0" data-target="#friend-introduce">
-                            </li>
-                            <li data-slide-to="1" data-target="#friend-introduce">
-                            </li>
-                            <li data-slide-to="2" data-target="#friend-introduce">
-                            </li>
-                            <li data-slide-to="3" data-target="#friend-introduce">
-                            </li>
-                        </ol>
-                        <div class="carousel-inner">
-                            <div class="item active">
-                                <img alt="" src="__PUBLIC__/images/index/models/friend/4.jpg" />
-                                <div class="carousel-caption">
-                                    找好友
-                                </div>
-                            </div>
-                            <div class="item">
-                                <img alt="" src="__PUBLIC__/images/index/models/friend/1.jpg" />
-                                <div class="carousel-caption">
-                                    加好友
-                                </div>
-                            </div>
-                            <div class="item">
-                                <img alt="" src="__PUBLIC__/images/index/models/friend/2.png" />
-                                <div class="carousel-caption">
-                                    好友列表
-                                </div>
-                            </div>
-                            <div class="item">
-                                <img alt="" src="__PUBLIC__/images/index/models/friend/3.jpg" />
-                                <div class="carousel-caption">
-                                    好友申请
-                                </div>
-                            </div>
-                        </div>
-                        <!--左右切换的控制-->
-                        <a class="left carousel-control" href="#friend-introduce" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
-                        <a class="right carousel-control" href="#friend-introduce" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
-                    </div>
+                    <ul class="carousel-m">
+                        <li class="carousel-item">
+                            <a href="#!"><img src="__PUBLIC__/images/index/models/friend/4.jpg" class="picboxed" data-header="找好友" data-footer="1/4"></a><!--将图片加上.picboxed即可-->
+                        </li>
+                        <li class="carousel-item">
+                            <a href="#!"><img src="__PUBLIC__/images/index/models/friend/1.jpg" class="picboxed" data-header="加好友" data-footer="2/4"></a><!--将图片加上.picboxed即可-->
+                        </li>
+                        <li class="carousel-item">
+                            <a href="#!"><img src="__PUBLIC__/images/index/models/friend/2.png" class="picboxed" data-header="好友列表" data-footer="3/4"></a><!--将图片加上.picboxed即可-->
+                        </li>
+                        <li class="carousel-item">
+                            <a href="#!"><img src="__PUBLIC__/images/index/models/friend/3.jpg" class="picboxed" data-header="好友申请" data-footer="4/4"></a><!--将图片加上.picboxed即可-->
+                        </li>
+                    </ul>
                 </div>
             </div>
             <hr>
@@ -303,39 +241,17 @@
                     </p>
                 </div>
                 <div class="col-md-7 column">
-                    <div class="carousel slide" id="supervision-introduce" data-interval="3000" data-ride="carousel" style="margin-top:50px;">
-                        <ol class="carousel-indicators">
-                            <li class="active" data-slide-to="0" data-target="#supervision-introduce">
-                            </li>
-                            <li data-slide-to="1" data-target="#supervision-introduce">
-                            </li>
-                            <li data-slide-to="2" data-target="#supervision-introduce">
-                            </li>
-                        </ol>
-                        <div class="carousel-inner">
-                            <div class="item active">
-                                <img alt="" src="__PUBLIC__/images/index/models/supervision/1.jpg" />
-                                <div class="carousel-caption">
-                                    监督的计划
-                                </div>
-                            </div>
-                            <div class="item">
-                                <img alt="" src="__PUBLIC__/images/index/models/supervision/2.jpg" />
-                                <div class="carousel-caption">
-                                    监督申请
-                                </div>
-                            </div>
-                            <div class="item">
-                                <img alt="" src="__PUBLIC__/images/index/models/supervision/3.jpg" />
-                                <div class="carousel-caption">
-                                    监督报告处理
-                                </div>
-                            </div>
-                        </div>
-                        <!--左右切换的控制-->
-                        <a class="left carousel-control" href="#supervision-introduce" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
-                        <a class="right carousel-control" href="#supervision-introduce" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
-                    </div>
+                    <ul class="carousel-m">
+                        <li class="carousel-item">
+                            <a href="#!"><img src="__PUBLIC__/images/index/models/supervision/1.jpg" class="picboxed" data-header="监督的计划" data-footer="1/3"></a><!--将图片加上.picboxed即可-->
+                        </li>
+                        <li class="carousel-item">
+                            <a href="#!"><img src="__PUBLIC__/images/index/models/supervision/2.jpg" class="picboxed" data-header="监督申请" data-footer="2/3"></a><!--将图片加上.picboxed即可-->
+                        </li>
+                        <li class="carousel-item">
+                            <a href="#!"><img src="__PUBLIC__/images/index/models/supervision/3.jpg" class="picboxed" data-header="监督报告处理" data-footer="3/3"></a><!--将图片加上.picboxed即可-->
+                        </li>
+                    </ul>
                 </div>
             </div>
             <hr>
@@ -348,31 +264,14 @@
                     </p>
                 </div>
                 <div class="col-md-7 col-md-pull-5 column">
-                    <div class="carousel slide" id="message-introduce" data-interval="3000" data-ride="carousel" style="margin-top:50px;">
-                        <ol class="carousel-indicators">
-                            <li class="active" data-slide-to="0" data-target="#message-introduce">
-                            </li>
-                            <li data-slide-to="1" data-target="#message-introduce">
-                            </li>
-                        </ol>
-                        <div class="carousel-inner">
-                            <div class="item active">
-                                <img alt="" src="__PUBLIC__/images/index/models/message/1.jpg" />
-                                <div class="carousel-caption">
-                                    私信列表
-                                </div>
-                            </div>
-                            <div class="item">
-                                <img alt="" src="__PUBLIC__/images/index/models/message/2.jpg" />
-                                <div class="carousel-caption">
-                                    新建私信
-                                </div>
-                            </div>
-                        </div>
-                        <!--左右切换的控制-->
-                        <a class="left carousel-control" href="#message-introduce" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
-                        <a class="right carousel-control" href="#message-introduce" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
-                    </div>
+                    <ul class="carousel-m">
+                        <li class="carousel-item">
+                            <a href="#!"><img src="__PUBLIC__/images/index/models/message/1.jpg" class="picboxed" data-header="私信列表" data-footer="1/2"></a><!--将图片加上.picboxed即可-->
+                        </li>
+                        <li class="carousel-item">
+                            <a href="#!"><img src="__PUBLIC__/images/index/models/message/2.jpg" class="picboxed" data-header="新建私信" data-footer="2/2"></a><!--将图片加上.picboxed即可-->
+                        </li>
+                    </ul>
                 </div>
             </div>
             <hr>
@@ -385,47 +284,20 @@
                     </p>
                 </div>
                 <div class="col-md-7 column">
-                    <div class="carousel slide" id="account-introduce" data-interval="3000" data-ride="carousel" style="margin-top:50px;">
-                        <ol class="carousel-indicators">
-                            <li class="active" data-slide-to="0" data-target="#account-introduce">
-                            </li>
-                            <li data-slide-to="1" data-target="#account-introduce">
-                            </li>
-                            <li data-slide-to="2" data-target="#account-introduce">
-                            </li>
-                            <li data-slide-to="3" data-target="#account-introduce">
-                            </li>
-                        </ol>
-                        <div class="carousel-inner">
-                            <div class="item active">
-                                <img alt="" src="__PUBLIC__/images/index/models/account/1.jpg" />
-                                <div class="carousel-caption">
-                                    设置主页
-                                </div>
-                            </div>
-                            <div class="item">
-                                <img alt="" src="__PUBLIC__/images/index/models/account/2.jpg" />
-                                <div class="carousel-caption">
-                                    更改邮箱
-                                </div>
-                            </div>
-                            <div class="item">
-                                <img alt="" src="__PUBLIC__/images/index/models/account/3.jpg" />
-                                <div class="carousel-caption">
-                                    更改基本信息
-                                </div>
-                            </div>
-                            <div class="item">
-                                <img alt="" src="__PUBLIC__/images/index/models/account/4.jpg" />
-                                <div class="carousel-caption">
-                                    个性化设置
-                                </div>
-                            </div>
-                        </div>
-                        <!--左右切换的控制-->
-                        <a class="left carousel-control" href="#account-introduce" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
-                        <a class="right carousel-control" href="#account-introduce" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
-                    </div>
+                    <ul class="carousel-m">
+                        <li class="carousel-item">
+                            <a href="#!"><img src="__PUBLIC__/images/index/models/account/1.jpg" class="picboxed" data-header="私信列表" data-footer="1/4"></a><!--将图片加上.picboxed即可-->
+                        </li>
+                        <li class="carousel-item">
+                            <a href="#!"><img src="__PUBLIC__/images/index/models/account/2.jpg" class="picboxed" data-header="新建私信" data-footer="2/4"></a><!--将图片加上.picboxed即可-->
+                        </li>
+                        <li class="carousel-item">
+                            <a href="#!"><img src="__PUBLIC__/images/index/models/account/3.jpg" class="picboxed" data-header="新建私信" data-footer="3/4"></a><!--将图片加上.picboxed即可-->
+                        </li>
+                        <li class="carousel-item">
+                            <a href="#!"><img src="__PUBLIC__/images/index/models/account/4.jpg" class="picboxed" data-header="新建私信" data-footer="4/4"></a><!--将图片加上.picboxed即可-->
+                        </li>
+                    </ul>
                 </div>
             </div>
             <hr>
@@ -434,20 +306,20 @@
     <div class="row clearfix"><!--系统介绍-->
         <div class="col-md-4 column">
             <h2>
-                创新过程
-            </h2>
-            <p>
-                &nbsp;&nbsp;做这个系统的初衷，是希望能做一个帮助 用户 学习的辅助系统，当 用户 每天到网站签到打卡，记录学习进度的时候，我都能及时知道并给予回复。<br>
-                &nbsp;&nbsp;在实际开发的过程中，开发者针对这一核心功能进行了必要的扩展和调整，经过思维的发散和各个难关的攻克，一个较为完善的学习计划管理系统就这样出炉了。
-            </p>
-        </div>
-        <div class="col-md-4 column">
-            <h2>
                 系统架构
             </h2>
             <p>
                 &nbsp;&nbsp;后台使用thinkPHP框架+MySql搭建 <br>
                 &nbsp;&nbsp;前台使用bootstrap框架布局并辅以jQuery，jquery.form插件，bootstrapValidator插件，时间轴插件等 <br>
+            </p>
+        </div>
+        <div class="col-md-4 column">
+            <h2>
+                创新过程
+            </h2>
+            <p>
+                &nbsp;&nbsp;做这个系统的初衷，是希望做一个帮助用户的学习辅助系统，当 用户 每天到网站签到打卡，记录学习进度的时候，监督者都能及时知道并给予回复。<br>
+                &nbsp;&nbsp;在实际开发的过程中，开发者针对这一核心功能进行了必要的扩展和调整，经过思维的发散和各个难关的攻克，一个较为完善的学习计划管理系统就这样出炉了。
             </p>
         </div>
         <div class="col-md-4 column">

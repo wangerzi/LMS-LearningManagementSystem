@@ -36,21 +36,22 @@ class AccountAction extends CommonAction
         $uid=session('uid');
         $db=M('user');
 
-        load('account');
-        $face = save_user_image($uid);
+        load('@/account');
+        $face = save_user_image($uid,249,249,'m_');
         if($face['status'])
-            $face = $face['path'];
+            $face = get_thumb_file($face['path'],'m_');
         else{
             $this->ajaxReturn($face);
         }
 
         $arr=array(
             'id'    =>  $uid,
-            'face'  =>  $_POST['face'],
+            'face'  =>  $face,
         );
         if(!$db->save($arr)){
             $this->error('保存失败，请重试！');
         }else{
+            unlink($this->user['face']);//删除之前的头像。
             clearUniqid();
             $this->redirect(GROUP_NAME.'/Account/index');
         }
@@ -67,6 +68,9 @@ class AccountAction extends CommonAction
     function basicHandle(){
         if(!IS_POST)
             _404('页面不存在！');
+
+        $this->checkFormUniqid(I('post.uniqid'));
+
         $uid=session('uid');
         $username=I('post.username');
         $sex=intval(I('post.sex'))%2;
@@ -77,10 +81,16 @@ class AccountAction extends CommonAction
 
         load('@/check');
 
-        if($str=mb_check_stringLen($username,C('MIN_NAME'),C('MAX_NAME'),'用户名')!=true)
-            $this->error($str);
-        if($str=mb_check_stringLen($info,0,200,'自我介绍')!=true)
-            $this->error($str);
+        $str=mb_check_stringLen($username,C('MIN_NAME'),C('MAX_NAME'),'用户名');
+        if(!$str->isValid())
+            $this->error($str->getMessage());
+        // /u是utf8的意思。
+        ///^[\u4E00-\u9FFFa-zA-z1-9_]*$/这个用在js里比较好。
+        if(!preg_match('/^[\x{4e00}-\x{9fa5}a-zA-z1-9_]*$/u',$username))
+            $this->error('用户名只能是中文、英文、数字、下划线');
+        $str=mb_check_stringLen($info,0,200,'自我介绍');
+        if(!$str->isValid())
+            $this->error($str->getMessage());
 
 
         if($birth>time())
@@ -89,6 +99,8 @@ class AccountAction extends CommonAction
             $this->error('用户名重复！');
         }
 
+        //清理标识码
+        clearUniqid();
         $data=array(
             'id'        =>  $uid,
             'username'  =>  $username,
@@ -136,8 +148,9 @@ class AccountAction extends CommonAction
             $warn_time+=86400;//如果在现在的时间之前，就加一天，避免重复发送。
         //echo date('Y-m-d ',time()).$_POST['rem_warn_time'].'<br>'.date('Y-m-d H:i:s',$warn_time);
 
+        clearUniqid();
         $data=array(
-            'stu_time'      =>  intval(I('post.stu_time'))%16,
+            //'stu_time'      =>  intval(I('post.stu_time'))%16,
             'fri_rej_all'   =>  intval(I('post.fri_rej_all'))%2,
             'rem_message'   =>  intval(I('post.rem_message'))%2,
             'rem_evd_time'  =>  $evd_time,

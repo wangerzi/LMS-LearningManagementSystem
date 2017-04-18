@@ -1,6 +1,6 @@
 <extend name="./LMS/Models/Index/Tpl/base.html" />
 <block name="title">
-	{$data['plan']['name']}
+	{$data['name']}
 </block>
 <block name="leader">
 </block>
@@ -13,10 +13,10 @@
 	<script type="text/javascript">
 		/*提交完成的ajax的地址*/
 		var completeUrl="{:U(GROUP_NAME.'/Plan/mission_complete',array('uniqid' => $url_uniqid,'pcid' => $data['id']),'')}";
-        var mode={:intval($data.plan.mode)};
+        var mode={:intval($data['mode'])};
         var urlUniqid='{$url_uniqid}';
         var praiseUrl="{:U(GROUP_NAME.'/Plan/praise')}";
-        var pid={$data['plan']['id']};
+        var pid={$data['pid']};
         var praised='{$praised}';
 	</script>
 	<!--/特色JS/CSS-->
@@ -29,7 +29,7 @@
 				<div class="panel-title">
 					<span class="glyphicon glyphicon-saved"></span>
 					完成学习任务
-					<button class="close">
+					<button class="close cancle">
 						&times;
 					</button>
 				</div>
@@ -60,7 +60,7 @@
 	<div class="row">
 		<div class="col-md-5">
 			<div class="thumbnail" style="margin-top:15px;">
-				<img src="{$data['plan']['face']}" alt="" style="width:100%;" />
+				<img src="{:get_thumb_file($data['face'],'m_')}" alt="" style="width:100%;" />
 				<div class="caption">
 					<button class="btn">
 						<span class="glyphicon glyphicon-user"></span>
@@ -68,43 +68,43 @@
 					</button>
 					<button id="praise-btn" class="btn btn-success">
 						<span class="glyphicon glyphicon-thumbs-up"></span>
-						<span class="praise">赞</span>(<span class="num">{$data['plan']['praised']}</span>)
+						<span class="praise">赞</span>(<span class="num">{$data['praised']}</span>)
 					</button>
 					<a href="{:U(GROUP_NAME.'/Plan/log',array('pcid'=>$data['id']))}" target="_blank" class="btn btn-info">
 						<span class="glyphicon glyphicon-calendar"></span>
 						学习记录
 					</a>
-					<a class="btn btn-warning" href="{:U(GROUP_NAME.'/Plan/comment',array('pid'=>$data['plan']['id']))}" target="_blank">
+					<a class="btn btn-warning" href="{:U(GROUP_NAME.'/Plan/comment',array('pid'=>$data['pid']))}" target="_blank">
 						<span class="glyphicon glyphicon-flag"></span>
-						查看评论({$data['plan']['comment']})
+						查看评论({$data['active_status']['comment_num']})
 					</a>
 				</div>
 			</div>
 		</div>
 		<div class="col-md-7">
-			<h3>{$data['plan']['name']}</h3>
+			<h3>{$data['name']}</h3>
 			<ul class="list-inline">
 				<li>
 					<span class="glyphicon glyphicon-eye-open"></span>
-					{$data['plan']['saw']}
+					{$data['saw']}
 				</li>
 				<li class="text-success">
-					<for start="0" end="$data['plan']['star']">
+					<for start="0" end="$data['active_status']['star']">
 						<span class="glyphicon glyphicon-star"></span>
 					</for>
-					<for start="$data['plan']['star']" end="5">
+					<for start="$data['active_status']['star']" end="5">
 						<span class="glyphicon glyphicon-star-empty"></span>
 					</for>
-					<span class="text-info">({$data['plan']['comment_star']})</span>
+					<span class="text-info">({$data['active_status']['comment_star']})</span>
 				</li>
 				<li>
-					创建者：<a href="">{$data.creator.username}</a>
+					创建者：<a href="{:U(GROUP_NAME.'/Account/person_index',array('uid'=>$data['creator']['id']))}">{$data.creator.username}</a>
 				</li>
 			</ul>
 			<ul class="list-unstyled">
 				<li class="">
 					分享链接：
-					<a href="{:U(GROUP_NAME.'/Plan/share',array('pid'=>$data['plan']['id']))}" target="_blank">{:U(GROUP_NAME.'/Plan/share',array('pid'=>$data['plan']['id']),false,false,true)}</a>
+					<a href="{:U(GROUP_NAME.'/Plan/share',array('pid'=>$data['pid']))}" target="_blank">{:U(GROUP_NAME.'/Plan/share',array('pid'=>$data['pid']),false,false,true)}</a>
 				</li>
 			</ul>
 			<hr>
@@ -121,7 +121,7 @@
                             <elseif condition="$data['start']"/>
 							<span class="text-success">
 								学习中 -
-								<if condition="$data['today_complete']">
+								<if condition="$data['active_status']['today_complete']">
 									今日已完成
 									<else/>
 									<span class="text-danger">
@@ -136,28 +136,29 @@
                 </tr>
 				<tr>
 					<td>
-						创建时间：
+						加入时间：
 					</td>
 					<td>
-						{:date('Y-m-d H:i:s',$data['plan']['create_time'])}
+						{:date('Y-m-d H:i:s',$data['create_time'])}
 					</td>
 				</tr>
 				<tr>
 					<td>开始时间：</td>
-					<td>{:date('Y-m-d',$data['start_time'])}</td>
+					<td>{:date('Y-m-d',$data['start'])}</td>
+				</tr>
+				<tr>
+					<td>预计结束：</td>
+					<td>{:date('Y-m-d',$data['end'])}</td>
 				</tr>
 				<tr>
 					<if condition="$data['complete_time']">
 						<td>完成时间：</td>
 						<td>{:date('Y-m-d H:i:s',$data['complete_time'])}</td>
-						<else/>
-						<td>预计结束时间：</td>
-						<td>{:date('Y-m-d H:i:s',$data['end_time'])}</td>
 					</if>
 				</tr>
                 <tr class="text-warning">
                     <td>监督人：</td>
-                    <td>{$data['supervision']['username']}</td>
+                    <td>{$data['supervision']['username']?$data['supervision']['username']:'无'}</td>
                 </tr>
 			</table>
 				<!--完成情况和延期情况！-->
@@ -167,16 +168,16 @@
 						计划类型：
 					</td>
 					<td>
-						<if condition="$data['plan']['open']">
-							公开
+						<if condition="$data['open']">
+							<span class="text-success">公开</span>
 							<else/>
-							私有
+							<span class="text-warning">私有</span>
 						</if>
 						-
-						<if condition="$data['plan']['mode'] eq 1">
-							顺序模式
+						<if condition="$data['mode'] eq 1">
+							<span class="text-primary">顺序模式</span>
 							<else/>
-							列表模式
+							<span class="text-primary">列表模式</span>
 						</if>
 					</td>
 				</tr>
@@ -185,20 +186,25 @@
 						已完成：
 					</td>
 					<td>
-						<span class="text-success">{$data.mission_complete}个任务</span>
+						<span class="text-success">{$data.active_status.mission_complete}个任务</span>
 					</td>
 				</tr>
                 <tr>
                     <td>总任务：</td>
-                    <td>{$data.mission_total}个</td>
+                    <td>{$data.active_status.mission_total}个</td>
                 </tr>
                 <tr>
                     <td>您已学习：</td>
-                    <td>{$data.study_time}天</td>
+                    <td>{:round( (($data['complete_time']?$data['complete_time']:time())-$data['start'])/86400.0,2)}天</td>
                 </tr>
 				<tr>
-					<td>延期：</td>
-					<td class="text-danger">{$data.delay}小时</td>
+					<if condition="$delay lt 0">
+						<td class="text-success">提前：</td>
+						<td class="text-success">{-$delay}天</td>
+						<else/>
+						<td>延期：</td>
+						<td class="text-danger">{$delay}天</td>
+					</if>
 				</tr>
 			</table>
 			</div>
@@ -209,26 +215,30 @@
 		<div class="well clearfix" style="padding-bottom:5px;">
 			<div class="col-md-10 pull-left">
 				<div class="progress">
-					<div alt="{$data.mission_complete_rate}" class="progress-bar progress-bar-success progress-bar-striped active">
-						<span style="font-weight: bold;">完成任务:{$data.mission_complete} / 总任务:{$data.mission_total}</span>
+					<div alt="{:round($data['active_status']['complete_rate']*100,2)}" class="progress-bar progress-bar-success progress-bar-striped active">
+						<span style="font-weight: bold;">完成任务:{$data.active_status.mission_complete} / 总任务:{$data.active_status.mission_total}</span>
 					</div>
 				</div>
 			</div>
 			<div class="col-md-2">
-				计划完成度：<span class="text-success">{$data.mission_complete_rate}%</span>
+				计划完成度：<span class="text-success">{:round($data['active_status']['complete_rate']*100,2)}%</span>
 			</div>
 			<div class="help-block col-md-12">
-				目前已完成 <span class="text-success">{$data.mission_complete}</span> 个任务，继续努力吧！
+				目前已完成 <span class="text-success">{$data.active_status.mission_complete}</span> 个任务，继续努力吧！
 			</div>
 		</div>
 	</div>
+	<!--为变量赋值-->
+	<assign name="i" value="0"/>
+	<assign name="j" value="0"/>
+	<assign name="k" value="0"/>
 	<div class="row">
 		<div class="col-md-12">
 			<table class="table table-responsive table-hover plan-list">
-				<foreach name="data['plan']['stage']" item="val">
-					<tr class="stage">
+				<foreach name="data['stage']" item="val">
+					<tr class="stage" id="stage_{$i+1}">
 						<td class="first">
-							阶段
+							步骤
 						</td>
 						<td class="circle-warp col-md-1 text-center">
 							<span class="circle-md">
@@ -240,15 +250,18 @@
 								{$val.name}
 							</span>
 							<span class="help-block small" style="padding-left:30px;display:inline;">
+								权值({$val.power})
+							</span>
+							<span class="help-block small" style="padding-left:30px;display:inline;">
 								描述：{$val.info}
 							</span>
 						</td>
 						<td>
 						</td>
 					</tr>
-					<span class="hidden">{$j=0}</span>
+					<assign name="j" value="0"/>
 					<foreach name="val['mission']" item="v">
-						<tr>
+						<tr data-toggle="collapse" data-target="#mission_{$i}_{$j+1}" data-parent="#stage_{$i}">
 							<td class="first">
 								任务
 							</td>
@@ -258,14 +271,14 @@
 								</span>
 							</td>
 							<td>
-								{$v.name} ( {$v.time}h )
-								<p class="help-block small">
-									<if condition="!empty($v['info'])">
-										描述:{$v['info']}
-									</if>
-								</p>
+								<div>{$v.name}</div>
+								<!--这里用p标签的话，容易引起Marin合并的问题-->
+								<div class="help-block small">任务量：{:round($v['avg_time']*1.0/86400,2)}天</>
+								<div class="help-block small collapse" id="mission_{$i}_{$j}">
+									描述:{$v['info']?$v['info']:'未添加描述'}
+								</div>
 							</td>
-							<if condition="$v['complete']">
+							<if condition="$v['time']">
 								<td class="col-md-4">
 									<button class="btn btn-success">
 										<span class="glyphicon glyphicon-ok"></span>
@@ -273,7 +286,7 @@
 									</button>
 									<button class="btn btn-default">
 										<span class="glyphicon glyphicon-time"></span>
-										{:date('Y年m月d日 h:i:s',$v['complete'])}
+										{:show_time($v['time'],'Y年m月d日 h:i:s',3)}
 									</button>
 								</td>
 								<elseif condition="$supervision"/>
@@ -283,7 +296,7 @@
 										无法操作
 									</button>
 								</td>
-								<elseif condition="$data['plan']['mode'] eq 1"/>
+								<elseif condition="$data['mode'] eq 1"/>
 								<td class="col-md-4">
 									<button class="btn disabled plan-lock" data="{$v.id}">
 										<span class="glyphicon glyphicon-lock"></span>

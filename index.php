@@ -5,10 +5,10 @@ chdir(dirname(__FILE__));
 if(version_compare(PHP_VERSION,'5.5.0','<'))  die('require PHP > 5.3.0 !');
 
 // 开启调试模式 建议开发阶段开启 部署阶段注释或者设为false
-define('APP_DEBUG',true);
+define('APP_DEBUG',false);
 
 //应用名称。
-define("APP_NAME","测试博客");
+define("APP_NAME","LMS学习计划监督管理系统");
 
 //应用路径。
 define("APP_PATH","./LMS/");

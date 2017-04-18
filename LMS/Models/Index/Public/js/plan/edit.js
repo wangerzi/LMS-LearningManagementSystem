@@ -2,6 +2,7 @@
  * Created by Administrator on 2016/11/23 0023.
  */
 $(function(){
+    //自动显示/隐藏操作按钮。
     $('.mission').on('mouseover',function(e){
         $(this).find('.operate').show();
     }).on('mouseout',function(e){
@@ -10,8 +11,21 @@ $(function(){
             $(this).find('.operate').hide()
     });
 
+    //调用datepicker插件
+    $('.input-daterange').datepicker({
+        format: "yyyy-mm-dd",
+        language:'zh-CN',
+        //autoclose: true,
+        startDate: today,
+        todayHighlight: true
+    });
+    //验证码刷新
+    $('.verify').click(function(){
+        $(this).attr('src',function(i,oldVal){return oldVal+'&r='+Math.random()});
+    });
+
     $('#basicForm .save').click(function(){
-        submitForm($(this).parents('form'));
+        submitForm($(this).parents('form'),null,{pid:pid,pcid:pcid});
     });
 
     $('#faceForm .save').click(function(){
@@ -19,10 +33,95 @@ $(function(){
             wq_alert('保存成功');
             $('#faceImg').attr('src',data.face);
         });
-    });
-    $('#supervisionFrom .save').click(function(){
-        submitForm($(this).parents('form'),function(data){
-            wq_alert('已成功向'+data.num+'个好友发送您的申请（跳过已经送过的好友）');
+    },{pid:pid,pcid:pcid});
+    $('#restartForm').bootstrapValidator({
+        verbose: false,
+        message: 'This value is not valid',
+        feedbackIcons:{
+            /*验证状态用的图标！*/
+            valid:'glyphicon glyphicon-ok',
+            invalid:'glyphicon glyphicon-remove',
+            validating:'glyphicon glyphicon-refresh'
+        },
+        fields:{
+            start:{
+                validators:{
+                    notEmpty:{
+                        message:'开始时间不能为空！'
+                    },
+                    date:{
+                        format:'YYYY-MM-DD',
+                        message:'时间格式不匹配'
+                    },
+                    callback:{
+                        message:'开始时间不能在今天以前！',
+                        callback:function(value,validator){
+                            var m = new moment(value, 'YYYY-MM-DD', true);
+                            if (!m.isValid()) {
+                                return false;
+                            }
+                            // Check if the date in our range
+                            return m.isAfter(yesterday);//'2000-01-01' 形式的！
+                        }
+                    }
+                }
+            },
+            end:{
+                validators:{
+                    notEmpty:{
+                        message:'结束时间不能为空！'
+                    },
+                    date:{
+                        format:'YYYY-MM-DD',
+                        message:'时间格式不匹配'
+                    },
+                    callback:{
+                        message:'结束时间不能在开始时间以前！',
+                        callback:function(value,validator){
+                            var m = new moment(value, 'YYYY-MM-DD', true);
+                            if (!m.isValid()) {
+                                return false;
+                            }
+                            // Check if the date in our range
+                            return m.isAfter($('input[name="start"]').val());//'2000-01-01' 形式的！
+                        }
+                    }
+                }
+            },
+            verify:{
+                validators:{
+                    notEmpty:{
+                        message:'验证码不能为空',
+                    },
+                    stringLength:{
+                        min:verifyLen,
+                        max:verifyLen,
+                        message:'验证码长度应该为'+verifyLen,
+                    },
+                    remote:{
+                        url:verifyCheckUrl,
+                        message:'验证码不正确',
+                        delay:1000,
+                        data:function(){
+                            return {
+                                verify:$("input[name='verify']").val(),
+                            };
+                        },
+                        type:'post',
+                    }
+                }
+            }
+
+        }
+    }).on('success.form.bv',function(e){
+        e.preventDefault();
+
+        var form = $('#restartForm');
+
+        wq_confirm('确定要重新学习吗？<br/>注：所有任务进度，学习日志，监督关系将被清除！',function(){
+            submitForm(form,function(data){
+                wq_alert('重置成功');
+            },{pid:pid,pcid:pcid})
         });
     });
 
@@ -59,51 +158,6 @@ $(function(){
         });
     });
 });
-function submitForm(obj,callback){
-    var form=$(obj);
-    var submit=form.find('.save');
-    $(submit).attr('disabled','disabled');
-
-    var oldValue=$(submit).html();
-    $(submit).html(
-        '<span class="glyphicon glyphicon-refresh"></span>' +
-        '保存中'
-    );
-
-    form.ajaxSubmit({
-        url:form.attr('action'),
-        dataType:'json',
-        data:{
-            pid :   pid,
-            pcid:   pcid,
-        },
-        type:'post',
-        success:function(data) {
-            if(!data.status){
-                wq_alert(data.info);
-                submit.removeAttr('disabled');
-                submit.html(oldValue);
-                return 0;
-            }
-            if(typeof callback  ==   'function')
-                callback(data);
-            else{
-                wq_alert('保存成功');
-            }
-
-            if(typeof data.uniqid != 'undifined')
-                $(form).find('input[name="uniqid"]').val(data.uniqid);
-            submit.removeAttr('disabled');
-            submit.html(oldValue);
-        },
-        error:function(xml,text){
-            wq_alert(text+'可能服务器忙，请稍后重试！');
-            submit.removeAttr('disabled');
-            submit.html(oldValue);
-            return 0;
-        }
-    });
-}
 /**
  * 检查一组数据是否改变
  * @param isNew 是否是新建任务
@@ -159,10 +213,6 @@ function add_mission(obj,isStageNew)
         '       </div>'+
         '   </td>' +
         '   <td>' +
-        '       <div class="form-group">' +
-        '           <input class="form-control" name="mission_hour&'+id+'" data="'+id+'" value="6" type="text" />' +
-        '           <span class="small text-nowrap text-danger help"></span>'+
-        '       </div>'+
         '   </td>' +
         '   <td>' +
         '       <div class="form-group">' +
@@ -280,13 +330,11 @@ function check_mission(obj){
         var id=$(obj[i]).attr('data');
         var name=obj.find('input[name="mission&'+id+'"]');
         var info=obj.find('input[name="mission_info&'+id+'"]');
-        var hour=obj.find('input[name="mission_hour&'+id+'"]');
         var sort=obj.find('input[name="mission_sort&'+id+'"]');
 
         //分开是因为name对象可能后边还有用
         var name_str=name.val();
         var info_str=info.val();
-        var hour_str=hour.val();
         var sort_str=sort.val();
 
         var flag=true;
@@ -306,16 +354,6 @@ function check_mission(obj){
         if(info_str.length>MISSION_MAX_INFO){
             help.text('任务简介长度需要在'+0+'到'+MISSION_MAX_INFO+'之间！');
             info.focus();
-            flag=false;
-        }else{
-            help.text('');
-        }
-
-        //学习时长的检测
-        var help=hour.parents('.form-group').find('.help');
-        if(hour_str<2||hour_str>48){
-            help.text('学习时长需要在'+2+'到'+48+'之间！');
-            hour.focus();
             flag=false;
         }else{
             help.text('');
@@ -346,11 +384,13 @@ function check_stage(obj){
         var id=$(obj[i]).attr('data');
         var name=$(obj[i]).find('input[name="stage&'+id+'"]');
         var info=$(obj[i]).find('input[name="stage_info&'+id+'"]');
+        var power=$(obj[i]).find('input[name="stage_power&'+id+'"]');
         var sort=$(obj[i]).find('input[name="stage_sort&'+id+'"]');
 
         //分开是因为name对象可能后边还有用
         var name_str=name.val();
         var info_str=info.val();
+        var power_str=power.val();
         var sort_str=sort.val();
 
         var flag=true;
@@ -358,7 +398,7 @@ function check_stage(obj){
         //名字的检测
         var help=name.parents('.form-group').find('.help');
         if(name_str.length<STAGE_MIN_NAME||name_str.length>STAGE_MAX_NAME){
-            help.text('阶段名长度需要在'+STAGE_MIN_NAME+'到'+STAGE_MAX_NAME+'之间！');
+            help.text('步骤名长度需要在'+STAGE_MIN_NAME+'到'+STAGE_MAX_NAME+'之间！');
             name.focus();
             flag=false;
             return false;
@@ -369,7 +409,7 @@ function check_stage(obj){
         //简介的检测
         var help=info.parents('.form-group').find('.help');
         if(info_str.length>STAGE_MAX_INFO){
-            help.text('阶段简介长度需要在'+0+'到'+STAGE_MAX_INFO+'之间！');
+            help.text('步骤简介长度需要在'+0+'到'+STAGE_MAX_INFO+'之间！');
             info.focus();
             flag=false;
             return false;
@@ -387,24 +427,35 @@ function check_stage(obj){
         }else{
             help.text('');
         }
+
+        //优先级的检测
+        var help=sort.parents('.form-group').find('.help');
+        if(power_str<0 || power_str>10000){
+            help.text('权值不得小于0或大于9999');
+            sort.focus();
+            flag=false;
+            return false;
+        }else{
+            help.text('');
+        }
         totalFlag=totalFlag&&flag;//只要有一个错误，整体返回错误
     }
     return totalFlag;
 }
 /**
- * 在末尾添加一个阶段，同时锁定不能继续添加阶段，除非添加阶段成功
+ * 在末尾添加一个步骤，同时锁定不能继续添加步骤，除非添加步骤成功
  */
 function add_stage(){
     var not_save=$('.stage-not-save');
     if(not_save.length){
-        wq_alert('请先保存【未保存阶段】后，再【新建阶段】',function(){
+        wq_alert('请先保存【未保存步骤】后，再【新建步骤】',function(){
             scrollTo(not_save);
             not_save.find('input[type="text"]:first').focus();
         });
         return ;
     }
     n++;
-    //需要新建一个任务，确保每个stage都有一个阶段
+    //需要新建一个任务，确保每个stage都有一个步骤
     $('.mission:last').after(
         '<tr class="stage stage-not-save" data="'+n+'" style="background:#f9f9f9;">'+
         '   <td>'+ n +
@@ -422,6 +473,10 @@ function add_stage(){
         '</div>'+
         '</td>'+
         '<td>'+
+        '<div class="form-group">'+
+        '<input class="form-control" name="stage_power&'+n+'" data="'+n+'" type="text" value="10" />' +
+        '<span class="small text-nowrap text-danger help"></span>'+
+        '</div>'+
         '</td>'+
         '<td>'+
         '<div class="form-group">'+
@@ -458,14 +513,14 @@ function add_stage(){
     });
 }
 /**
- * 保存新建阶段
+ * 保存新建步骤
  * @param obj
  */
 function save_stage_new(obj){
     var stage=$(obj).parents('.stage');
     var next=$(obj).parents('tr:first').nextAll();
     if(!next.length){
-        wq_alert('每个阶段至少有一个任务');
+        wq_alert('每个步骤至少有一个任务');
         $(stage).find('.operate .add').click();
         return 0;
     }
@@ -490,14 +545,13 @@ function save_stage_new(obj){
         var mission={
             name: $(this).find('input[name="mission&' + id + '"]').val(),
             info: $(this).find('input[name="mission_info&' + id + '"]').val(),
-            hour: $(this).find('input[name="mission_hour&' + id + '"]').val(),
             sort: $(this).find('input[name="mission_sort&' + id + '"]').val(),
         };
         missions.push(mission);
     });
 
     if(missions.length<1){
-        wq_alert('每个阶段至少有一个任务');
+        wq_alert('每个步骤至少有一个任务');
         return 0;
     }
 
@@ -507,17 +561,20 @@ function save_stage_new(obj){
     //这一块还得留着。。
     var name=$(stage).find('input[name="stage&'+id+'"]');
     var info=$(stage).find('input[name="stage_info&'+id+'"]');
+    var power=$(stage).find('input[name="stage_power&'+id+'"]');
     var sort=$(stage).find('input[name="stage_sort&'+id+'"]');
 
     //分开是因为name对象可能后边还有用
     var name_str=name.val();
     var info_str=info.val();
+    var power_str=power.val();
     var sort_str=sort.val();
 
     ajaxOperation(obj,addStageUrl,{
         pid:pid,
         name:name_str,
         info:info_str,
+        power:power_str,
         sort:sort_str,
         mission:missions,
         uniqid:operate_uniqid,
@@ -542,6 +599,7 @@ function save_stage_new(obj){
         //更新每个的name
         name.attr('data',sid).attr('name','stage&'+sid).attr('value',$(name).val());
         info.attr('data',sid).attr('name','stage_info&'+sid).attr('value',$(info).val());
+        power.attr('data',sid).attr('name','stage_power&'+sid).attr('value',$(power).val());
         sort.attr('data',sid).attr('name','stage_sort&'+sid).attr('value',$(sort).val());
         $(stage).attr('data',sid).removeClass('stage-not-save');
         //alert($(stage).length);
@@ -553,7 +611,7 @@ function save_stage_new(obj){
             '</button>'+
             '<button class="btn btn-danger" type="button" data="'+sid+'" onclick="remove_stage(this)">' +
             '<span class="glyphicon glyphicon-trash"></span>' +
-            '移除阶段' +
+            '移除步骤' +
             '</button>'
         );
 
@@ -575,7 +633,7 @@ function save_stage_new(obj){
         for(i=0;i<next.length;i++){
             //任务的id
             var mid=data.mid[i];
-            var mission=next[i];
+            var mission=$(next[i]);
 
             //id还是以前的那个ID
             var name=$(mission).find('input[name="mission&'+id+'"]');
@@ -611,7 +669,7 @@ function save_stage_new(obj){
             }).on('mouseout',function(){
                 if(!$(this).find('.save').length)
                     $(this).find('.operate').hide();
-            })
+            });
             bind_check_change(mission,function(obj){
                 var id=$(obj).attr('data');
 
@@ -627,9 +685,6 @@ function save_stage_new(obj){
         }
     })
 }
-function toCompleteMission(obj){
-
-}
 /**
  * 保存现有的任务
  * @param obj
@@ -640,17 +695,15 @@ function save_mission(obj){
     var id=$(obj).attr('data');
     var mission=$(obj).parents('.mission');//这里是因为更新操作obj之后，通过obj找不到mission。
 
-    //这一块还得留着。。
+    //这一块还得留着，之所以不用jquery.form.js，因为一行一个表单，着实难以管理。
     var top=$(obj).parents('tr:first');
     var name=top.find('input[name="mission&'+id+'"]');
     var info=top.find('input[name="mission_info&'+id+'"]');
-    var hour=top.find('input[name="mission_hour&'+id+'"]');
     var sort=top.find('input[name="mission_sort&'+id+'"]');
 
     //分开是因为name对象可能后边还有用
     var name_str=name.val();
     var info_str=info.val();
-    var hour_str=hour.val();
     var sort_str=sort.val();
 
     if(!check_mission(mission)){
@@ -661,7 +714,6 @@ function save_mission(obj){
         mid:id,
         name:name_str,
         info:info_str,
-        hour:hour_str,
         sort:sort_str,
         uniqid:operate_uniqid,
     },function(data){
@@ -676,7 +728,6 @@ function save_mission(obj){
         //更新vlaue，否则检测修改可能错误！
         name.attr('value',name_str);
         info.attr('value',info_str);
-        hour.attr('value',hour_str);
         sort.attr('value',sort_str);
 
         $(obj).remove();//更新状态
@@ -691,11 +742,13 @@ function save_stage(obj){
     var top=$(obj).parents('tr:first');
     var name=top.find('input[name="stage&'+id+'"]');
     var info=top.find('input[name="stage_info&'+id+'"]');
+    var power=top.find('input[name="stage_power&'+id+'"]');
     var sort=top.find('input[name="stage_sort&'+id+'"]');
 
     //分开是因为name对象可能后边还有用
     var name_str=name.val();
     var info_str=info.val();
+    var power_str=power.val();
     var sort_str=sort.val();
 
 
@@ -707,6 +760,7 @@ function save_stage(obj){
         sid:id,
         name:name_str,
         info:info_str,
+        power:power_str,
         sort:sort_str,
         uniqid:operate_uniqid,
     },function(data){
@@ -721,6 +775,7 @@ function save_stage(obj){
         //更新vlaue，否则检测修改可能错误！
         name.attr('value',name_str);
         info.attr('value',info_str);
+        power.attr('value',power_str);
         sort.attr('value',sort_str);
 
         $(obj).remove();//更新状态
@@ -740,13 +795,11 @@ function save_mission_new(obj){
     var top=$(obj).parents('tr:first');
     var name=top.find('input[name="mission&'+id+'"]');
     var info=top.find('input[name="mission_info&'+id+'"]');
-    var hour=top.find('input[name="mission_hour&'+id+'"]');
     var sort=top.find('input[name="mission_sort&'+id+'"]');
 
     //分开是因为name对象可能后边还有用
     var name_str=name.val();
     var info_str=info.val();
-    var hour_str=hour.val();
     var sort_str=sort.val();
 
     /*
@@ -779,7 +832,6 @@ function save_mission_new(obj){
         sid:id,
         name:name_str,
         info:info_str,
-        hour:hour_str,
         sort:sort_str,
         uniqid:operate_uniqid,
     },function(data){
@@ -798,7 +850,6 @@ function save_mission_new(obj){
         //更新任务id，以及更新vlaue，否则检测修改可能错误！
         name.attr('data',mid).attr('name','mission&'+mid).attr('value',name_str);
         info.attr('data',mid).attr('name','mission_info&'+mid).attr('value',info_str);
-        hour.attr('data',mid).attr('name','mission_hour&'+mid).attr('value',hour_str);
         sort.attr('data',mid).attr('name','mission_sort&'+mid).attr('value',sort_str);
         mission.attr('data',mid);
 
@@ -836,7 +887,7 @@ function remove_mission_new(obj){
     });
 }
 function remove_stage_new(obj){
-    wq_confirm('确定删除新增阶段？',function(){
+    wq_confirm('确定删除新增步骤？',function(){
         var top=$(obj).parents('tr');
         top.nextAll().hide('normal',function(){
             $(this).remove();
@@ -871,7 +922,7 @@ function remove_mission(obj){
 }
 function remove_stage(obj){
     var id=$(obj).attr('data')
-    wq_confirm('确定删除该阶段吗？',function(){
+    wq_confirm('确定删除该步骤吗？',function(){
         ajaxOperation(obj,removeStageUrl,{
             pid:pid,
             sid:id,

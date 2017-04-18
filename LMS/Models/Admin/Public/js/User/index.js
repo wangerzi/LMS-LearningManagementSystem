@@ -6,6 +6,17 @@ function deleteUser(obj){
     $('#userConfSure').attr('href',url);
     $('#userConf').modal('open');
 }
+function removeAdmin(obj){
+    var url = $(obj).attr('alt');
+    $('#adminConfSure').attr('href',url);
+    $('#adminConf').modal('open');
+}
+function addAdmin(obj){
+    var uid = $(obj).attr('alt');
+    var modal = $('#addAdmin');
+    modal.find('input[name="uid"]').val(uid);
+    modal.modal('open');
+}
 function activeUser(obj){
     var url = $(obj).attr('alt');
     $('#userActiveConfSure').attr('href',url);
@@ -24,11 +35,11 @@ function get_ip_addr(obj,ip){
         dataType:   'script',//跨域
         success :   function(){
             var str = '<h4>IP 详细信息</h4>'+'<p>IP：'+ip+'</p>';
-            var data = remote_ip_info;
-            if(!remote_ip_info) {
-                $(obj).html('<h4>接口申请失败</h4><p>IP:' + ip + '</p><p>错误：' + text + '&' + error + '</p><p>该地址可能是私网地址或不合法地址</p>');
+            if(typeof remote_ip_info == 'undefined') {
+                $(obj).html('<h4>接口申请失败</h4><p>IP:' + ip + '</p><p>该地址可能是私网地址或不合法地址</p>');
                 return ;
             }
+            var data = remote_ip_info;
             if(data.country)
                 str += '<p>国家：'+data.country+'</p>';
             if(data.province)

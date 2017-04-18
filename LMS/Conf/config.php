@@ -7,9 +7,12 @@ return array(
     'APP_GROUP_PATH' => 'Models',
     'DB_HOST' => 'localhost',
     'DB_USER' => 'root',
-    'DB_PWD' => 'root',
+    'DB_PWD' => '',
     'DB_NAME' => 'think_lms',
     'DB_PREFIX' => 'wq_',
+
+    //开启页面追踪。
+    'SHOW_PAGE_TRACE'   =>  false,
 
     //日志目录
     'MINE_LOG_PATH' =>APP_PATH.'log/',
@@ -33,6 +36,7 @@ return array(
 
         //登录界面
         'Index/Login/index',
+        'Index/Login/logout',
         //登录界面提交
         'Index/Login/loginHandle',
         //登录界面验证码
@@ -69,10 +73,6 @@ return array(
     //默认ajax返回类型
     'DEFAULT_AJAX_RETURN'=> 'JSON',
 
-    //找朋友部分允许搜索的最大值和最小值！
-    'FRIEND_SEARCH_MAX' => 19,
-    'FRIEND_SEARCH_MIN' => 2,
-	
 	//兼容模式，否则有是有图片显示不出来
 	'URL_MODEL'	=>	3,
 
@@ -80,7 +80,6 @@ return array(
     'USER_BASE_PATH'    =>  APP_PATH.'data/user/',
 	
 	//版本信息
-	'WEB_VERSION'	=>	'1.0.0.20170127_beta',
-    'WEB_EMAIL'     =>  'admin@wj2015.com.cn',//仅用于发送用户反馈的邮件。
+	'WEB_VERSION'	=>	'1.2.0.20170418_release',
 );
 ?>

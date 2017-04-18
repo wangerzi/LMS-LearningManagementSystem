@@ -8,8 +8,13 @@
     <!--highcharts图表插件-->
     <script src="__PUBLIC__/js/penguin/Highcharts/highcharts.js"></script>
     <script type="text/javascript">
-        var day_active_id="day-active-chart";
-        var day_active_data_url="{$day_active_path}";//数据源
+        var day_plan_id="day-plan-chart";
+        var day_mission_id="day-mission-chart";
+        var day_supervision_id="day-supervision-chart";
+        var day_mission_and_plan_url="{:U(GROUP_NAME.'/Index/day_mission_plan')}";//数据源
+        var day_supervision_url="{:U(GROUP_NAME.'/Index/day_supervision')}";//数据源
+
+        var days = '{$days}';
     </script>
     <!--active图标的JS-->
     <script src="__PUBLIC__/js/charts/day-active.js"></script>
@@ -20,16 +25,16 @@
     <ul class="nav nav-pills nav-justified" id="main-top-leader">
         <li>
             <a href="{:U(GROUP_NAME.'/Plan/index',array('type'=>'today_not_complete'))}">
-                <h4 class="text-center">
-                    {$plan_num['not_complete']}
+                <h4 class="text-center" id="planNotCompleteNum">
+                    0
                 </h4>
                  <p class="text-info">今日未完成计划</p>
             </a>
         </li>
         <li>
             <a href="{:U(GROUP_NAME.'/Plan/index',array('type'=>'today_complete'))}">
-                <h4 class="text-center">
-                    {$plan_num['complete']}
+                <h4 class="text-center" id="planCompleteNum">
+                    0
                 </h4>
                  <p class="text-info">今日已完成计划</p>
             </a>
@@ -37,7 +42,7 @@
         <li>
             <a href="{:U(GROUP_NAME.'/Plan/index',array('type'=>'continue'))}">
                 <h4 class="text-center">
-                    {$plan_num['continue']}
+                    {$plan_num['started']}
                 </h4>
                  <p class="text-info">已开始学习计划</p>
             </a>
@@ -45,7 +50,7 @@
         <li>
             <a href="{:U(GROUP_NAME.'/Plan/index',array('type'=>'end'))}">
                 <h4 class="text-center">
-                    {$plan_num['end']}
+                    {$plan_num['completed']}
                 </h4>
                  <p class="text-info">已结束学习计划</p>
             </a>
@@ -61,18 +66,42 @@
         <li>
             <a href="" class="no-right">
                 <h4 class="text-center">
-                    0
+                    {$plan_num['sv_not_deal']}
                 </h4>
                  <p class="text-info">未处理监督报告</p>
             </a>
         </li>
     </ul>
     <hr style="margin-top:0;">
-    <!--日活跃量的图！-->
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <span class="panel-title">任务曲线</span>
+    <div class="row">
+        <div class="col-md-6">
+            <!--日计划的图！-->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="panel-title">计划曲线</span>
+                </div>
+                <div class="panel-body charts" id="day-plan-chart" style="height:245px;"></div>
+            </div>
         </div>
-        <div class="panel-body" id="day-active-chart"></div>
+        <div class="col-md-6">
+            <!--日监督的图！-->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="panel-title">监督曲线</span>
+                </div>
+                <div class="panel-body charts" id="day-supervision-chart" style="height:245px;"></div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!--日任务的图！-->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="panel-title">任务曲线</span>
+                </div>
+                <div class="panel-body charts" id="day-mission-chart"></div>
+            </div>
+        </div>
     </div>
 </block>

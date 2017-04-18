@@ -134,3 +134,7 @@ a:hover{
 #right-content img{
 	display:inline;
 }
+/*服务器压缩输出之后，有些以空格为间隔的按钮就不好看了。*/
+.btn{
+	margin-right:5px;
+}

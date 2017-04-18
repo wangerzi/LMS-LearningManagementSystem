@@ -4,19 +4,21 @@
 </block>
 <block name="CSS_AND_JS">
 	<link rel="stylesheet" href="__PUBLIC__/css/bootstrap/bootstrapValidator.min.css">
+	<link rel="stylesheet" href="__PUBLIC__/css/bootstrap/bootstrap-datepicker.min.css">
 	<!--特色JS/CSS-->
 	<script type="text/javascript">
 		var PLAN_MIN_NAME={:C('PLAN_MIN_NAME')};
 		var PLAN_MAX_NAME={:C('PLAN_MAX_NAME')};
 		var STAGE_MIN_NAME={:C('STAGE_MIN_NAME')};
 		var STAGE_MAX_NAME={:C('STAGE_MAX_NAME')};
-		var STAGE_MAX_INFO={:C('STAGE_MAX_INFO')};//阶段描述最多字数
+		var STAGE_MAX_INFO={:C('STAGE_MAX_INFO')};//步骤描述最多字数
 		var MISSION_MIN_NAME={:C('MISSION_MIN_NAME')};
 		var MISSION_MAX_NAME={:C('MISSION_MAX_NAME')};
 		var MISSION_MAX_INFO={:C('MISSION_MAX_INFO')};//任务描述最多字数
 		var yesterday='{:date("Y-m-d",time()-86400)}';
+		var today='{:date("Y-m-d",time())}';
 		var successUrl='{:U(GROUP_NAME."/Plan/detail",array("pcid"=>$data["id"]))}';
-		var n={:count($data['stage'])};//第几阶段
+		var n={:count($data['stage'])};//第几步骤
 
 		var pid={$data['pid']};
 		var pcid={$data['id']};
@@ -30,6 +32,10 @@
 		var saveStageUrl='{:U(GROUP_NAME."/Plan/save_stage")}';
 		var removeMissionUrl='{:U(GROUP_NAME."/Plan/remove_mission")}';
 		var removeStageUrl='{:U(GROUP_NAME."/Plan/remove_stage")}';
+
+		//验证码
+		var verifyLen =  {:C('VERIFY_LEN')};
+		var verifyCheckUrl ='{:U("verifyCheck")}';
 
 		//公开和模式的前后台交互
 		var open={:intval($data['open'])};
@@ -48,6 +54,9 @@
 	</script>
 	<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/bootstrapValidator.min.js'></script>
 	<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/moment-with-locales.min.js'></script>
+
+	<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/bootstrap-datepicker.min.js'></script>
+	<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/bootstrap-datepicker.zh-CN.min.js'></script>
 	<!--涉及到异步文件上传，所以引入了jquery.form.js-->
 	<script type="text/javascript" src='__PUBLIC__/js/penguin/jquery.form.js'></script>
 	<script type="text/javascript" src='__PUBLIC__/js/plan/edit.js'></script>
@@ -59,6 +68,7 @@
 	<!--/特色JS/CSS-->
 </block>
 <block name="body">
+	<if condition="$owner">
 	<form action="{:U(GROUP_NAME.'/Plan/editHandle')}" method="post" role="form" enctype="multipart/form-data" id="basicForm">
 		{$__UNIQID__}
         <input type="hidden" name="type" value="basic" />
@@ -78,11 +88,12 @@
 							<input type="text" class="form-control" name="name" value="{$data.name}" id="planName" />
 						</div>
 					</div>
-					<!--开启时间-->
-					<div class="col-md-3">
-						<div class="form-group">
-							<label class="control-label">开始时间</label>
-							<input type="date" name="startTime" value="{:date('Y-m-d',$data['start_time'])}" disabled="disabled" class="form-control"/>
+					<div class="col-md-6">
+						<label>执行时间</label>
+						<div class="input-group input-daterange">
+							<input class="input-sm form-control" type="text" value="{:date('Y-m-d',$data['start'])}" disabled="disabled">
+							<span class="input-group-addon">到</span>
+							<input class="input-sm form-control" type="text" value="{:date('Y-m-d',$data['end'])}" disabled="disabled">
 						</div>
 					</div>
 				</div>
@@ -115,7 +126,7 @@
 									<input type="radio" name="mode" value="1" checked="checked" />
 									顺序模式
 								</label>
-								<label onclick="showTips(this)" alt="列表模式下，您可以跨阶段,自由的完成任务，未完成的任务不会被锁定。">
+								<label onclick="showTips(this)" alt="列表模式下，您可以跨步骤,自由的完成任务，未完成的任务不会被锁定。">
 									<input type="radio" name="mode" value="0" />
 									列表模式
 								</label>
@@ -144,6 +155,8 @@
 			</div>
 		</div>
     </form>
+	</if>
+	<if condition="$owner">
     <!--封面-->
     <form action="{:U(GROUP_NAME.'/Plan/editHandle')}" method="post" role="form" enctype="multipart/form-data" id="faceForm">
         {$__UNIQID__}
@@ -159,14 +172,12 @@
                     <img src="{:get_thumb_file($data['face'],'s_')}" alt="" id="faceImg">
                 </div>
                 <div class="clearfix"></div>
-                <if condition="$owner">
                     <div class="form-group col-md-6">
                         <label class="control-label">
                             修改图片：(<span class="text-danger">所有者特权</span>)
                         </label>
                         <input type="file" name="face" class="form-control" />
                     </div>
-                </if>
                 <div class="row">
                     <div class="col-md-12">
                         <hr>
@@ -185,15 +196,16 @@
             </div>
         </div>
     </form>
-	<!--学习阶段和任务，只有所有者能进入-->
+	</if>
+	<!--学习步骤和任务，只有所有者能进入-->
 	<if condition="$owner">
 		<div class="panel panel-success">
 			<div class="panel-heading">
-				<div class="panel-title">添加学习阶段和任务(<span class="text-danger">所有者特权</span>)</div>
+				<div class="panel-title">添加学习步骤和任务(<span class="text-danger">所有者特权</span>)</div>
 			</div>
 			<div class="panel-body">
 				<div class="col-md-12" style="margin-bottom:10px;">
-					<!--添加阶段就在这里！-->
+					<!--添加步骤就在这里！-->
 					<div class="col-md-12" id="addStageArea" style="margin-bottom:10px;">
 						<table class="table table-responsive table-hover">
 							<caption>
@@ -203,7 +215,10 @@
 										您的更改将生效到所有加入此计划的人
 									</li>
 									<li>
-										有编号的是阶段，否则是阶段下的任务
+										有编号和权值的是步骤，否则是步骤下的任务
+									</li>
+									<li>
+										权值用来于为学习计划分配时间，<span class="text-danger">权值越高，分配的时间越多</span>。
 									</li>
 									<li>
 										优先级数字越小显示越靠前，0为最高级
@@ -213,8 +228,8 @@
 							<thead>
 							<th></th>
 							<th>名称</th>
-							<th>简介</th>
-							<th class="col-md-1">时长(h)</th>
+							<th>描述</th>
+							<th class="col-md-1">权值</th>
 							<th class="col-md-1">优先级</th>
 							<th>操作</th>
 							</thead>
@@ -238,6 +253,10 @@
 										</div>
 									</td>
 									<td>
+										<div class="form-group">
+											<input class="form-control" name="stage_power&{$value.id}" data="{$val.id}" type="text" value="{$value['power']?$value['power']:10}" />
+											<span class="small text-nowrap text-danger help"></span>
+										</div>
 									</td>
 									<td>
 										<div class="form-group">
@@ -253,7 +272,7 @@
 											</button>
 											<button class="btn btn-danger" type="button" data="{$value.id}" onclick="remove_stage(this)">
 												<span class="glyphicon glyphicon-trash"></span>
-												移除阶段
+												移除步骤
 											</button>
 										</div>
 									</td>
@@ -274,12 +293,7 @@
 												<span class="small text-nowrap text-danger help"></span>
 											</div>
 										</td>
-										<td>
-											<div class="form-group">
-												<input class="form-control" name="mission_hour&{$val.id}" data="{$val.id}" type="text" value="{$val['time']}" />
-												<span class="small text-nowrap text-danger help"></span>
-											</div>
-										</td>
+										<td></td>
 										<td>
 											<div class="form-group">
 												<input class="form-control" name="mission_sort&{$val.id}" data="{$val.id}" name="stage_sort{$val.id}" type="text" value="{$val['sort']}" />
@@ -300,19 +314,22 @@
 							</tbody>
 						</table>
 					</div>
-					<!--添加阶段的按钮！-->
+					<!--添加步骤的按钮！-->
 					<div class="col-md-12">
 						<button type="button" class="btn btn-success" onclick="add_stage()" id="addStage">
 							<span class="glyphicon glyphicon-plus-sign"></span>
-							添加阶段
+							添加步骤
 						</button>
 					</div>
 				</div>
 			</div>
 			<div class="panel-footer">
-				您可以点击 <a href="javascript:add_stage();">添加阶段</a> 添加一个学习阶段，并可以在学习阶段下添加许多任务，学习任务可以设置完成时长，我们会根据您每日的可学习时间计算出完成计划的总时间，每日可学习时间可以在 <a
-					href="">系统设置</a>里设置。
+				您可以点击 <a href="javascript:add_stage();">添加步骤</a> 添加一个学习步骤，并可以在学习步骤下添加许多任务，学习步骤可以有权值，我们会根据您的学习时间和权值适当的分配时间，以确保能在学习时间内完成任务。
 			</div>
+		</div>
+		<else/>
+		<div class="well text-warning">
+			由于您不是计划拥有者，故部分配置被隐藏。
 		</div>
 	</if>
 	<!--监督者的表单-->
@@ -325,17 +342,17 @@
 					监督人邀请
 				</div>
 			</div>
+			<if condition="$data['svid']">
+				<div class="panel-body">
+					<img class="img-circle img-responsive img-thumbnail center-block" src="{$svuser.face}" alt="" style="width:150px;height:150px;">
+					<p class="text-center">监督人：<a href="">{$svuser.username}</a></p>
+				</div>
+				<div class="panel-footer">
+					此计划已有监督者，除非监督方主动解除监督关系，否则监督者与计划的监督关系会一直存在！
+				</div>
+				<else/>
 			<!--好友的组合-->
 			<div class="panel-body">
-				<if condition="$data['svid']">
-					<div class="thumbnail">
-						<img class="img-circle img-responsive img-thumbnail" src="{$svuser.face}" alt="" style="width:150px;height:150px;">
-						<p class="text-center"><a href="">{$svuser.username}</a></p>
-						<div class="panel-footer">
-							此计划已有监督者，除非监督方主动解除监督关系，否则监督者与计划的监督关系会一直存在！
-						</div>
-					</div>
-					<else/>
 					<if condition="empty($friends)">
 						您还没有好友哦，快去找找志同道合的伙伴吧！<a class="btn btn-success" href="{:U(GROUP_NAME.'/Friend/index')}" target="_blank">-->找朋友</a>
 						<else/>
@@ -367,7 +384,6 @@
 							</div>
 						</div>
 					</div>
-				</if>
 			</div>
 			<div class="panel-footer">
 				我们会向选中好友发出监督申请，好友接受申请后即可开始监督（自动跳过已发过申请但未处理的好友）。
@@ -378,6 +394,54 @@
 					<li>监督者拥有查看学习记录，查看计划详情的权限</li>
 					<li>每个学习计划只能各有一个监督者</li>
 				</ol>
+			</div>
+			</if>
+		</div>
+	</form>
+	<form action="{:U(GROUP_NAME.'/Plan/editHandle')}" method="post" role="form" enctype="multipart/form-data" id="restartForm">
+		{$__UNIQID__}
+		<input type="hidden" name="type" value="restart" />
+		<!--基本设置-->
+		<div class="panel panel-success">
+			<div class="panel-heading">
+				<div class="panel-title">
+					重新学习
+				</div>
+			</div>
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-md-6">
+						<label>执行时间</label>
+						<div class="input-group input-daterange">
+							<input class="input-sm form-control" type="text" name="start" value="{:date('Y-m-d',time())}">
+							<span class="input-group-addon">到</span>
+							<input class="input-sm form-control" type="text" name="end" value="{:date('Y-m-d',time()+7*86400)}">
+						</div>
+					</div>
+				</div>
+				<br>
+				<div class="row">
+					<div class="col-md-3">
+						<div class="form-group">
+							<input type="text" class="form-control" name="verify">
+						</div>
+					</div>
+					<div class="col-md-3">
+						<img src="{:U('verify')}" class="verify" alt="">
+						<p class="help-block">点击验证码切换</p>
+					</div>
+				</div>
+				<div class="row operate">
+					<div class="col-md-12">
+						<hr>
+						<div class="form-group">
+							<button type="submit" class="btn btn-success save">
+								<span class="glyphicon glyphicon-ok"></span>
+								重新学习
+							</button>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</form>

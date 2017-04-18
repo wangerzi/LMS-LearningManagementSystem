@@ -90,9 +90,15 @@
 						</li>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
-						<li>
-							<a href="{:U(GROUP_NAME.'/Login/index')}">登录</a>
-						</li>
+						<if condition="is_login()">
+							<li>
+								<a href="{:U(GROUP_NAME.'/Index/index')}">个人管理中心</a>
+							</li>
+							<else/>
+							<li>
+								<a href="{:U(GROUP_NAME.'/Login/index')}">登录</a>
+							</li>
+						</if>
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">更多功能<strong class="caret"></strong></a>
 							<ul class="dropdown-menu">
@@ -104,7 +110,7 @@
 									<a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=zfT5_fv19fn1-428vOOuoqA">联系作者</a>
 								</li>
 								<li>
-									<a href="#" onclick="wq_alert('还没做好，后边补上。^_^')">意见反馈</a>
+									<a href="{:U(GROUP_NAME.'/Show/feedback')}">意见反馈</a>
 								</li>
 							</ul>
 						</li>

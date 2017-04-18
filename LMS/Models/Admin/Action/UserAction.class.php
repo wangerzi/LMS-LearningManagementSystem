@@ -9,15 +9,17 @@
 class UserAction extends CommonAction{
     public function index(){
         $db=M('user');
-        $pageSize=9;
+        $pageSize=6;
         $this->initUniqid();
+        $this->initUniqid(GROUP_NAME.'/User/addAdmin','add_admin_');
 
         import('ORG.Util.Page');
         $page=new Page($db->count(),$pageSize);
         $data = $db
             ->table(C('DB_PREFIX').'user as u')
             ->join(C('DB_PREFIX').'active as a ON a.user_id = u.id')
-            ->field('u.id,u.username,u.lock,u.email,u.birth,u.reg_time,u.last_time,u.login_ip,u.face,u.exp,u.sex,u.info,a.active')
+            ->join(C('DB_PREFIX').'admin as ad ON ad.uid = u.id')
+            ->field('u.id,u.username,u.lock,u.email,u.birth,u.reg_time,u.last_time,u.login_ip,u.face,u.exp,u.sex,u.info,u.checkout,a.active,ad.level,ad.uid as aduid')
             ->order('u.reg_time DESC')
             ->limit($page->firstRow,$page->listRows)
             ->select();
@@ -25,6 +27,7 @@ class UserAction extends CommonAction{
 
         $page->setConfig('theme','%first% %upPage% %linkPage% %downPage% %end%');
         $this->page=$page->show();
+        $this->adminLevel = session('ADMIN_LEVEL');
 
         $this->display();
     }
@@ -60,8 +63,9 @@ class UserAction extends CommonAction{
             'lock' =>  I('get.lock','intval')%2,
         );
         clearUniqid();
-        if($db->save($map))
-            $this->success('操作成功');
+        if($db->save($map)) {
+            $this->redirect('index');
+        }
         else
             $this->error('数据库操作失败');
     }
@@ -91,11 +95,11 @@ class UserAction extends CommonAction{
         if(!checkEmail($email))
             $this->error('邮箱不符合规则');
         $str = mb_check_stringLen($title,1,20,'主题');
-        if($str != true)
-            $this->error($str);
+        if(!$str->isValid())
+            $this->error($str->getMessage());
         $str = mb_check_stringLen($content,1,300,'内容');
-        if($str != true)
-            $this->error($str);
+        if(!$str->isValid())
+            $this->error($str->getMessage());
 
         if(addEmailTimeQueue($email,$name,$title,$content,$time,'lms_admin_mail_'.$uid))
             $this->success('发送成功');
@@ -130,7 +134,8 @@ class UserAction extends CommonAction{
             $this->error('用户不存在');
         if(empty($mine) || intval($admin['level']) >= $mine['level'])
             $this->error('权限不足');
-        return error('此操作过于危险，如需使用请在源码中删除此句。');
+        $this->error('此操作过于危险，如需使用请在源码中删除此句。');
+        return ;
         //删除用户。
         $db->delete($uid);
         //删除配置。
@@ -145,5 +150,75 @@ class UserAction extends CommonAction{
         M('mission_complete')->where('uid=%d',$uid)->delete();
         //等其他的。
         $this->success('删除成功');
+    }
+    public function admin(){
+        $db=M('admin');
+        $pageSize=6;
+        $this->initUniqid(GROUP_NAME.'/User/index');
+        $this->initUniqid(GROUP_NAME.'/User/adminRemove','ad_rm_');
+
+        import('ORG.Util.Page');
+        $page=new Page($db->count(),$pageSize);
+        $data = $db
+            ->table(C('DB_PREFIX').'admin as ad')
+            ->join(C('DB_PREFIX').'user as u ON u.id = ad.uid')
+            ->join(C('DB_PREFIX').'active as a ON a.user_id = u.id')
+            ->field('u.id,u.username,u.lock,u.email,u.birth,u.reg_time,u.last_time,u.login_ip,u.face,u.exp,u.sex,u.info,u.checkout,a.active,ad.level')
+            ->order('ad.level DESC')
+            ->limit($page->firstRow,$page->listRows)
+            ->select();
+        $this->data=$data;
+
+        $page->setConfig('theme','%first% %upPage% %linkPage% %downPage% %end%');
+        $this->page=$page->show();
+
+        $this->adminLevel = session('ADMIN_LEVEL');
+
+        $this->display();
+    }
+
+    /**
+     * 添加一个用户至管理员
+     */
+    public function addAdmin(){
+        if(!IS_POST)
+            _404('页面不存在');
+        $this->checkFormUniqid(I('post.uniqid'));
+
+        $uid = I('post.uid',0,'intval');
+        $level = I('post.level',0,'intval');
+
+        if($uid == session('uid'))
+            $this->error('不能操作自己');
+        if($level >= session('ADMIN_LEVEL'))
+            $this->error('权限不足');
+
+        $db = M('admin');
+        $res = $db->where('uid=%d',$uid)->field('level')->find();
+
+        if(empty($res)){
+            $data = array(
+                'uid'   =>  $uid,
+                'level' =>  $level,
+            );
+            $db->add($data);
+            $this->redirect('index');
+        }else{
+            $this->error('该用户已经是管理员了！');
+        }
+    }
+    public function adminRemove(){
+        $this->checkUrlUniqid(I('get.uniqid'));
+
+        $uid = I('get.uid',0,'intval');
+        $db = M('admin');
+
+        $res = $db->where('uid=%d',$uid)->field('id,level')->find();
+        if(empty($res))
+            $this->error('该用户不是管理员');
+        if($res['level'] >= session('ADMIN_LEVEL'))
+            $this->error('无权操作');
+        $db->delete($res['id']);
+        $this->redirect('admin');
     }
 }

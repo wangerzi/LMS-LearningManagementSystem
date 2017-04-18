@@ -44,6 +44,10 @@ class RegisterAction extends CommonAction
 			$this->error('敏感用户名不能注册！');
 		}
         $db = D('user');
+        load('@/check');
+        $str = mb_check_stringLen($data['username'],C('MIN_NAME'),C('MAX_NAME'),'用户名');
+        if(!$str->isValid())
+            $this->error($str->getMessage());
 
         if (!$user = $db->create())
             $this->error($db->getError());
@@ -76,7 +80,6 @@ class RegisterAction extends CommonAction
 				$this->error("注册失败：用户私有空间创建失败，请联系管理员配置服务器权限！位置：".$dir);
 			}
 
-            session("reg_verify", null);//销毁验证码！
             $info=array(
                 'uid'   =>  $user,
                 'rem_evd_time' =>  get_time(0)+9*3600,
@@ -90,6 +93,7 @@ class RegisterAction extends CommonAction
 
             //清除标识码。
             clearUniqid();
+            imageCode::remove('reg_verify');//销毁验证码！
             //发送邮件
             $this->sendRegisterEmail($data['email'],$data['username'],$active);
             $this->success("注册成功，请前往邮箱激活！", U(GROUP_NAME . "/Login/index"));//注册成功的跳转。

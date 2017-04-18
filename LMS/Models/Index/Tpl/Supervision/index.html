@@ -49,26 +49,26 @@
 					<foreach name="data" item="val">
 						<div class="col-md-4 col-sm-4">
 							<div class="thumbnail">
-								<img src="{$val.plan.face}" alt="" style="width:100%;"/>
+								<img src="{:get_thumb_file($val['face'],'m_')}" alt="" style="width:100%;"/>
 								<!--进度条-->
 								<div>
 									<span class="small text-success">
-										学习进度：已完成{$val['mission_complete']}个任务
+										学习进度：已完成{$val['active_status']['mission_complete']}个任务
 									</span>
 									<div class="progress" style="height:10px;margin-bottom:0;">
-										<div class="progress-bar progress-bar-success" style="width:{$val['mission_complete_rate']}%;"></div>
+										<div class="progress-bar progress-bar-success" style="width:{:round($val['active_status']['complete_rate']*100,2)}%;"></div>
 									</div>
 								</div>
 								<div class="caption">
-									<h4 title="{$val['plan']['name']}">{:submore($val['plan']['name'],C('PLAN_NAME_SHOW'))}</h4>
+									<h4 title="{$val['plan']['name']}">{:submore($val['name'],C('PLAN_NAME_SHOW'))}</h4>
 									<p class="help-block">
 										状态：
 										<if condition="$val['complete_time']">
 											<span class="text-primary">已完成 - {:round((time()-$val['complete_time'])/86400,1)}天前</span>
-											<elseif condition="time()-$val['start_time'] gt 0" />
+											<elseif condition="time()-$val['start'] gt 0" />
 											<span class="text-success">
-												进行中({:round((time()-$val['start_time'])/86400,1)}天) -
-												<if condition="$val['today_complete']">
+												进行中({:round((time()-$val['start'])/86400,1)}天) -
+												<if condition="$val['active_status']['today_complete']">
 													今日已完成
 													<else/>
 													<span class="text-danger">
@@ -77,10 +77,10 @@
 												</if>
 											</span>
 											<else />
-											<span class="text-danger">未开始 - {:round(($val['start_time']-time())/86400,1)}天</span>
+											<span class="text-danger">未开始 - {:round(($val['start']-time())/86400,1)}天</span>
 										</if>
 									</p>
-									<p class="small text-warning">监督人：{$val.supervision.username}</p>
+									<p class="small text-warning">执行人：{$val.user.username}</p>
 									<p>
 										<a class="btn btn-success" href="{:U(GROUP_NAME.'/Plan/detail',array('pcid'=>$val['id']))}" target="_blank">
 											<!--<span class="glyphicon glyphicon-search"></span>-->
@@ -90,7 +90,7 @@
 											<span class="glyphicon glyphicon-list"></span>
 											监督日志
 										</a>
-										<if condition="$val['today_complete'] OR $val['complete_time']">
+										<if condition="$val['active_status']['today_complete'] OR $val['complete_time']">
 											<button class="btn btn-danger" type="button" disabled="disabled">
 												无法鞭笞
 											</button>

@@ -155,7 +155,7 @@ class FriendAction extends CommonAction
 
         //首先，查看生日相同的
         $map=array(
-            'user.id'    =>  array('neq',$uid),
+            'user.id'    =>  array(array('neq',$uid),array('exp','IS NOT NULL')),
         );
         //$birth=$db->field(array('id','username','info','email'))->where($map)->limit(4)->select();
         /*$birth=$db->query("SELECT `id`,`username`,`face`,`info`,`email`
@@ -169,7 +169,7 @@ class FriendAction extends CommonAction
         //生日相同的，注册时间相近的，最后登录时间相近的。
         $birth=$db
             ->table(C('DB_PREFIX').'user AS user')
-            //->join(C('DB_PREFIX')."friend AS fri ON (fri.fid={$uid} AND fri.rid=user.id) OR (fri.fid=user.id AND fri.rid={$uid})")
+            //->join('LEFT JOIN '.C('DB_PREFIX')."friend AS fri ON (fri.fid={$uid} AND fri.rid=user.id) OR (fri.fid=user.id AND fri.rid={$uid})",$uid,$uid)//已经加好友的不算。
             ->where($map)
             ->where("
             user.birth='%s' 

@@ -9,90 +9,184 @@
 class IndexAction extends CommonAction
 {
     public function index(){
-        $uid=session('uid');
-        //加载函数库！
-        load('@/plan');
+        $uid=session('uid');;
 
-        $plan_all=get_plan_all($uid);
-        $plan_num=countTodayPlan($plan_all);
+        $plan_num=M('plan_clone')->where('uid=%d',$uid)->field('COUNT(IF(start<'.time().',id,NULL)) as started,COUNT(IF(complete_time IS NOT NULL,id,NULL)) as completed')->find();
+
+        load('@/supervision');
+        $arr = count_supervision($uid);
+        $plan_num['sv_not_deal'] = $arr['waiting'];
         $this->plan_num=$plan_num;
+        //p(M('supervision_log')->getLastSql());
+        //p($plan_num);
+
+        //p(get_time(-8).':'.get_time(-7).':'.get_time(-6));
+        $this->days=7;//数据的个数。
 
         $this->day_active_path=U(GROUP_NAME.'/Index/day_active');
         $this->display();
     }
-    public function day_active(){
+    public function day_mission_plan(){
+        if(!IS_AJAX)
+            _404('页面不存在');
         $uid=session('uid');
-        //日活跃图的数据源
-        load('@/account');
 
+        //天数。
+        $days = 7;
 
         //今天00:00的时间戳
-        $today=get_time(0);
-        $db=M('mission_complete');
-        $db_pc=M('plan_clone');
-        $config=M('user_config')->where("uid='%d'",$uid)->find();
+        $db_pc=D('plan_clone');
+        $db_p = D('plan');
+
+        $map = array(
+            'uid'           =>  array('eq',$uid),
+            'complete_time' =>  array(array('gt',get_time(-$days+1)),array('exp','IS NULL'),'or'),
+        );
+        //$plan = D('plan_clone')->table(C('DB_PREFIX').'plan_clone AS pc')->join(C('DB_PREFIX').'plan AS p ON p.id=pc.pid')->where($map)->field('pc.id,pc.pid')->select();
+        //获取即将出场的plan_clone信息，并进行合并。
+        $plan = $db_pc->where($map)->field('id,pid,complete_time,start,end')->select();
+        foreach($plan as $key => $value){
+            $plan[$key]['stage'] = $db_p->get_stage_mission_by_pid($value['pid'],$value['id']);
+            $total_power = 0;
+            foreach($plan[$key]['stage'] as $k => $val){
+                $plan[$key]['stage'][$k]['power'] = $val['power']?$val['power']:10;
+                $total_power += $val['power']?$val['power']:10;
+            }
+            //分成两个循环，也是无奈
+            foreach($plan[$key]['stage'] as $k => $val){
+                //计算分配的时间。
+                $avg_time = ($plan[$key]['end']-$plan[$key]['start'])*$val['power']/$total_power;
+                $plan[$key]['stage'][$k]['avg_time'] = $avg_time;
+                $avg_time_m = $avg_time/count($val['mission']);//任务数。
+                $plan[$key]['stage'][$k]['avg_time_m'] = $avg_time_m;//效率优化。
+                /*foreach($val['mission'] as $k2=>$v){
+                    $plan[$key]['stage'][$k]['mission'][$k2]['avg_time'] = $avg_time_m;
+                }*/
+            }
+            $plan[$key]['total_power'] = $total_power;
+            $plan[$key]['active_schedule'] = $plan[$key]['start'];//实时进度初始化。
+        }
+        //$this->ajaxReturn($plan);
 
         //初始化数组。
         $arr=array(
             'status'    =>  false,
         );
-        //完成任务的数量统计
-        $arr['info'][0]['data']=array();
-        $data=array();
-        for($i=7;$i>=0;$i--){
-            //前i天的时间戳
-            $time_i=get_time(-$i);
-            $map=array(
-                'uid'   =>  array('eq',$uid),
-                //这里要注意between的用法，中间用,隔开
-                'time' =>  array('between',$time_i.','.get_time(-$i+1)),
-            );
-            $data[]=array(
-                $time_i*1000,//ms与s的转换。
-                intval($db->where($map)->count()),
+        //任务的数量统计
+        $arr['mission'][0]['data']=array();
+        $arr['mission'][1]['data']=array();
+        //$arr['mission'][2]['data']=array();
 
-            );
+        $arr['mission'][0]['name']='未完成任务';
+        $arr['mission'][1]['name']='已完成任务';
+        //$arr['mission'][2]['name']='总任务';
+
+        //计划的数量统计
+        $arr['plan'][0]['data']=array();
+        $arr['plan'][1]['data']=array();
+        $arr['plan'][2]['data']=array();
+
+        $arr['plan'][0]['name']='未完成计划';
+        $arr['plan'][1]['name']='已完成计划';
+        $arr['plan'][2]['name']='已延期计划';
+        for($i=$days-1;$i>=0;$i--){
+            //获取时间
+            $time_i = get_time(-$i);
+            $time_i_1 = get_time(-$i+1);
+
+            $complete_num = 0;
+            $not_complete_num = 0;
+            $total_num = 0;
+
+            $complete_plan = 0;
+            $not_complete_plan = 0;
+            $delay_plan = 0;
+
+            //统计当天完成时间和任务数。
+            foreach($plan as $key=>$value){
+                //注意大于等于，否则数据不对。
+                if((!empty($value['complete_time']) && $value['complete_time'] < $time_i) || $value['start']>=$time_i_1)//如果任务在第i天之前已结束，或者在第i天时还没开始，忽略。
+                    continue;
+                //这里的complete_time需要在里边。
+                $complete_time = 0;
+                foreach($value['stage'] as $k=>$val){
+                    foreach($val['mission'] as $k2=>$v){
+                        $total_num++;
+                        if($v['time']>$time_i && $v['time']<$time_i_1){
+                            $complete_num++;
+                            $complete_time += $val['avg_time_m'];
+                        }
+                    }
+                }
+                //如果已完成时间没有一天，则在数组里找未完成任务，直到达到一天为止。
+                if($complete_time < 86400){
+                    $not_complete_plan++;//当天该计划任务未完成
+                    foreach($value['stage'] as $k=>$val){
+                        foreach($val['mission'] as $k2=>$v){
+                            if(!($v['time']>$time_i && $v['time']<$time_i_1)){
+                                $complete_time += $val['avg_time_m'];
+                                $not_complete_num++;
+                                if($complete_time > 86400)
+                                    break(2);
+                            }
+                        }
+                    }
+                }else{
+                    $complete_plan++;
+                }
+                $plan[$key]['active_schedule'] += $complete_time;//实时进度。
+                if($plan[$key]['active_schedule'] < $time_i_1)
+                    $delay_plan++;
+            }
+            $arr['mission'][0]['data'][]=array($time_i*1000,$not_complete_num);
+            $arr['mission'][1]['data'][]=array($time_i*1000,$complete_num);
+            //$arr['mission'][2]['data'][]=array($time_i*1000,$total_num);
+
+            $arr['plan'][0]['data'][]=array($time_i*1000,$not_complete_plan);
+            $arr['plan'][1]['data'][]=array($time_i*1000,$complete_plan);
+            $arr['plan'][2]['data'][]=array($time_i*1000,$delay_plan);
         }
-        $arr['info'][0]['data']=$data;
-        //某些初次请求的，可能没有这个
-        $arr['info'][0]['name']='已完成任务';
 
-
-        //未完成任务的计算
-        $arr['info'][1]['data']=array();
-        $data=array();
-        for($i=7;$i>=0;$i--){
-            //前i天的时间戳
-            $time_i=get_time(-$i);
-            //需要完成的任务数量大概是complete_time在前几天之前的，已经开始的任务数.
-            $map=array(
-                'uid'   =>  array('eq',$uid),
-                //已经开始的
-                'start_time' =>  array('lt',$time_i),
-                //当时未完成或现在未完成的
-                'complete_time'  =>  array(array('exp','IS null'),array('gt',$time_i),'or'),
-            );
-            $need_num=$db_pc->where($map)->count();
-            $need_num*=ceil($config['stu_time']/6);//需要完成的任务数 约等于 每天学习时间/每个任务的时间 * 需要完成的计划。
-
-            //$need_num=0;
-            //需要完成减去已完成
-            $not_complete=$need_num-intval($arr['info'][0]['data'][$i][1]);
-            $not_complete=intval($not_complete>0?$not_complete:0);
-            //$complete=0;
-            //完成的任务数是mission_complete中
-            $data[]=array(
-                $time_i*1000,
-                $not_complete,
-            );
-        }
-        //p($db_pc->getLastSql());
-        $arr['info'][1]['data']=$data;
-        $arr['info'][1]['name']='未完成任务';
-
-        $arr['refresh_time']=time();
         $arr['status']=true;
 
+        $this->ajaxReturn($arr);
+    }
+    public function day_supervision(){
+        if(!IS_AJAX)
+            _404('页面不存在');
+        $uid=intval(session('uid'));
+
+        //天数。
+        $days = 7;
+
+        $db=M('supervision_log');
+
+        //初始化数组。
+        $arr=array(
+            'status'    =>  false,
+        );
+        //任务的数量统计
+        $arr['supervision'][0]['data']=array();
+        $arr['supervision'][1]['data']=array();
+
+        $arr['supervision'][0]['name']='已处理监督';
+        $arr['supervision'][1]['name']='未处理监督';
+        for($i=$days-1;$i>=0;$i--){
+            //获取时间
+            $time_i = get_time(-$i);
+            $time_i_1 = get_time(-$i+1);
+
+            //通过complete_time和resquest_time获取supervision_log统计数据。
+            $count=$db
+                ->table(C('DB_PREFIX').'supervision_log AS sv')
+                ->join('INNER JOIN '.C('DB_PREFIX').'plan_clone AS pc ON sv.pcid=pc.id AND pc.svid='.$uid)
+                //由于if的条件中sv.id能得出正确的统计结果。
+                ->field('COUNT(IF(sv.reply_time > '.$time_i.' AND sv.reply_time < '.$time_i_1.',sv.id,NULL)) AS complete, COUNT(IF(sv.complete_time < '.$time_i_1.' AND (sv.reply_time IS NULL OR sv.reply_time>'.$time_i_1.'),sv.id,NULL)) AS not_complete')
+                ->find();
+            $arr['supervision'][0]['data'][]=array($time_i*1000,intval($count['complete']));
+            $arr['supervision'][1]['data'][]=array($time_i*1000,intval($count['not_complete']));
+        }
+        $arr['status'] = true;
         $this->ajaxReturn($arr);
     }
     /*签到*/

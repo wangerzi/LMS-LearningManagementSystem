@@ -52,12 +52,12 @@ class ShowAction extends CommonAction
             $this->error('联系方式填写不正确');
 
         load('@/account');
-        $path = save_user_image('temp');
+        $path = save_user_image('temp','900','500','m_');
         if(!$path['status']) {
             $path = null;
         }
         else
-            $path = $_SERVER['HTTP_HOST'].':'.$_SERVER['SERVER_PORT'].get_thumb_file($path['path']);
+            $path = 'http://'.$_SERVER['HTTP_HOST'].':'.$_SERVER['SERVER_PORT'].get_thumb_file($path['path'],'m_');
         //$this->ajaxReturn(array('status'=>false,'info'=>'test','path'=>$path));
 
         $uid=session('uid');
@@ -68,7 +68,9 @@ class ShowAction extends CommonAction
             'uid'   =>  $uid,
             'pics'  =>  $path,
             'time'  =>  time(),
-            'status'=>  false,
+            'status'=>  null,
+            'image' =>  $path,
+            'ip'    =>  get_client_ip(),
         );
         if(!($fid=M('feedback')->add($data)))
             $this->error('加入数据库失败！');

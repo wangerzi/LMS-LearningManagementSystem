@@ -1,0 +1,8 @@
+2017年4月7日12:38:02
+1. wq_feedback，增加pics字段，保存上传图片的地址。
+--------Plan改版--------
+2. wq_plan_clone，增加start,end，删除start_time，
+3. wq_plan，删除total
+4. wq_stage，增加power.
+5. wq_mission，删除time.
+--------Plan改版--------

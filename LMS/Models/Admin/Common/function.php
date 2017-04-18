@@ -27,12 +27,12 @@ function updateConf($path, $dst, $filter='htmlspecialchars'){
         $is_func = true;
     else
         $is_func = false;
-    $new = array();
 
     foreach($arr as $key => $val){
         if(!isset($dst[$key])) {
-            $data['info'] = '表单元素缺失'.$key;
-            return $data;
+            //$data['info'] = '表单元素缺失'.$key;
+            //return $data;
+            continue;
         }
 
         $v = $is_func?$filter($dst[$key]) : $dst[$key];
@@ -41,10 +41,10 @@ function updateConf($path, $dst, $filter='htmlspecialchars'){
             //如果目标是数字，但上传可能不是数字，则判断上传是否为on，最后再进行floatval()转换。
             $v = $v == 'on'?1:doubleval($v);
         }
-        $new[$key]=$v;
+        $arr[$key]=$v;//更新信息。
     }
     //更新文件。
-    if(F(pathinfo($path, PATHINFO_FILENAME),$new,dirname($path).'/')) {
+    if(F(pathinfo($path, PATHINFO_FILENAME),$arr,dirname($path).'/')) {
         $data['status'] = true;
         return $data;
     }
@@ -52,5 +52,10 @@ function updateConf($path, $dst, $filter='htmlspecialchars'){
         $data['info'] = '更新失败，请尝试给予' . $path . '权限';
         return $data;
     }
+}
+function admin_message_num(){
+    $num = M('feedback')->where('status IS NULL')->count();
+    //p(M('feedback')->getLastSql());
+    return $num;
 }
 ?>

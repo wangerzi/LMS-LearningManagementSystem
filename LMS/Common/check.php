@@ -5,6 +5,25 @@
  * Date: 2016/12/3 0003
  * Time: 下午 7:47
  */
+
+/**
+ * 不能直接以true,false描述的错误信息，就用这个类。
+ * Class checkError
+ */
+class checkError{
+    protected $valid = false;
+    protected $message;
+    public function getMessage(){
+        return $this->message;
+    }
+    public function isValid(){
+        return $this->valid;
+    }
+    public function __construct($valid,$message=''){
+        $this->valid=$valid;
+        $this->message=$message;
+    }
+}
 /**
  * 检查字符串长度！
  * @param $str
@@ -14,10 +33,10 @@
  * @return bool|string
  */
 function mb_check_stringLen($str,$min=3,$max=12,$name='名称'){
-    $len=mb_strlen($str);
+    $len=mb_strlen($str,'utf-8');
     if($len<$min||$len>$max)
-        return $name.'长度需要在'.$min.'到'.$max.'之间！';
-    return true;
+        return new checkError(false, $name.'长度需要在'.$min.'到'.$max.'之间！');
+    return new checkError(true);
 }
 function check_forbid_name($str){
     $arr=mb_split(',',C('FORBID_NAME'));

@@ -45,6 +45,10 @@ $(function(){
                         max:USER_MAX_NAME,
                         message:'用户名不得小于'+USER_MIN_NAME+'字并不得大于'+USER_MAX_NAME+'字',
                     },
+                    regexp:{
+                        regexp: /^[\u4E00-\u9FFFa-zA-z1-9_]*$/,
+                        message: '用户名只能是中文、英文、数字、下划线.'
+                    },
                     remote:{
                         url:nameCheckUrl,
                         message:'用户名已被注册',

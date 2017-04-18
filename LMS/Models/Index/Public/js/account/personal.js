@@ -4,6 +4,15 @@
 $(function(){
     //replaceWord($("input[name='remind_everyday_time']"),'请填入提醒时间');
     //replaceWord($("input[name='remind_warning_time']"),'请填入提醒时间');
+    //调用datepicker插件
+    $('.datetime').datetimepicker({
+        format:'hh:ii',
+        startDate:today+' 0:0:0',
+        endDate:today+' 23:59:59',
+        startView:'day',
+        maxView:'day',
+        autoclose:true,
+    });
     $('#personInfo').bootstrapValidator({
         message: 'This value is not valid',
         feedbackIcons:{

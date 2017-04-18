@@ -18,20 +18,20 @@
 <block name="body">
 	<div class="container">
 		<div class="page-header">
-			<h1 id="timeline">{$plan_clone['plan']['name']}</h1>
+			<h1 id="timeline">{$plan_clone['name']}</h1>
 			<ul class="list-inline">
 				<li>
 					<span class="glyphicon glyphicon-eye-open"></span>
 					{$plan_clone['plan']['saw']}
 				</li>
 				<li class="text-success">
-					<for start="0" end="$plan_clone['plan']['star']">
+					<for start="0" end="$plan_clone['active_status']['star']">
 						<span class="glyphicon glyphicon-star"></span>
 					</for>
-					<for start="$plan_clone['plan']['star']" end="5">
+					<for start="$plan_clone['active_status']['star']" end="5">
 						<span class="glyphicon glyphicon-star-empty"></span>
 					</for>
-					<span class="text-info">({$plan_clone['plan']['comment_star']})</span>
+					<span class="text-info">({$plan_clone['active_status']['comment_star']})</span>
 				</li>
 				<li>
 					计划执行者：<a href="">{$plan_clone['user']['username']}</a>

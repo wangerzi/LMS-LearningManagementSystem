@@ -3,13 +3,20 @@
 	个性化
 </block>
 <block name="CSS_AND_JS">
-	<script type="text/javascript">
-		var yesterday='{:date("Y-m-d",time()-86400)}';
-	</script>
 	<!--特色JS/CSS-->
 	<link rel="stylesheet" href="__PUBLIC__/css/bootstrap/bootstrapValidator.min.css">
+	<link rel="stylesheet" href="__PUBLIC__/css/bootstrap/bootstrap-datetimepicker.min.css">
+
 	<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/bootstrapValidator.min.js'></script>
 	<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/moment-with-locales.min.js'></script>
+
+	<!--时间选择插件-->
+	<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/bootstrap-datetimepicker.min.js'></script>
+	<!--<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/bootstrap-datepicker.zh-CN.min.js'></script>-->
+	<script>
+		var today = '{:date("Y-m-d",time())}';
+	</script>
+
 	<script type="text/javascript" src='__PUBLIC__/js/account/personal.js'></script>
 	<!--/特色JS/CSS-->
 </block>
@@ -32,7 +39,7 @@
 									开启
 								</label>
 								<label class=" checkbox-inline">
-									<input type="radio" name="fri_rej_all" value="1" />
+									<input type="radio" name="fri_rej_all" value="0" />
 									关闭
 								</label>
 								<else/>
@@ -41,7 +48,7 @@
 									开启
 								</label>
 								<label class=" checkbox-inline">
-									<input type="radio" name="fri_rej_all" value="1" checked="checked" />
+									<input type="radio" name="fri_rej_all" value="0" checked="checked" />
 									关闭
 								</label>
 							</if>
@@ -51,7 +58,7 @@
 			</div>
 		</fieldset>
 		<br>
-		<fieldset>
+		<!--<fieldset>
 			<legend>学习计划设置</legend>
 			<div class="row">
 				<div class="col-md-5">
@@ -79,7 +86,7 @@
 				</div>
 			</div>
 		</fieldset>
-		<br>
+		<br>-->
 		 <fieldset>
 			<legend>提醒设置</legend>
 			<div class="row">
@@ -150,11 +157,13 @@
 					</div>
 				</div>
 				<div class="col-md-3" id="every-input-warp-top" <if condition="!$data['rem_evd']">style='display:none;'</if>>
+					<label>
+						提醒时间
+					</label>
 					<div class="form-group">
-						<label>
-							提醒时间
-						</label>
-						<input type="time" name="rem_evd_time" class="form-control" value="{:date('H:i',$data['rem_evd_time'])}" />
+						<input type="text" class="form-control datetime" name="rem_evd_time" value="{:date('H:i',$data['rem_evd_time'])}">
+						<!--<span class="input-group-addon add-on"><i class="glyphicon glyphicon-remove icon-remove"></i></span>
+						<span class="input-group-addon add-on"><i class="glyphicon glyphicon-calendar icon-calender"></i></span>-->
 					</div>
 				</div>
 			</div>
@@ -170,7 +179,7 @@
 				<div class="col-md-6">
 					<div class="form-group">
 						<label>
-							警告提醒：
+							未完成提醒：
 						</label>
 						<div class="">
 							<if condition="$data['rem_warn']">
@@ -196,18 +205,21 @@
 					</div>
 				</div>
 				<div class="col-md-3" id="warning-input-warp-top" <if condition="!$data['rem_warn']">style='display:none;'</if>>
+
+					<label>
+						提醒时间
+					</label>
 					<div class="form-group">
-						<label>
-							提醒时间
-						</label>
-						<input type="time" name="rem_warn_time" class="form-control" value="{:date('H:i',$data['rem_warn_time'])}" />
+						<input type="text" class="form-control datetime" name="rem_warn_time" value="{:date('H:i',$data['rem_warn_time'])}">
+						<!--<span class="input-group-addon"><i class="glyphicon glyphicon-remove"></i></span>
+						<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>-->
 					</div>
 				</div>
 			</div>
 			 <div class="row">
 				<div class="col-md-12">
 					 <p class="help-block">
-						开启此功能后，每当您在设置的时间点前没有完成任务，我们会自动给您发送邮件以告知您需要完成的任务！
+						开启此功能后，当您每天在设置的时间点前没有完成任务，我们会自动给您发送邮件以告知您需要完成的任务！
 					</p>
 				</div>
 			 </div>

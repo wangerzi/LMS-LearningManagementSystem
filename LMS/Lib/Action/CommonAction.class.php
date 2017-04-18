@@ -30,11 +30,15 @@ class CommonAction extends Action{
             }
         }
         //检查需要管理员权限的分组是否有管理员权限，放在前边是为了不被请登录不暴露后台地址
-        if(in_array(GROUP_NAME,C('NEED_ADMIN_GROUP'))&&!is_admin()){
-            _404('页面不存在！');
+        if(in_array(GROUP_NAME,C('NEED_ADMIN_GROUP'))){
+            if(!is_admin())
+                _404('页面不存在！');
+            //管理员的处理方法
+            $this->admin_message_num = admin_message_num();
+            $this->feedbackTip = M('feedback')->field('name,time')->where('status IS NULL')->order('time DESC')->limit(4)->select();//只显示一次都没处理过的，即：status IS NULL。
         }
         if(!in_array(GROUP_NAME.'/'.MODULE_NAME.'/'.ACTION_NAME,C('NO_LOGIN_ROUTE'))&&!is_login()) {
-            cookie('login_refer',__SELF__);
+            session('login_refer',__SELF__);
             $this->error('请先登录！', U(GROUP_NAME . '/Login/index'));
         }
         //把控制器名称传入作为left_row的默认值，前端自动激活相关选项。
@@ -43,7 +47,7 @@ class CommonAction extends Action{
         //实例化user，签到信息的完善
         if(is_login()) {
             $uid=session('uid');
-            $this->user = M('user')->field(array('id', 'username', 'face' , 'checkout' , 'exp', 'email'))->find($uid);
+            $this->user = M('user')->field(array('id', 'username', 'face' , 'checkout' , 'exp', 'email', 'info'))->find($uid);
             $this->checkout=array(
                 'total' => M('checkout')->where("uid='%d' AND time > '%d'",session('uid'),get_time(0))->count(),
                 'serialize' => $this->user['checkout'],
@@ -85,25 +89,33 @@ class CommonAction extends Action{
         }
     }
     //为某控制器初始化表单验证码。
-    protected function initUniqid($control=null){
+    /**
+     * @param null $control
+     * @param string $prefix    当需要初始化多个表单验证码的时候，可通过加前缀来解决。
+     * @return bool
+     */
+    protected function initUniqid($control=null,$prefix=''){
         $control=empty($control)?GROUP_NAME.'/'.MODULE_NAME.'/'.ACTION_NAME:$control;
         $uniqid=get_uniqid();
         session($control.'_uniqid',$uniqid);
 
-
-        $this->url_uniqid=$uniqid;
-        $this->uniqid=$uniqid;
+        //保存生成随机码
+        $name = $prefix.'url_uniqid';
+        $this->$name=$uniqid;
+        $name = $prefix.'uniqid';
+        $this->$name=$uniqid;
 
         //快捷生成表单的字符串。
-        $this->__UNIQID__="<input type='hidden' name='uniqid' value='{$uniqid}'/>";
+        $name = $prefix.'__UNIQID__';
+        $this->$name="<input type='hidden' name='uniqid' value='{$uniqid}'/>";
         return true;
     }
-    //标识码处理！
+    //标识码验证处理！
     protected function checkFormUniqid($uniqid,$control=null){
         if(!checkFormUniqid($uniqid,$control))
             $this->error('表单唯一标识码不正确，为了您的安全，请刷新重试！');
     }
-    //标识码处理！
+    //标识码验证处理！
     protected function checkUrlUniqid($uniqid,$control=null){
         if(!checkFormUniqid($uniqid,$control))
             $this->error('页面唯一标识码不正确，为了您的安全，请刷新重试！');

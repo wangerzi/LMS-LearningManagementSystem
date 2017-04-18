@@ -288,7 +288,8 @@ function Directory( $dir,$num=0644){
  * @return false|int
  */
 function get_time($day){
-    return strtotime(date('Y-m-d',time()+80400*$day));
+    //return strtotime(date('Y-m-d',time()+80400*$day));
+    return strtotime(date('Y-m-d',time()))+80400*$day;//两种写法可能会不一样，第一种可能会出错，神奇。
 }
 
 /**
@@ -307,7 +308,8 @@ function show_time($time,$format='Y-m-d H:i:s',$max=6){
 
     //获取天数
     $day=round($distance/86400,0);
-    return $day>0?$day.'天前 '.date('H:i',$time):'今天 '.date('H:i',$time);
+    $str = $day>2?$day.'天前 ':$day>1?'前天 ':$day>0?'昨天 ':'今天 ';//感觉这个?表达式乱糟糟的。。
+    return $str . date('H:i',$time);
 }
 
 /**
@@ -392,5 +394,22 @@ function get_uncomplete_plan($arr){
     $content=str_replace('{__INFO__}','您还有计划<span style="color:#90ed7d">'.$plans.'</span>今日未完成，不要忘记了哦！',$content);
     //p($content);
     return $content;
+}
+
+/**
+ * //用户信息缓冲，减少数据库读取量
+ */
+function users_cache($uid){
+    global $users_cache;
+    if(empty($users_cache))
+        $users_cache=array();
+    $uid = intval($uid);
+    if(!isset($users_cache[$uid])) {
+        $tmp = M('user')->field('id,username')->find($uid);//这里的字段用上就加。
+        if(empty($tmp))
+            $tmp = array('username'=>'无','id'=>0);
+        $users_cache[$uid] = $tmp;
+    }
+    return $users_cache[$uid];
 }
 ?>

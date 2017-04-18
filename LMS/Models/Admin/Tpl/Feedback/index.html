@@ -1,0 +1,102 @@
+<extend name="./LMS/Models/Admin/Tpl/base.html"/>
+<block name="title">反馈管理</block>
+<block name="CSS_AND_JS">
+    <script src="__PUBLIC__/js/user/index.js"></script>
+    <style>
+        .card-image.waves-effect{
+            overflow: visible;
+        }
+    </style>
+</block>
+<block name="body">
+    <p style="margin-left:2rem;">
+        <a href="{:U('readAll',array('uniqid'=>$url_uniqid))}" class="btn waves-effect waves-light red"><i class="material-icons left">done_all</i>全部已读</a>
+    </p>
+    <div class="row">
+        <assign name="i" value="0"></assign>
+        <foreach name="data" item="v" key="k">
+            <div class="col s12 m6">
+                <div class="card">
+                    <div class="card-image waves-effect waves-light">
+                        <if condition="$v['image']">
+                            <img class="activator" src="{:$v['image']}">
+                            <else/>
+                            <img class="activator" src="__PUBLIC__/images/feedback_default.jpg" alt="">
+                        </if>
+                        <if condition="$v['status']">
+                            <a href="{:U('statusHandle',array('id'=>$v['id'],'status'=>0,'uniqid'=>$url_uniqid))}" class="btn-floating halfway-fab waves-effect waves-light white"><i class="material-icons blue-text">star_border</i></a>
+                            <else/>
+                            <a href="{:U('statusHandle',array('id'=>$v['id'],'status'=>1,'uniqid'=>$url_uniqid))}" class="btn-floating halfway-fab waves-effect waves-light green"><i class="material-icons white-text">star</i></a>
+                        </if>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-title activator">{$v['name']}</div>
+                        <p>
+                        <span class="grey-text">
+                            <i class="material-icons left">access_time</i>
+                            {:show_time($v['time'])}
+                            <div class="clearfix"></div>
+                        </span>
+                        <span>
+                            <i class="material-icons grey-text left">contact_phone</i>
+                            联系：{$v['connect']} <br>
+                            <div class="clearfix"></div>
+                        </span>
+                        </p>
+                    </div>
+                    <div class="card-reveal">
+                        <div class="card-title activator">{$v['name']}<i class="material-icons right">close</i></div>
+                        <p>uid={$v['uid']?$v['uid']:'游客'}</p>
+                        IP:<a href="">{$v['ip']}</a>
+                        <p>内容：{$v['content']}<br>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <if condition="$i++%2">
+                <div class="clearfix"></div>
+            </if>
+        </foreach>
+    </div>
+    <ul class="pagination">
+        {$page}
+    </ul>
+</block>
+<block name="other_not_use">
+    <ul class="collapsible popout">
+        <foreach name="data" item="v" key="k">
+            <li>
+                &lt;!&ndash;是否已读&ndash;&gt;
+                <div class="right" style="margin:1rem 1rem 0 0 ;">
+                    <if condition="$v['status']">
+                        <a href="{:U('statusHandle',array('id'=>$v['id'],'status'=>0,'uniqid'=>$url_uniqid))}"><i class="material-icons">star_border</i></a>
+                        <else/>
+                        <a href="{:U('statusHandle',array('id'=>$v['id'],'status'=>1,'uniqid'=>$url_uniqid))}"><i class="material-icons">star</i></a>
+                    </if>
+                </div>
+                <div class="collapsible-header">
+                    <h4 style="padding-top:1rem;">{$v['name']}</h4>
+                    <span class="grey-text">
+                        <i class="material-icons left">access_time</i>
+                        {:show_time($v['time'])}
+                    </span><br>
+                    <span>
+                        联系方式：{$v['connect']} <br>
+                    </span>
+                </div>
+                <div class="collapsible-body">
+                    <p>uid={$v['uid']}</p>
+                    IP:<a href="">{$v['ip']}</a>
+                    <p>内容：{$v['content']}<br>
+                        配图：
+                        <if condition="$v['image']">
+                            <img src="{$v['image']}" class="picboxed" style="width:30rem;" alt="">
+                            <else/>
+                            无
+                        </if>
+                    </p>
+                </div>
+            </li>
+        </foreach>
+    </ul>
+</block>

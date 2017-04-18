@@ -2,6 +2,8 @@
  * Created by Administrator on 2016/10/30 0030.
  */
 $(function(){
+    //激活collapase折叠插件;
+    //$('.collapse').collapse();
     $('#left-leader').find("li[alt='"+left_row+"']").addClass('active');
     /*签到的提交按钮*/
     $('#checkout').click(function(){

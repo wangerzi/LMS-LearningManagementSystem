@@ -27,9 +27,10 @@ $(function(){
                     notEmpty:{
                         message:'用户名不能为空'
                     },
-                   /* emailAddress:{
-                        message:"不是邮箱a!",
-                    },*/
+                    regexp:{
+                        regexp: /^([\u4E00-\u9FFFa-zA-z1-9_]*)|([a-zA-z1-9]{1,20}@{a-zA-Z1-9}{1,20}[\.a-zA-Z1-9]{0,5})$/,
+                        message: '用户名只能是中文、英文、数字、下划线，或者邮箱不符合规范'
+                    },
                     remote:{
                         url:userNameCheckUrl,
                         message:'用户名或邮箱不存在',

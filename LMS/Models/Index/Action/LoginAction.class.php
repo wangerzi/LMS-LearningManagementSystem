@@ -35,6 +35,11 @@ class LoginAction extends CommonAction{
                 $this->error('密码不正确！');
             if($user['lock'])
                 $this->error('用户已被锁定');
+            
+            //清空表单验证码
+            clearUniqid();
+            //清理验证码。
+            imageCode::remove('login_verify');
 
             //设置cookie
             session('uid',$user['id']);
@@ -42,12 +47,11 @@ class LoginAction extends CommonAction{
             cookie('username',$user['username']);
             session('is_login',true);
 
-            session('login_verify',null);//使用后清空验证码，防止重复提交。
-
             //验证是否是管理员。
-            $res=M('admin')->where('uid=%d',$user['id'])->limit(1)->select();
+            $res=M('admin')->field('level')->where('uid=%d',$user['id'])->find();
             if(count($res)>0) {
                 session(C('ADMIN_TAG'), true);
+                session('ADMIN_LEVEL', $res['level']);
             }
             //更新最近登录时间和登录IP
             $map = array(
@@ -56,8 +60,6 @@ class LoginAction extends CommonAction{
                 'login_ip'  =>  get_client_ip(),
             );
             $db->save($map);
-            //清空表单验证码
-            clearUniqid();
 
             //处理info表缺失的异常
             $db_user_info=M('user_config');
@@ -75,20 +77,18 @@ class LoginAction extends CommonAction{
             }
 
             //自动跳转到登录之前的页面
-            $refer=cookie('login_refer');
+            $refer=session('login_refer');
 			$data=array(
                     'info'  =>  '登录成功，自动跳至登录前所在地',
                     'status'=>  1,
                 );
-            //在为空或者是主页的情况下，直接跳转，否则提示跳转并清除cookie.
-            if(empty($refer)||$refer==U(GROUP_NAME.'/Index/index')){
-                cookie('login_refer',null);
+            //在为空或者是主页的情况下，直接跳转，否则提示跳转并清除session.
+            if(!empty($refer)&&$refer!=U(GROUP_NAME.'/Index/index','',true,false,true)){
                 //redirect(U(GROUP_NAME . '/Index/index'));
-            }else{
-                cookie('login_refer',null);
 				$data['location']=$refer;
                 //$this->success('登录成功，自动跳转至登录前所在地');
             }
+            session('login_refer',null);
 			$this->ajaxReturn($data);
         }
         else

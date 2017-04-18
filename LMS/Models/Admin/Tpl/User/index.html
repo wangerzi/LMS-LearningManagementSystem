@@ -2,54 +2,83 @@
 <block name="title">用户列表</block>
 <block name="CSS_AND_JS">
     <script type="text/javascript" src="__PUBLIC__/js/User/index.js"></script>
+    <style>
+        .collection .collection-item.active{
+            background-color: #fff;
+            color:rgba(0,0,0,0.870588);
+        }
+        .collapsible-header{
+            border-bottom:0;
+        }
+        .collapsible-header.active{
+            border-bottom:1px solid #ddd
+        }
+        .collection-item i{
+            margin-right: 1rem;
+        }
+    </style>
 </block>
 <block name="body">
-    <table class="hightlight centered responsive-table">
-        <thead>
-        <tr>
-            <th>用户名</th>
-            <th>email</th>
-            <th>注册时间</th>
-            <th>最后时间</th>
-            <th>最后IP</th>
-            <th>生日</th>
-            <th>锁定</th>
-            <th>激活</th>
-            <th>操作</th>
-        </tr>
-        </thead>
-        <tbody>
+    <h4 class="center-align">用户列表</h4>
+    <ul class="collection collapsible popout">
         <foreach name="data" item="v" key="k">
-            <tr>
-                <td title="{$v['username']}">{$v['username']}</td>
-                <td title="{$v['email']}">{$v['email']}</td>
-                <td title="{:date('Y-m-d H:i:s',$v['reg_time'])}">{:show_time($v['reg_time'],'Y-m-d')}</td>
-                <td title="{:date('Y-m-d H:i:s',$v['last_tim'])}">{:show_time($v['last_time'],'Y-m-d')}</td>
-                <td><a href="#!" onclick="ipDetail(this)">{$v['login_ip']}</a></td>
-                <td title="{:date('Y-m-d',$v['birth'])}">{:date('Y-m-d',$v['birth'])}</td>
-                <td>
+            <li class="collection-item avatar">
+                <span class="secondary-content">
+                    <if condition="$v['aduid']">
+                        <a href="#!" title="该用户是管理员"><i class="material-icons">assignment_ind</i></a>
+                        <elseif condition="$adminLevel gt 0"/>
+                        <a href="#!" title="设为管理员" onclick="addAdmin(this)" alt="{$v['id']}"><i class="material-icons green-text">add_circle</i></a>
+                    </if>
+                     <a href="{:U(GROUP_NAME.'/User/mail',array('mail'=>$v['email']))}" title="管理员邮件"><i class="material-icons">mail</i></a>
                     <if condition="$v['lock']">
-                        <a href="{:U(GROUP_NAME.'/User/lock',array('uid'=>$v['id'],'lock'=>0,'uniqid'=>$url_uniqid))}">解锁</a>
-                        <else/>
-                        <a href="{:U(GROUP_NAME.'/User/lock',array('uid'=>$v['id'],'lock'=>1,'uniqid'=>$url_uniqid))}">锁定</a>
+                    <a href="{:U(GROUP_NAME.'/User/lock',array('uid'=>$v['id'],'lock'=>0,'uniqid'=>$url_uniqid))}" title="解锁"><i class="material-icons">lock</i></a>
+                    <else/>
+                    <a href="{:U(GROUP_NAME.'/User/lock',array('uid'=>$v['id'],'lock'=>1,'uniqid'=>$url_uniqid))}" title="锁定"><i class="material-icons">lock_open</i></a>
                     </if>
-                </td>
-                <td>
                     <if condition="$v['active']">
-                        <a onclick="activeUser(this);" alt="{:U('Index/Register/active',array('active'=>$v['active'],'uniqid'=>$url_uniqid))}" style="cursor: pointer;">激活</a>
-                        <else/>
-                        <span>已激活</span>
+                        <a href="#!" title="激活" onclick="activeUser(this);" alt="{:U('Index/Register/active',array('active'=>$v['active'],'uniqid'=>$url_uniqid))}"><i class="material-icons">vpn_key</i></a>
+                    <else/>
+                        <a href="#!" title="已激活" disabled="disabled"><i class="material-icons grey-text">vpn_key</i></a>
                     </if>
-                </td>
-                <td>
-                    [<a href="{:U(GROUP_NAME.'/User/mail',array('mail'=>$v['email']))}">邮件</a>]
-                    [<a onclick="deleteUser(this)" alt="{:U(GROUP_NAME.'/User/delete',array('uid'=>$v['id'],'uniqid'=>$url_uniqid))}" style="cursor: pointer;">删除</a>]
-                </td>
-            </tr>
+                    <a href="#!" onclick="deleteUser(this)" alt="{:U(GROUP_NAME.'/User/delete',array('uid'=>$v['id'],'uniqid'=>$url_uniqid))}"><i class="material-icons red-text">delete_forever</i></a>
+                </span>
+                <div class="collapsible-header">
+                    <img src="{$v['face']}" style="width:40px;" alt="" class="circle">
+                    <span class="title">{$v['username']}<if condition="$v['aduid']"><b class="yellow-text text-darken-1"> - Lv.{$v['level']}</b></if>
+                    </span>
+                    <p>{$v['email']} -  <a href="#!" onclick="ipDetail(this)">{$v['login_ip']}</a></p>
+                </div>
+                <div class="collapsible-body">
+                    生日：{:date('Y-m-d',$v['birth'])} <br>
+                    简介：{$v['info']} <br>
+                    注册系统时间：{:show_time($v['reg_time'],'Y-m-d')}<br>
+                    最后登录时间：{:show_time($v['last_time'],'Y-m-d')}<br>
+                    连续签到：{$v['checkout']}
+                </div>
+            </li>
         </foreach>
-        </tbody>
-    </table>
-    {$page}
+    </ul>
+    <ul class="pagination" style="padding-left:1rem;">
+        {$page}
+    </ul>
+    <div id="addAdmin" class="modal">
+        <form action="{:U('addAdmin')}" method="post">
+            {$add_admin___UNIQID__}
+            <div class="modal-content">
+                <h4>添加这个用户至管理员</h4>
+                <br>
+                    <div class="input-field">
+                        <label>管理员等级</label>
+                        <input type="number" name="level" min="0" max="{$adminLevel-1}" value="{$adminLevel-1}" class="validate">
+                        <input type="hidden" name="uid" value="0">
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="modal-action btn-flat waves-effect waves-light">提交</button>
+                <button type="button" class="modal-action modal-close btn-flat waves-effect waves-green">取消</button>
+            </div>
+        </form>
+    </div>
     <div id="userConf" class="modal">
         <div class="modal-content">
             <h4>确定要删除这个用户吗？</h4>

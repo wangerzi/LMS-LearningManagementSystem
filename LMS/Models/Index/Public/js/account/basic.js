@@ -6,6 +6,7 @@ $(function(){
     replaceWord($("input[name='info']"),'他（她）没有留下自我介绍哦！');
     $('#basicInfo').bootstrapValidator({
         message: 'This value is not valid',
+        verbose:false,
         feedbackIcons:{
             /*验证状态用的图标！*/
             valid:'glyphicon glyphicon-ok',
@@ -15,7 +16,6 @@ $(function(){
         fields:{
             username:{
                 validators:{
-                    verbose:false,
                     notEmpty:{
                         message:'用户名不能为空'
                     },
@@ -23,6 +23,10 @@ $(function(){
                         min:MIN_NAME,
                         max:MAX_NAME,
                         message:'用户名长度需要是'+MIN_NAME+'字到'+MAX_NAME+'字之间！',
+                    },
+                    regexp:{
+                        regexp: /^[\u4E00-\u9FFFa-zA-z1-9_]*$/,
+                        message: '用户名只能是中文、英文、数字、下划线.'
                     },
                     remote:{
                         url:nameCheckUrl,
@@ -39,7 +43,6 @@ $(function(){
             },
             info:{
                 validators:{
-                    verbose:false,
                     stringLength:{
                         min:0,
                         max:200,

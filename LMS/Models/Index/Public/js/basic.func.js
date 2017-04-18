@@ -251,6 +251,61 @@ function ajaxOperation(obj,url,data,success,error){
 		}
 	})
 }
+/**
+ * 提交表单，默认将button.save禁用，以防止重复提交。
+ * @param obj
+ * @param callback
+ * @param extdata
+ */
+function submitForm(obj,callback,extdata){
+	var form=$(obj);
+	var submit=form.find('.save');
+
+	extdata = extdata?extdata:{};
+
+	$(submit).attr('disabled','disabled');
+
+	var oldValue=$(submit).html();
+	$(submit).html(
+		'<span class="glyphicon glyphicon-refresh"></span>' +
+		'保存中'
+	);
+
+	form.ajaxSubmit({
+		url:form.attr('action'),
+		dataType:'json',
+		data:extdata,
+		type:'post',
+		success:function(data) {
+			if(!data.status){
+				wq_alert(data.info);
+				submit.removeAttr('disabled');
+				submit.html(oldValue);
+				return 0;
+			}
+			if(typeof callback  ==   'function')
+				callback(data);
+			else{
+				wq_alert('保存成功');
+			}
+
+			if(typeof data.uniqid != 'undefined')
+				$(form).find('input[name="uniqid"]').val(data.uniqid);
+			submit.removeAttr('disabled');
+			submit.html(oldValue);
+		},
+		error:function(xml,text){
+			wq_alert(text+'可能服务器忙，请稍后重试！');
+			submit.removeAttr('disabled');
+			submit.html(oldValue);
+			return 0;
+		}
+	});
+}
+/**
+ * 根据时间的不同改变obj的内容。
+ * @param obj
+ */
 function say_hello(obj){
 	var val = '';
 	var date = new Date();

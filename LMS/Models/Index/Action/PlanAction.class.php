@@ -11,77 +11,12 @@ class PlanAction extends CommonAction
     /*学习计划首页，计划列表！*/
     public function index(){
         import('ORG.Util.Page');
-        //为自己初始化标识码，验证时，需传入此控制器的信息！
-        $this->initUniqid();
 
         $uid=session('uid');
-        $db=M('plan_clone');
+        $db=D('plan_clone');
         $type=I('get.type');
 
-        //加载函数库！
-        load('@/plan');
 
-        $plan_all=get_plan_all($uid);
-        $plan_num=countTodayPlan($plan_all);
-
-
-        //正在进行的
-        if($type=='continue') {
-            $message='正在进行计划';
-            $info='正在进行计划';
-            $plan=filterContinuePlan($plan_all);
-            $count=$plan_num['continue'];
-            $color='info';//面板的颜色
-        }//结束的
-        elseif($type=='end') {
-            $message='已完成计划';
-            $info='已完成计划';
-            $plan=filterContinuePlan($plan_all,true);
-            $count=$plan_num['end'];
-            $color='warning';
-        }elseif($type=='today_complete'){//今日完成
-            $message='今日已完成';
-            $info='今日已完成';
-            $plan=filterTodayCompletePlan($plan_all);
-            $count=$plan_num['not_complete'];
-            $color='success';
-        }
-        elseif($type=='today_not_complete'){//今日未完成
-            $message='今日未完成';
-            $info='今日未完成';
-            $plan=filterTodayCompletePlan($plan_all,true);
-            $count=$plan_num['complete'];
-            $color='danger';
-        }
-        else{
-            $message='全部学习计划';
-            $info='计划';
-            $plan=$plan_all;
-            unset($plan['config']);
-            $count=$plan_num['all'];
-            $color='primary';
-        }
-        //小标题
-        $this->title=$message;
-        //当没有内容的时候，描述不一样。
-        $this->title_info=$info;
-        $this->plan_num=$plan_num;
-        //面板颜色！
-        $this->color=$color;
-
-        $listRows=6;
-        $page=new Page($count,$listRows);
-        $page->setConfig('theme','%first% %upPage% %linkPage% %downPage% %end%');
-        $this->page=$page->show();
-
-        //分页
-        $arr = array_slice($plan, $page->firstRow, $page->listRows);
-        $this->data = $arr;
-        //p($arr);
-        $this->display();
-
-        /*
-         * 这种传统数据库的方式不能解决统计数目的问题，因为那个SQL语句写不出来。。。
         $map=array(
             'uid'   =>  array('eq',$uid),
         );
@@ -91,9 +26,6 @@ class PlanAction extends CommonAction
         $end=array(
             'complete_time' => array('exp', 'IS NOT null'),
         );
-
-        $all_plan=get_plan_all($uid);
-        $today_count=countTodayPlan($all_plan);
 
         //各个类型的学习计划数据统计
         $plan_num=array(
@@ -112,43 +44,76 @@ class PlanAction extends CommonAction
         if($type=='continue') {
             $message='正在进行计划';
             $info='正在进行计划';
+            $color = 'info';
             $count=$plan_num['continue'];
             $map=array_merge($map,$continue);
         }//结束的
         elseif($type=='end') {
             $message='已完成计划';
             $info='已完成计划';
+            $color = 'warning';
             $count=$plan_num['end'];
             $map=array_merge($map,$end);
-        }elseif($type=='today_complete'){//今日完成
+        }elseif($type=='today_complete'){//今日完成,今日未完成，之所以放在一起，是因为今日已完成完成计划的PID有利于效率优化。
             $message='今日已完成';
-            $info='今日已完成';
+            $info='今日已完成计划';
+            $color = 'success';
 
-            //这代表已经取好了，直接用
+            //这标记代表已经取好了，直接用
             $mode=0;
 
 
-            //由于今日已完成计划中可能含有已经完成的计划，所以将所有计划都取出来
-            $plan=filterTodayCompletePlan(get_plan_all($uid));
+            //由于今日已完成计划中可能含有已经完成的计划，所以将所有可能的计划都取出来
+            $temp = array(
+                'uid'   =>  array('eq',$uid),
+                'time'  =>  array(array('gt',get_time(0)),array('lt',time()),'and'),
+            );
+            $plan=M('mission_complete')->field('pcid')->where($temp)->group('pcid')->select();
+            foreach($plan as $key=>$value){
+                $plan[$key] = $value['pcid'];
+            }
+            $plan = $db->detail($plan);
+            foreach($plan as $key => $value){
+                if($value['complete_time'] or !$value['active_status']['today_complete'])//这里效率有点低了，但由于不知道从哪里开始，到哪里结束，效率优化也没有办法。
+                    unset($plan[$key]);
+            }
+            //p(M('mission_complete')->getLastSql());
             //p($plan);
             $count=count($plan);
         }
-        elseif($type=='today_not_complete'){//今日未完成
+        elseif($type=='today_not_complete'){
             $message='今日未完成';
-            $info='今日未完成';
+            $info='今日未完成计划';
+            $color = 'danger';
 
+            //这标记代表已经取好了，直接用
             $mode=0;
 
-            $plan=filterTodayCompletePlan(get_plan_all($uid),true);
+            //由于进行中计划中包含未完成计划，所以将所有可能的计划都取出来
+            $temp = array(
+                'uid'           =>  array('eq',$uid),
+                'complete_time' =>  array('exp','IS NULL')
+            );
+            $plan=$db->field('id')->where($temp)->select();
+            foreach($plan as $key=>$value){
+                $plan[$key] = $value['id'];
+            }
+            $plan = $db->detail($plan);
+            foreach($plan as $key => $value){
+                if($value['complete_time'] or $value['active_status']['today_complete'])//这里效率有点低了。。
+                    unset($plan[$key]);
+            }
             $count=count($plan);
         }
         else{
             $message='全部学习计划';
             $info='计划';
+            $color = 'primary';
             $count=$plan_num['all'];
         }
         //小标题
         $this->title=$message;
+        $this->color = $color;
         //当没有内容的时候，描述不一样。
         $this->title_info=$info;
 
@@ -158,8 +123,14 @@ class PlanAction extends CommonAction
         $this->page=$page->show();
 
         if($mode) {
-            $arr = $db->where($map)->order('create_time desc,complete_time desc')->limit($page->firstRow, $page->listRows)->select();
-            $this->data=merge_plan($arr);
+            $arr = $db->field('id')->where($map)->order('create_time desc,complete_time desc')->limit($page->firstRow, $page->listRows)->select();
+            if(!empty($arr)){
+                foreach($arr as $key=>$value)
+                    $arr[$key] = $arr[$key]['id'];
+                $this->data=D('plan_clone')->detail($arr);
+            }else{
+                $this->data=null;
+            }
         }
         else {
             $arr = array_slice($plan, $page->firstRow, $page->listRows);
@@ -170,7 +141,6 @@ class PlanAction extends CommonAction
 
         //p($this->data);
         $this->display();
-        */
     }
     public function detail(){
         if(!isset($_GET['pcid'])||IS_POST)
@@ -178,30 +148,32 @@ class PlanAction extends CommonAction
         /*if(!checkUrlUniqid(I('get.uniqid'),GROUP_NAME.'/Plan/index'))
             $this->error('您的URL验证已失效，为了您的安全，请刷新原页面后重新打开此页面！');*/
         $uid=session('uid');
-        $db=M('plan_clone');
+        $db=D('plan_clone');
+        $pcid = I('get.pcid',0,'intval');
 
         //这里让监督者也能看到计划详情
-        $data=$db->where("id='%d' AND (uid='%d' OR svid='%d')",I('get.pcid',0,'intval'),$uid,$uid)->limit(1)->select();
+        $data=$db->where("id='%d' AND (uid='%d' OR svid='%d')",$pcid,$uid,$uid)->find();
         if(empty($data))
             $this->error('计划不存在！');
-        //为点赞初始化标识码。
-        $this->initUniqid(GROUP_NAME.'/Plan/praise');
         //更新计划信息
-        M('plan')->where("id='%d'",$data[0]['pid'])->setInc('saw',1);
+        M('plan')->where("id='%d'",$data['pid'])->setInc('saw',1);
         //p(M('plan')->getLastSql());
 
-        $this->initUniqid();
+        //为点赞初始化验证码。
+        $this->initUniqid(GROUP_NAME.'/Plan/praise');
+
         load('@/plan');
-        $data=merge_plan($data,'m_');
-        //将合并好计划信息后的数据进行阶段和任务的合并！
-        $data=merge_plan_mission($data);
-        $this->data=$data[0];
+        plan_complete($pcid);//需要更新下是否已完成。
+
+        $plan = $db->detail($pcid,1,true);
+        //p($plan);
+        $this->data=$plan;
         //是否是监督者
-        $this->supervision=$data[0]['svid']==$uid;
+        $this->supervision=$data['svid']==$uid;
         //p($this->data);
 
-        $pid=$data[0]['plan']['id'];
-        $data=M('plan_praise')->where("uid='%d' AND pid='%d'",$uid,$pid)->limit(1)->select();
+        $pid=$data['pid'];
+        $data=M('plan_praise')->where("uid='%d' AND pid='%d'",$uid,$pid)->find();
         if(empty($data))
             $this->praised=0;
         else
@@ -209,11 +181,8 @@ class PlanAction extends CommonAction
         $map=array(
             'pid'   =>  array('eq',$pid)
         );
-        $this->studyPeople=$db->where($map)->count();
-        //分配下一些临时变量
-        $this->i=0;
-        $this->j=0;
-        $this->k=0;
+        $this->delay = round($plan['active_status']['delay_time']*1.0/86400,2);
+        $this->studyPeople=$db->where($map)->count();//学习人数
         $this->display();
     }
 
@@ -226,21 +195,20 @@ class PlanAction extends CommonAction
         $db_pc=M('plan_clone');
         $db_cop=M('mission_complete');
 
-        //这里这样写，是因为需要使用merge_plan函数就需要这样。。。
-        $plan_clone[0]=$db_pc->find($pcid);
+        $plan_clone=$db_pc->find($pcid);
         if(empty($plan_clone))
             $this->error('没有此计划');
         //如果不是所有者和监督者，则无法查看
-        if($plan_clone[0]['svid']!=$uid&&$plan_clone[0]['uid']!=$uid)
+        if($plan_clone['svid']!=$uid && $plan_clone['uid']!=$uid)
             $this->error('无权查看');
         load('@/plan');
-        //由于需要监督者名字，计划名称等，所以用了merge_plan，里边包含数据库操作，效率着想，违规情况无需进行此操作，所以放在后边
-        $plan_clone=merge_plan($plan_clone);
+        //由于需要监督者名字，计划名称等，里边包含数据库操作，效率着想，违规情况无需进行此操作，所以放在后边
+        $plan_clone=D('plan_clone')->detail($pcid,1,true);
         //如果是监督者看的，那么重新读取表
-        if($plan_clone[0]['svid']==$uid){
-            $plan_clone[0]['user']=M('user')->field('id,username')->find($plan_clone[0]['uid']);
+        if($plan_clone['svid']==$uid){
+            $plan_clone['user']=M('user')->field('id,username')->find($plan_clone['uid']);
         }else {
-            $plan_clone[0]['user'] = $this->user;
+            $plan_clone['user'] = $this->user;
         }
 
         //获取记录，这里可能要做ajax翻页，但挺麻烦的
@@ -249,9 +217,10 @@ class PlanAction extends CommonAction
         //p($db_cop->getLastSql());
 
         //是否是监督者
-        $this->supervision=$plan_clone[0]['svid']==$uid;
+        $this->supervision=$plan_clone['svid']==$uid;
 
-        $this->plan_clone=$plan_clone[0];
+        $this->plan_clone=$plan_clone;
+        //p($this->plan_clone);
         $this->data=$complete_mission;
         $this->display();
     }
@@ -400,11 +369,10 @@ class PlanAction extends CommonAction
             $this->ajaxReturn($data);
         }
 
-        $plan_clone=M('plan_clone')->where("uid='%d' AND id='%d'",$uid,$pcid)->limit(1)->select();
-        $plan_clone=$plan_clone[0];
+        $plan_clone=M('plan_clone')->field('id,pid,uid,start,svid')->where("uid='%d' AND id='%d'",$uid,$pcid)->find();
         $mission=M('mission')->find($mid);
         $stage=M('stage')->find($mission['sid']);
-        $plan=M('plan')->find($stage['pid']);
+        $plan=M('plan')->find($stage['pid']);//反向查询计划，然后验证plan和plan_clone是否相契合。
         //检查是否存在任务和计划！
         if(empty($plan_clone)||empty($mission)||empty($stage)||empty($plan)) {
             $data['text']='计划不存在！';
@@ -415,7 +383,7 @@ class PlanAction extends CommonAction
             $data['text']='操作失败，任务与计划不对应！';
             $this->ajaxReturn($data);
         }
-        if($plan_clone['start_time']>time()){
+        if($plan_clone['start']>time()){
             $data['text']='操作失败，任务未开始！';
             $this->ajaxReturn($data);
         }
@@ -460,13 +428,16 @@ class PlanAction extends CommonAction
                 $this->ajaxReturn($data);
             }
             //如果完成整个计划，则更新完成时间。
-            if(count_total_mission($plan['id'])>=count_complete_mission($pcid)){
-                $tmp['id']=$pcid;
-                $tmp['complete_time']=time();
-                M('plan_clone')->save($plan_clone);
-            }
+            plan_complete($pcid);
             $exp=$this->level['complete_exp'];
             M('user')->where("id='%d'",$uid)->setInc('exp',$exp);
+
+            //给监督者发信。
+            if($plan_clone['svid']){
+                load('@/email');
+                load('@/message');
+                addEmailTimeQueue(get_email($plan_clone['svid']),'监督者','您监督的学习计划有了新进展','您监督的学习计划《'.$plan['name'].'》在北京时间'.date('Y年m月d日 H:i:s',time()).'提交了学习总结，进入系统<a href="'.U(GROUP_NAME.'/Supervision/waiting','',true,false,true).'">检阅进度</a>吧！',time());
+            }
             $data['status']=true;
             $data['time']=date('Y年m月d日 H:i:s',$time);
             $data['exp']=$exp;
@@ -479,37 +450,54 @@ class PlanAction extends CommonAction
      */
     public function share(){
         $pid=I('get.pid',0,'intval');
+        $uid = session('uid');
 
-        $db=M('plan');
-        $plan=$db->find($pid);
+        $db=D('plan');
+        $plan=$db->field('id,uid,face,open,mode,name,create_time,last_edit_time,praised,saw')->find($pid);
         if(empty($plan)){
             $this->error('该计划不存在');
         }
-        //解析缩略图
-        $face=$plan['face'];
-        $plan['face']=get_thumb_file($face,'m_');
-        $plan['mission_total']=$db->table(C('DB_PREFIX').'plan AS p')->join(C('DB_PREFIX').'stage AS s ON s.pid=p.id')->join(C('DB_PREFIX').'mission AS m ON m.sid=s.id')->where("p.id='%d'",$pid)->count();
+        //$plan['mission_total']=$db->table(C('DB_PREFIX').'plan AS p')->join(C('DB_PREFIX').'stage AS s ON s.pid=p.id')->join(C('DB_PREFIX').'mission AS m ON m.sid=s.id')->where("p.id='%d'",$pid)->count();
         //p($db->getLastSql());
 
         //在计划公开的情况下查询数据
         if($plan['open']){
-            load('@/plan');
-            //获取任务的其他信息
-            $plan['stage']=get_stage($plan['id']);
-            $plan['creator']=M('user')->field('id,username')->find($plan['uid']);
+            $plan['stage'] = $db->get_stage_mission_by_pid($pid);
+
             $mission_num=0;
+            $total_power=0;
             foreach($plan['stage'] as $key=>$value){
-                $mission_num+=count($value['mission']);
+                $plan['stage'][$key]['power'] = $value['power']?$value['power']:10;
+                $total_power += $plan['stage'][$key]['power'];
+            }
+            foreach($plan['stage'] as $key=>$value){
+                $num = count($value['mission']);
+                $mission_num += $num;
+
+                $plan['stage'][$key]['avg_rate'] = $value['power']*1.0/$total_power;
+                $plan['stage'][$key]['m_avg_rate'] = $value['power']*1.0/$total_power/$num;
             }
             $plan['mission_total']=$mission_num;
-            $this->initUniqid(GROUP_NAME.'/Plan/praise');
         }
+        //创造者
+        $plan['creator']=M('user')->field('id,username')->find($plan['uid']);
+        $plan['joined'] = M('plan_clone')->field('id,create_time')->where('uid=%d AND pid=%d',$uid,$pid)->find();
+
+        $plan['active_status'] = array(
+            //评论区
+            'comment_num'           =>  M('plan_comment')->where('pid=%d',$pid)->count(),
+            'comment_star'          =>  M('plan_comment')->where('pid=%d AND rid=0',$pid)->count(),
+            'star'                  =>  floor(M('plan_comment')->where('pid=%d AND rid=0',$pid)->avg('star')),//floor函数在这里比较科学。
+        );
         $this->data=$plan;
         //p($this->data);
         //更新计划信息，查看人数+1
         M('plan')->where("id='%d'",$plan['id'])->setInc('saw',1);
 
-        $data=M('plan_praise')->where("uid='%d' AND pid='%d'",session('uid'),$pid)->limit(1)->select();
+
+        //为点赞初始化验证码。
+        $this->initUniqid(GROUP_NAME.'/Plan/praise');
+        $data=M('plan_praise')->where("uid='%d' AND pid='%d'",session('uid'),$pid)->find();
         if(empty($data))
             $this->praised=0;
         else
@@ -519,7 +507,63 @@ class PlanAction extends CommonAction
             'pid'   =>  array('eq',$pid)
         );
         $this->studyPeople=M('plan_clone')->where($map)->count();
+
+        //为加入计划初始化验证码
+        $this->initUniqid(GROUP_NAME.'/Plan/join','plan_join_');
         $this->display();
+    }
+    public function join(){
+        if(!IS_AJAX||!IS_POST)
+            _404('页面不存在！');
+        $this->checkFormUniqid(I('post.uniqid'));
+        import('imageCode',APP_PATH.C('APP_GROUP_PATH').'/'.GROUP_NAME.'/Class/');
+        if(!imageCode::check('plan_verify',I('post.verify')))
+            $this->error('验证码不正确');
+
+
+        $uid = session('uid');
+        $pid = I('post.pid');
+        $start = I('post.start',get_time(0),'strtotime');
+        $end = I('post.end',get_time(0),'strtotime');
+
+        if($start>$end)
+            $this->error('开始时间大于结束时间');
+
+        $db_pc = M('plan_clone');
+        $db_p = M('plan');
+
+        //检测是否开放和计划是否存在。
+        $plan = $db_p->field('open')->find($pid);
+        if(empty($plan)){
+            $this->error('没有此计划');
+        }
+        if(!$plan['open']){
+            $this->error('添加失败，该计划未公开');
+        }
+
+        //检测是否已经加入
+        $plan_clone = $db_pc->where('pid=%d AND uid=%d',$pid,$uid)->field('create_time')->find();
+
+        if(!empty($plan_clone)){
+            $this->error('您在'.date('Y-m-d H:i:s',$plan_clone['create_time']).'已经加入过此计划了，不可重复加入！');
+        }
+        //清除表单验证。
+        clearUniqid();
+        imageCode::remove('plan_verify');
+
+        $arr = array(
+            'pid'           =>  $pid,
+            'uid'           =>  $uid,
+            'start'         =>  $start,
+            'end'           =>  $end,
+            'create_time'   =>  time(),
+        );
+        $plan_clone=$db_pc->add($arr);
+
+        if(empty($plan_clone)) {
+            $this->error('加入计划失败');
+        }
+        $this->success('加入成功');
     }
 
     /**
@@ -553,6 +597,7 @@ class PlanAction extends CommonAction
             $data['text']='一个计划只能点一个赞，您已经赞过了！';
             $this->ajaxReturn($data);
         }
+        clearUniqid();
         //加入数据库！
         $arr=array(
             'pid'   =>  $pid,
@@ -564,15 +609,16 @@ class PlanAction extends CommonAction
             $this->ajaxReturn($data);
         }
 
-        //发送消息
-        load('@/message');
-        $rid=$plan['uid'];
-        $content=$this->user['usernaem'].'在北京时间 '.date('Y年m月d日 H:i:s').' 对您的计划《'.$plan['name'].'》点了一个赞！';
-        sendMessage($uid,$rid,C('WEB_NAME'),$content,get_email($rid));
+        if($uid!=$plan['uid']){
+            //发送消息
+            load('@/message');
+            $rid=$plan['uid'];
+            $content=$this->user['username'].'在北京时间 '.date('Y年m月d日 H:i:s').' 对您的计划《'.$plan['name'].'》点了一个赞！';
+            sendMessage($uid,$rid,C('WEB_NAME'),$content,get_email($rid));
+        }
 
         $data['status']=true;
         $data['text']='点赞成功！';
-        clearUniqid();
         $this->ajaxReturn($data);
     }
     /*删除计划！*/
@@ -601,13 +647,17 @@ class PlanAction extends CommonAction
             $this->error('您没有权限删除该计划！');
 
         //关于删除源计划，即使是私有的计划，也可能被分享过，应该判断除了自己有多少人在用这个计划，还是留着？。
-		/*$map = array(
+		$map = array(
 			'pid'	=>	array('eq',$plan_clone['pid'])
 		);
-		if(M('plan_clone')->where($map)->count() <= 1){
-			M('mission')->where()->delete();
+        $num = M('plan_clone')->where($map)->count();
+        $plan = M('plan')->field('open,saw')->find($plan_clone['pid']);
+		if($num <= 1 && !$plan['open']){//删除只有一个人的，并且是私有的任务。
+            M('plan')->delete($plan_clone['pid']);
+			M('mission')->table(C('DB_PREFIX').'mission AS m')->join(C('DB_PREFIX').'mission_complete AS mc ON mc.mid = m.id')->join('INNER JOIN '.C('DB_PREFIX').'stage AS s on m.sid=s.id s.pid='.$plan_clone['pid'])->delete();
+            M('stage')->where('pid=%d',$plan_clone['pid'])->delete();
 		}
-		*/
+
 
         //删除计划
         if(M('plan_clone')->delete($pcid)) {
@@ -655,7 +705,7 @@ class PlanAction extends CommonAction
         $plan_clone=M('plan_clone')
             ->table(C('DB_PREFIX').'plan_clone AS pc')
             ->join(C('DB_PREFIX').'plan AS plan ON pc.pid=plan.id')
-            ->field('pc.id,pc.start_time,pc.svid,pc.pid,plan.uid,plan.name,plan.open,plan.mode,plan.face')
+            ->field('pc.id,pc.start,pc.end,pc.svid,pc.pid,plan.uid,plan.name,plan.open,plan.mode,plan.face')
             ->where("pc.id='%d' AND pc.uid='%d'",$pcid,$uid)
             ->find();
 
@@ -696,7 +746,7 @@ class PlanAction extends CommonAction
             ->table(C('DB_PREFIX').'plan_clone AS pc')
             ->join(C('DB_PREFIX').'plan AS p ON p.id=pc.pid')
             ->where("pc.id='%d'",$pcid)
-            ->field('p.uid,p.name,pc.pid,pc.uid,pc.uid AS pcuid')
+            ->field('p.uid,p.name,p.face,pc.pid,pc.svid,pc.uid AS pcuid')
             ->find();
 
         if(empty($plan_clone)){
@@ -754,6 +804,8 @@ class PlanAction extends CommonAction
                     'face'  =>  $_POST['face'],
                 );
                 if($db->save($arr)){
+                    unlink(get_thumb_file($plan_clone['face'],'m_'));//删除之前的图片。
+                    unlink(get_thumb_file($plan_clone['face'],'s_'));//删除之前的图片。
                     $data['status']=true;
                     $data['face']=get_thumb_file($_POST['face'],'m_');
                     break;//跳出，然后执行后边的分配随机码
@@ -770,15 +822,49 @@ class PlanAction extends CommonAction
 
                 $data['status']=true;
 
-                $db_sv_r=M('supervision_request');
-                $db_user=M('user');
-
                 $supervision=I('post.supervision',0,'intval');
 
                 //发送监督申请
                 load('@/supervision');
                 $num=send_supervision_requests($pcid,$supervision,$plan_clone,$uid,$this->user['username'],true);
                 $data['num']=$num;
+                break;
+            case 'restart':
+                if($plan_clone['pcuid']!=$uid)
+                    $this->error('无权操作');
+
+                $db_mc = M('mission_complete');
+                $start = I('post.start',get_time(0),'strtotime');
+                $end = I('post.end',get_time(0),'strtotime');
+
+                if($start>$end)
+                    $this->error('开始时间大于结束时间');
+                //清理验证码。
+                imageCode::remove('plan_verify');
+                //清理mission_complete表。
+                $map = array(
+                    'pcid'  =>  $pcid,
+                );
+                $db_mc->where($map)->delete();
+                //清理sv_request表
+                M('supervision_request')->where($map)->delete();
+                M('supervision_log')->where($map)->delete();
+
+                if($plan_clone['svid']) {
+                    //给监督者发送消息
+                    load('@/message');
+                    sendMessage($uid, $plan_clone['svid'], '监督关系解除', $this->user['username'] . '在北京时间' . date('Y年m月d日 H:i:s', time()) . '重新开始学习计划《' . $plan_clone['name'] . '》，监督关系就此解除！', get_email($plan_clone['svid']));
+                }
+                $arr = array(
+                    'id'    =>  $pcid,
+                    'svid'  =>  null,
+                    'start' =>  $start,
+                    'complete_time' =>  null,
+                    'end'   =>  $end,
+                );
+                if(!$db_pc->save($arr))
+                    $this->error('没有数据被修改！');
+                $data['status']=true;
                 break;
             default:
                 $this->error('不存在的类型');
@@ -829,14 +915,12 @@ class PlanAction extends CommonAction
         //任务信息
         $name=pillStr(I('post.name'),C('MISSION_MIN_NAME'),C('MISSION_MAX_NAME'));
         $info=pillStr(I('post.info'),0,C('MISSION_MAX_INFO'));
-        $time=I('post.hour',0,'intval')%48;
         $sort=I('post.sort',0,'intval');
 
         $arr=array(
             'sid'   =>  $sid,
             'name'  =>  $name,
             'info'  =>  $info,
-            'time'  =>  $time,
             'sort'  =>  $sort,
         );
         //添加数据
@@ -890,14 +974,12 @@ class PlanAction extends CommonAction
         //任务信息
         $name=pillStr(I('post.name'),C('MISSION_MIN_NAME'),C('MISSION_MAX_NAME'));
         $info=pillStr(I('post.info'),0,C('MISSION_MAX_INFO'));
-        $time=I('post.hour',0,'intval')%48;
         $sort=abs(I('post.sort',0,'intval'));
 
         $arr=array(
             'id'    =>  $mid,
             'name'  =>  $name,
             'info'  =>  $info,
-            'time'  =>  $time,
             'sort'  =>  $sort,
         );
         //添加数据
@@ -910,7 +992,7 @@ class PlanAction extends CommonAction
 
             $this->ajaxReturn($data);
         }else{
-            $this->error('由于未知原因，保存出错，请稍后重试！');
+            $this->error('没有数据被改变');
         }
     }
     //ajax保存mission。
@@ -949,12 +1031,14 @@ class PlanAction extends CommonAction
         //任务信息
         $name=pillStr(I('post.name'),C('STAGE_MIN_NAME'),C('STAGE_MAX_NAME'));
         $info=pillStr(I('post.info'),0,C('STAGE_MAX_INFO'));
+        $power=abs(I('post.power',0,'intval')%10000);
         $sort=abs(I('post.sort',0,'intval'));
 
         $arr=array(
             'id'    =>  $sid,
             'name'  =>  $name,
             'info'  =>  $info,
+            'power' =>  $power,
             'sort'  =>  $sort,
         );
         //保存数据
@@ -967,7 +1051,8 @@ class PlanAction extends CommonAction
 
             $this->ajaxReturn($data);
         }else{
-            $this->error('由于未知原因，保存出错，请稍后重试！');
+            //$this->error(M('stage')->getLastSql());
+            $this->error('没有数据被改变');
         }
     }
     public function add_stage(){
@@ -998,6 +1083,7 @@ class PlanAction extends CommonAction
         //任务信息
         $name=pillStr(I('post.name'),C('STAGE_MIN_NAME'),C('STAGE_MAX_NAME'));
         $info=pillStr(I('post.info'),0,C('STAGE_MAX_INFO'));
+        $power=abs(I('post.power',0,'intval')%10000);
         $sort=abs(I('post.sort',0,'intval'));
 
         $mission=$_POST['mission'];
@@ -1006,6 +1092,7 @@ class PlanAction extends CommonAction
             'pid'   =>  $pid,
             'name'  =>  $name,
             'info'  =>  $info,
+            'power' =>  $power,
             'sort'  =>  $sort,
         );
         //添加数据
@@ -1023,6 +1110,7 @@ class PlanAction extends CommonAction
             foreach($mission as $key=>$value){
                 $mid[]=$db->add($value);
             }
+            //这里要ID的原因是，需要修改啊。
             $data['mid']=$mid;
             $data['sid']=$sid;
 
@@ -1176,9 +1264,14 @@ class PlanAction extends CommonAction
         );
 
         /*校验设置开始时间*/
-        $start_time=strtotime(I('post.start_time'));
-        if($start_time<time())
-            $start_time=strtotime(date('Y-m-d',time()));
+        $start=strtotime(I('post.start'));
+        $end = strtotime(I('post.end'));
+        //如果开始时间在今天之前，则改为今天
+        if($start<time())
+            $start=get_time(0);
+        //如果结束时间在开始时间之前，则改为明天。
+        if($end < $start)
+            $end = $start + 86400;
         //echo $start_time;
         $name=pillStr(I('post.name',''),C('PLAN_MIN_NAME'),C('PLAN_MAX_NAME'));
         load('@/plan');
@@ -1197,7 +1290,6 @@ class PlanAction extends CommonAction
                 $this->ajaxReturn($data);
             }
         }
-        $total=get_mission_total_time($arr);//total还是动态计算感觉比较合适
 
         //上传封面文件或使用默认封面
         if(!empty($_FILES['face']['size'])) {
@@ -1210,6 +1302,8 @@ class PlanAction extends CommonAction
         }else{
             $_POST['face'] = C('PLAN_DEFAULT_FACE');
         }
+        //清空验证码，防批量添加！
+        clearUniqid();
 
         $plan=array(
             'uid'   => $uid,
@@ -1218,7 +1312,6 @@ class PlanAction extends CommonAction
             'name'  => $name,
             'create_time' => time(),
             'face'  => $_POST['face'],
-            'total' => $total,
         );
         if(!$pid=M('plan')->add($plan)){
             $data['info']='添加计划信息失败，可能服务器忙！';
@@ -1231,6 +1324,7 @@ class PlanAction extends CommonAction
                 'name'  => pillStr($value['name'],C('STAGE_MIN_NAME'),C('STAGE_MAX_NAME')),
                 'info'  => pillStr($value['info'],0,C('STAGE_MAX_INFO')),
                 'sort'  => $i++,
+                'power' => abs(intval($value['power'])%10000),
             );
             if(!$sid=M('stage')->add($data)){
                 $data['info']='添加阶段时出现未知错误！添加计划失败！';
@@ -1242,7 +1336,6 @@ class PlanAction extends CommonAction
                     'sid' => $sid,
                     'name' => pillStr($v['name'],C('MISSION_MIN_NAME'),C('MISSION_MAX_NAME')),
                     'info' => pillStr($v['info'],0,C('MISSION_MAX_INFO')),
-                    'time' => $v['time'],
                     'sort' => $j++,
                 );
                 if(!M('mission')->add($data)){
@@ -1255,11 +1348,10 @@ class PlanAction extends CommonAction
             'pid'   => $pid,
             'uid'   => session('uid'),
             'sid'   => 0,
-            'start_time' => $start_time,
+            'start' => $start,
+            'end'   => $end,
             'create_time' => time()
         );
-        //清空验证码，防批量添加！
-        clearUniqid();
         if(!$pcid=M('plan_clone')->add($clone)) {
             $data['info']='创建计划成功，但添加至我的计划失败！<a href="'.U(GROUP_NAME.'/Plan/share',array('pid'=>$pid)).'">点击跳转</a>至计划分享目录，您可以自行通过加入计划自行添加！';
             $this->ajaxReturn($data);
@@ -1269,5 +1361,14 @@ class PlanAction extends CommonAction
         send_supervision_requests($pcid,I('post.supervision'),$plan,$uid,$this->user['username'],false);
         $data['status']=true;
         $this->ajaxReturn($data);
+    }
+    public function verify(){
+        import('imageCode',APP_PATH.C('APP_GROUP_PATH').'/'.GROUP_NAME.'/Class/');
+        $img = new imageCode();
+        $img->create('plan_verify',C('VERIFY_LEN'),C('VERIFY_TYPE'),100,30);
+    }
+    public function verifyCheck(){
+        import('imageCode',APP_PATH.C('APP_GROUP_PATH').'/'.GROUP_NAME.'/Class/');
+        $this->ajaxReturn(array('valid'=>imageCode::check('plan_verify',I('post.verify'))));
     }
 }

@@ -1,0 +1,44 @@
+.picboxed.active{
+	cursor:-webkit-zoom-out;
+	cursor:zoom-out;
+}
+.picboxed{
+	cursor:-webkit-zoom-in;
+	cursor:zoom-in;
+}
+/*在materialze中的carousel里做些改变，否则不好看*/
+.carousel-item .picboxed{
+	cursor:default;
+}
+.carousel-item.active .picboxed{
+	cursor:zoom-in;
+}
+/*蒙版*/
+.picboxed-override{
+	width:100%;
+	height:101%;
+	
+	background:#292929;
+	z-index:1055;
+	
+	position:fixed;
+	left:0;
+	top:0;
+}
+.picboxed-override .img-header,.picboxed-override .img-footer{
+	width:100%;
+	
+	text-align:center;
+	color:#fff;
+	
+	position:absolute;
+	top:20px;
+	left:0;
+}
+.picboxed-override .img-footer{
+	top:auto;
+	bottom:40px;
+}
+.picboxed-override div.img-wrap img.picboxed{
+	position:absolute;
+}

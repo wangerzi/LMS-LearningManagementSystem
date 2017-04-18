@@ -1,165 +1,260 @@
 <extend name="./LMS/Models/Index/Tpl/base.html" />
 <block name="title">
-	学习计划分享-{$data['plan']['name']}
+    {$data['name']}
 </block>
 <block name="leader">
 </block>
 <block name="left-bar">
 </block>
 <block name="CSS_AND_JS">
-	<!--特色JS/CSS-->
-	<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/plan/plan_list.css" />
-	<script type="text/javascript">
-        var mode={$data.mode};
+    <!--特色JS/CSS-->
+    <link rel="stylesheet" href="__PUBLIC__/css/bootstrap/bootstrapValidator.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/css/bootstrap/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/css/plan/plan_list.css" />
+
+    <script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/bootstrapValidator.min.js'></script>
+    <script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/moment-with-locales.min.js'></script>
+
+    <script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/bootstrap-datepicker.min.js'></script>
+    <script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/bootstrap-datepicker.zh-CN.min.js'></script>
+    <script type="text/javascript" src='__PUBLIC__/js/penguin/jquery.form.js'></script>
+    <script type="text/javascript">
+        var mode={:intval($data['mode'])};
+        var open={:intval($data['open'])};
+        var joined = {:intval($data['joined']['create_time'])};
+
+        //验证码
+        var verifyLen =  {:C('VERIFY_LEN')};
+        var verifyCheckUrl ='{:U("verifyCheck")}';
+
         var urlUniqid='{$url_uniqid}';
         var praiseUrl="{:U(GROUP_NAME.'/Plan/praise')}";
         var pid={$data['id']};
         var praised='{$praised}';
-	</script>
-    <script type="text/javascript" src="__PUBLIC__/js/plan/share.js"></script>
-	<!--/特色JS/CSS-->
+
+        var yesterday='{:date("Y-m-d",time()-86400)}';
+        var today='{:date("Y-m-d",time())}';
+    </script>
+    <script type="text/javascript" charset="utf-8" src='__PUBLIC__/js/plan/share.js'></script>
+    <!--/特色JS/CSS-->
 </block>
 <block name="body">
-	<!--展示封面和各种信息-->
-	<div class="row">
-		<div class="col-md-5">
-			<div class="thumbnail" style="margin-top:15px;">
-				<img src="{$data['face']}" alt="" style="width:100%;" />
-				<div class="caption">
-					<button class="btn">
-						<span class="glyphicon glyphicon-user"></span>
-						{$studyPeople}人参加
-					</button>
-					<button id="praise-btn" class="btn btn-success">
-						<span class="glyphicon glyphicon-thumbs-up"></span>
-						<span class="praise">赞</span>(<span class="num">{$data['praised']}</span>)
-					</button>
-                    <!--如果不是自己的计划-->
-                    <button class="btn btn-success">
+    <!--展示封面和各种信息-->
+    <div class="row">
+        <div class="col-md-5">
+            <div class="thumbnail" style="margin-top:15px;">
+                <img src="{:get_thumb_file($data['face'],'m_')}" alt="" style="width:100%;" />
+                <div class="caption">
+                    <button class="btn">
+                        <span class="glyphicon glyphicon-user"></span>
+                        {$studyPeople}人参加
+                    </button>
+                    <button id="praise-btn" class="btn btn-success">
+                        <span class="glyphicon glyphicon-thumbs-up"></span>
+                        <span class="praise">赞</span>(<span class="num">{$data['praised']}</span>)
+                    </button>
+                    <button class="btn btn-info" data-toggle="collapse" data-target="#joinPlan" onclick="if(!open)wq_alert('计划作者已将此计划设为私有，暂时无法查看或加入。');else if(joined) wq_alert('您已加入此计划，不可重复添加！');">
                         <span class="glyphicon glyphicon-plus"></span>
                         参加此计划
                     </button>
-					<a class="btn btn-warning" href="{:U(GROUP_NAME.'/Plan/comment',array('pid'=>$data['id']))}" target="_blank">
-						<span class="glyphicon glyphicon-flag"></span>
-						查看评论(1)
-					</a>
-				</div>
-			</div>
-		</div>
-		<div class="col-md-7">
-			<h3>{$data['name']}</h3>
-			<ul class="list-inline">
-				<li>
-					<span class="glyphicon glyphicon-eye-open"></span>
-					{$data['saw']}
-				</li>
-				<li class="text-success">
-					<span class="glyphicon glyphicon-star"></span>
-					<span class="glyphicon glyphicon-star"></span>
-					<span class="glyphicon glyphicon-star"></span>
-					<span class="glyphicon glyphicon-star-empty"></span>
-					<span class="glyphicon glyphicon-star-empty"></span>
-					<span class="text-info">(48)</span>
-				</li>
-				<li>
-					创建者：<a href="">{$data.creator.username}</a>
-				</li>
-			</ul>
-			<ul class="list-unstyled">
-				<li class="">
-					分享链接：
-					<a href="{:U(GROUP_NAME.'/Plan/share',array('pid'=>$data['id']))}">{:U(GROUP_NAME.'/Plan/share',array('pid'=>$data['id']),false,false,true)}</a>
-				</li>
-			</ul>
-			<hr>
-			<div class="well clearfix">
-			<!--各种时间信息-->
-			<table class="col-md-6">
-				<tr>
-					<td>
-						创建时间：
-					</td>
-					<td>
-						{:date('Y-m-d H:i:s',$data['create_time'])}
-					</td>
-				</tr>
-                <tr>
-                    <td>
-                        计划总时长：
-                    </td>
-                    <td class="text-danger">
-                        {$data['total']}h
-                    </td>
-                </tr>
-			</table>
-				<!--完成情况和延期情况！-->
-			<table class="col-md-6">
-				<tr>
-					<td>
-						计划类型：
-					</td>
-					<td>
-						<if condition="$data['mode'] eq 1">
-							顺序模式
-							<else/>
-							列表模式
-						</if>
-					</td>
-				</tr>
-                <tr>
-                    <td>总任务：</td>
-                    <td class="text-success">{$data.mission_total}个</td>
-                </tr>
-			</table>
-			</div>
-		</div>
-	</div>
-	<hr>
+                    <a class="btn btn-warning" href="{:U(GROUP_NAME.'/Plan/comment',array('pid'=>$data['pid']))}" target="_blank">
+                        <span class="glyphicon glyphicon-flag"></span>
+                        查看评论({$data['active_status']['comment_num']})
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <h3>{$data['name']}</h3>
+            <ul class="list-inline">
+                <li>
+                    <span class="glyphicon glyphicon-eye-open"></span>
+                    {$data['saw']}
+                </li>
+                <li class="text-success">
+                    <for start="0" end="$data['active_status']['star']">
+                        <span class="glyphicon glyphicon-star"></span>
+                    </for>
+                    <for start="$data['active_status']['star']" end="5">
+                        <span class="glyphicon glyphicon-star-empty"></span>
+                    </for>
+                    <span class="text-info">({$data['active_status']['comment_star']})</span>
+                </li>
+                <li>
+                    创建者：<a href="{:U(GROUP_NAME.'/Account/person_index',array('uid'=>$data['creator']['id']))}">{$data.creator.username}</a>
+                </li>
+            </ul>
+            <ul class="list-unstyled">
+                <li class="">
+                    分享链接：
+                    <a href="{:U(GROUP_NAME.'/Plan/share',array('pid'=>$data['id']))}" target="_blank">{:U(GROUP_NAME.'/Plan/share',array('pid'=>$data['pid']),false,false,true)}</a>
+                </li>
+            </ul>
+            <hr>
+            <div class="well clearfix">
+                <!--各种时间信息-->
+                <table class="col-md-6">
+                    <tr>
+                        <td>
+                            状态：
+                        </td>
+                        <td>
+                            <if condition="$data['joined']">
+                                <span class="text-success"><a href="{:U(GROUP_NAME.'/Plan/detail',array('pcid'=>$data['joined']['id']))}">已参加</a> - {:round((time()-$data['joined']['create_time'])/86400,1)}天前</span>
+                                <else/>
+                                <span class="text-danger">未参与</span>
+                            </if>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            创建时间：
+                        </td>
+                        <td>
+                            {:date('Y-m-d H:i:s',$data['create_time'])}
+                        </td>
+                    </tr>
+                </table>
+                <!--完成情况和延期情况！-->
+                <table class="col-md-6">
+                    <tr>
+                        <td>
+                            计划类型：
+                        </td>
+                        <td>
+                            <if condition="$data['open']">
+                                <span class="text-success">公开</span>
+                                <else/>
+                                <span class="text-warning">私有</span>
+                            </if>
+                            -
+                            <if condition="$data['mode'] eq 1">
+                                <span class="text-primary">顺序模式</span>
+                                <else/>
+                                <span class="text-primary">列表模式</span>
+                            </if>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>总任务：</td>
+                        <td>{$data.mission_total}个</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <hr>
     <if condition="$data['open']">
+        <if condition="empty($data['joined'])">
+            <!--参加计划的表单-->
+            <div class="row collapse" id="joinPlan">
+                <div class="col-md-12">
+                    <form action="{:U(GROUP_NAME.'/Plan/join')}" method="post" id="joinForm">
+                        {$plan_join___UNIQID__}
+                        <!--基本设置-->
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <div class="panel-title">
+                                    <span class="glyphicon glyphicon-plus"></span>
+                                    参加此计划
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label>执行时间</label>
+                                        <div class="input-group input-daterange">
+                                            <input class="input-sm form-control" type="text" name="start" value="{:date('Y-m-d',time())}">
+                                            <span class="input-group-addon">到</span>
+                                            <input class="input-sm form-control" type="text" name="end" value="{:date('Y-m-d',time()+7*86400)}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="verify">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <img src="{:U('verify')}" class="verify" alt="">
+                                        <p class="help-block">点击验证码切换</p>
+                                    </div>
+                                </div>
+                                <div class="row operate">
+                                    <div class="col-md-12">
+                                        <hr>
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-success save">
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                                提交
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </if>
+        <!--为变量赋值-->
+        <assign name="i" value="0"/>
+        <assign name="j" value="0"/>
+        <assign name="k" value="0"/>
         <div class="row">
             <div class="col-md-12">
                 <table class="table table-responsive table-hover plan-list">
                     <foreach name="data['stage']" item="val">
-                        <tr class="stage">
+                        <tr class="stage" id="stage_{$i+1}">
                             <td class="first">
-                                阶段
+                                步骤
                             </td>
                             <td class="circle-warp col-md-1 text-center">
-							<span class="circle-md">
-								{++$i}
-							</span>
+                                <span class="circle-md">
+                                    {++$i}
+                                </span>
                             </td>
                             <td>
-							<span class="">
-								{$val.name}
-							</span>
+                                <span class="">
+                                    {$val.name}
+                                </span>
                                 <span class="help-block small" style="padding-left:30px;display:inline;">
-								描述：{$val.info}
-							</span>
+                                    权值({$val.power})
+                                </span>
+                                <span class="help-block small" style="padding-left:30px;display:inline;">
+                                    描述：{$val.info}
+                                </span>
                             </td>
                             <td>
                             </td>
                         </tr>
-                        <span class="hidden">{$j=0}</span>
+                        <assign name="j" value="0"/>
                         <foreach name="val['mission']" item="v">
-                            <tr>
+                            <tr data-toggle="collapse" data-target="#mission_{$i}_{$j+1}" data-parent="#stage_{$i}">
                                 <td class="first">
                                     任务
                                 </td>
                                 <td class="circle-warp text-center">
-								<span class="circle-sm center-block">
-									{++$j}
-								</span>
+                                    <span class="circle-sm center-block">
+                                        {++$j}
+                                    </span>
                                 </td>
                                 <td>
-                                    {$v.name} ( {$v.time}h )
-                                    <p class="help-block small">
-                                        <if condition="!empty($v['info'])">
-                                            描述:{$v['info']}
-                                        </if>
-                                    </p>
+                                    <div>{$v.name}</div>
+                                    <!--这里用p标签的话，容易引起Marin合并的问题-->
+                                    <div class="help-block small">分配时间：{:round($val['m_avg_rate']*100,2)}%</div>
+                                    <div class="help-block small collapse" id="mission_{$i}_{$j}">
+                                        描述:{$v['info']?$v['info']:'未添加描述'}
+                                    </div>
                                 </td>
-                                <td></td>
+                                <td class="col-md-4">
+                                    <button class="btn btn-default disabled">
+                                        <span class="glyphicon glyphicon-lock"></span>
+                                        无法操作
+                                    </button>
+                                </td>
                             </tr>
                         </foreach>
                     </foreach>
@@ -167,17 +262,12 @@
             </div>
         </div>
         <else/>
-        <h1 class="text-center">该计划未公开</h1>
-        <div>
-            您可以尝试：
-            <a class="btn btn-success" href="{:U(GROUP_NAME.'/Message/send',array('uid'=>$data['uid']))}" target="_blank">
-                <span class="glyphicon glyphicon-envelope"></span>
-                私信TA索取
-            </a>
-            <a class="btn btn-info" href="{:U(GROUP_NAME.'/Plan/comment',array('pid'=>$data['id']))}" target="_blank">
-                <span class="glyphicon glyphicon-flag"></span>
-                评论区留言
-            </a>
+        <div class="text-center">
+            <h3> 计划作者已将此计划设为私有，故无法查看或加入。</h3>
+            <h5>
+                您可以尝试：
+                <a href="{:U(GROUP_NAME.'/Message/send',array('uid'=>$data['uid']))}" target="_blank" class="btn btn-success"><span class="glyphicon glyphicon-envelope"></span>私信TA</a>
+            </h5>
         </div>
     </if>
 </block>
