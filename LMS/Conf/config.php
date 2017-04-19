@@ -80,6 +80,6 @@ return array(
     'USER_BASE_PATH'    =>  APP_PATH.'data/user/',
 	
 	//版本信息
-	'WEB_VERSION'	=>	'1.2.0.20170419_release',
+	'WEB_VERSION'	=>	'1.2.1.20170419_release',
 );
 ?>
