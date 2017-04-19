@@ -87,8 +87,6 @@ $(function(){
         //获取form表单
         var form=$('#addPlan');
 
-        $('#submit').attr("disabled",'disabled');
-
         //合理性验证
         var flag=false;
 
@@ -97,6 +95,7 @@ $(function(){
         if(stages.length<1){
             //wq_alert('一个计划至少有一个阶段，请点击[添加步骤]进行添加！');
             $('#addStage').click();
+            $('#submit').removeAttr('disabled');
             return false;
         }
 
@@ -112,6 +111,8 @@ $(function(){
             $('#submit').removeAttr('disabled');
             return false;
         }
+
+        $('#submit').attr("disabled",'disabled');
 
 
         //ajax提交
@@ -174,7 +175,7 @@ function add_stage()
         '</div>'+
         '<div class="col-md-7">'+
             '<div class="form-group">'+
-            '<input type="text" name="stage_power&'+n+'[]" class="form-control" placeholder="权值默认10" />'+
+            '<input type="text" name="stage_power&'+n+'" class="form-control" placeholder="权值默认10" />'+
             '<p class="help-block">注：权值越高，分配在此步骤的时间就越多</p>'+
             '</div>'+
         '</div>' +
@@ -218,7 +219,7 @@ function add_stage()
             }
         }
     };
-    $('#addPlan').bootstrapValidator('addField','stage_power&'+n+'[]',validate);
+    $('#addPlan').bootstrapValidator('addField','stage_power&'+n,validate);
     //定位
     $('input[name="stage&'+n+'"]').focus();
 }

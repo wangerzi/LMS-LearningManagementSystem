@@ -118,8 +118,11 @@ class IndexAction extends CommonAction
                         }
                     }
                 }
-                //如果已完成时间没有一天，则在数组里找未完成任务，直到达到一天为止。
-                if($complete_time < 86400){
+                $plan[$key]['active_schedule'] += $complete_time;//实时进度。
+                if($plan[$key]['active_schedule'] < $time_i_1)
+                    $delay_plan++;
+                //如果已完成时间没有一天，并且计划延期，没有提前完成，则在数组里找未完成任务，直到达到一天为止。
+                if($plan[$key]['active_schedule'] < $time_i_1 && $complete_time < 86400){
                     $not_complete_plan++;//当天该计划任务未完成
                     foreach($value['stage'] as $k=>$val){
                         foreach($val['mission'] as $k2=>$v){
@@ -134,9 +137,6 @@ class IndexAction extends CommonAction
                 }else{
                     $complete_plan++;
                 }
-                $plan[$key]['active_schedule'] += $complete_time;//实时进度。
-                if($plan[$key]['active_schedule'] < $time_i_1)
-                    $delay_plan++;
             }
             $arr['mission'][0]['data'][]=array($time_i*1000,$not_complete_num);
             $arr['mission'][1]['data'][]=array($time_i*1000,$complete_num);

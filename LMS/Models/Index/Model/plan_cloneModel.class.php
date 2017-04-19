@@ -109,6 +109,8 @@ class plan_cloneModel extends Model
         $plan_clone['creator']=users_cache($plan_clone['puid']);
         $plan_clone['supervision']=users_cache($plan_clone['svid']);
 
+        //拖延的时间，为负表示超前完成。
+        $delay_time = $plan_clone['start']<time()?($plan_clone['complete_time']?$plan_clone['complete_time']:get_time(1))-$plan_clone['start']-$complete_total_time:0;
         //实时状态。
         $plan_clone['active_status'] = array(
             //任务区
@@ -118,8 +120,8 @@ class plan_cloneModel extends Model
             'mission_total'         =>  $total_mission,//总任务
             'total_time'            =>  $total_time,//总时间
             'complete_rate'         =>  round($complete_mission*1.0/$total_mission,2),
-            'today_complete'        =>  $plan_clone['complete_time'] or $complete_time_today > 86000,//今日是否完成任务，完全看今天的表现。
-            'delay_time'            =>  ($plan_clone['complete_time']?$plan_clone['complete_time']:get_time(1))-$plan_clone['start']-$complete_total_time,//拖延的时间，为负表示超前完成。
+            'today_complete'        =>  $plan_clone['complete_time'] or ($delay_time<0 && $delay_time<-86400) or  $complete_time_today > 86000,//今日是否完成任务，完全看今天的表现或者超时完成的表现。
+            'delay_time'            =>  $delay_time,
         );
         if($more){//在需要更多信息的时候，才执行。
             $temp = array(

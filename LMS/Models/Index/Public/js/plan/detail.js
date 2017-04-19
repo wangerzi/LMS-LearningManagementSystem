@@ -4,7 +4,8 @@
 $(function() {
     replaceWord($('#studyContent'),'写点记录吧....');
     $("#main-body").removeClass('col-md-11').addClass('col-md-12').parent().removeClass('col-md-10').addClass('col-md-12');
-    unlock($('.plan-lock:first'));
+    if(start)
+        unlock($('.plan-lock:first'));
 
     $('#studyContent').keyup(function(e){
         var len=$(this).val().length;

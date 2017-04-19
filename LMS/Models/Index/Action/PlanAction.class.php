@@ -1326,6 +1326,7 @@ class PlanAction extends CommonAction
                 'sort'  => $i++,
                 'power' => abs(intval($value['power'])%10000),
             );
+            $data['power'] = $data['power']?$data['power']:10;
             if(!$sid=M('stage')->add($data)){
                 $data['info']='添加阶段时出现未知错误！添加计划失败！';
                 $this->ajaxReturn($data);

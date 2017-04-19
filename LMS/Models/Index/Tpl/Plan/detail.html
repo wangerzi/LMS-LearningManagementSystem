@@ -14,6 +14,7 @@
 		/*提交完成的ajax的地址*/
 		var completeUrl="{:U(GROUP_NAME.'/Plan/mission_complete',array('uniqid' => $url_uniqid,'pcid' => $data['id']),'')}";
         var mode={:intval($data['mode'])};
+        var start={:intval($data['start'] < time())};
         var urlUniqid='{$url_uniqid}';
         var praiseUrl="{:U(GROUP_NAME.'/Plan/praise')}";
         var pid={$data['pid']};
@@ -118,7 +119,7 @@
                     <td>
                         <if condition="$data['complete_time']">
 							<span class="text-primary">已完成 - {:round((time()-$data['complete_time'])/86400,1)}天前</span>
-                            <elseif condition="$data['start']"/>
+                            <elseif condition="$data['start'] lt time()"/>
 							<span class="text-success">
 								学习中 -
 								<if condition="$data['active_status']['today_complete']">
@@ -195,7 +196,13 @@
                 </tr>
                 <tr>
                     <td>您已学习：</td>
-                    <td>{:round( (($data['complete_time']?$data['complete_time']:time())-$data['start'])/86400.0,2)}天</td>
+                    <td>
+						<if condition="$data['start'] lt time()">
+							{:round( (($data['complete_time']?$data['complete_time']:time())-$data['start'])/86400.0,2)}天
+							<else/>
+							0天
+						</if>
+					</td>
                 </tr>
 				<tr>
 					<if condition="$delay lt 0">
@@ -294,6 +301,13 @@
 									<button class="btn btn-default disabled">
 										<span class="glyphicon glyphicon-lock"></span>
 										无法操作
+									</button>
+								</td>
+								<elseif condition="$data['start'] gt time()"/>
+								<td class="col-md-4">
+									<button class="btn disabled" onclick="wq_alert('计划未开始，若想修改开始时间，请在\'修改\'中选择重新学习即可！')">
+										<span class="glyphicon glyphicon-lock"></span>
+										未开始
 									</button>
 								</td>
 								<elseif condition="$data['mode'] eq 1"/>
