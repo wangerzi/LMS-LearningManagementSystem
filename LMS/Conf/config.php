@@ -7,7 +7,7 @@ return array(
     'APP_GROUP_PATH' => 'Models',
     'DB_HOST' => 'localhost',
     'DB_USER' => 'root',
-    'DB_PWD' => '',
+    'DB_PWD' => 'root',
     'DB_NAME' => 'think_lms',
     'DB_PREFIX' => 'wq_',
 
@@ -80,6 +80,6 @@ return array(
     'USER_BASE_PATH'    =>  APP_PATH.'data/user/',
 	
 	//版本信息
-	'WEB_VERSION'	=>	'1.2.0.20170418_release',
+	'WEB_VERSION'	=>	'1.2.0.20170419_release',
 );
 ?>
