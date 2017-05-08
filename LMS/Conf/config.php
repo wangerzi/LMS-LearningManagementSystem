@@ -12,7 +12,7 @@ return array(
     'DB_PREFIX' => 'wq_',
 
     //开启页面追踪。
-    'SHOW_PAGE_TRACE'   =>  false,
+    'SHOW_PAGE_TRACE'   =>  true,
 
     //日志目录
     'MINE_LOG_PATH' =>APP_PATH.'log/',
@@ -85,6 +85,6 @@ return array(
     'USER_BASE_PATH'    =>  APP_PATH.'data/user/',
 
 	//版本信息
-	'WEB_VERSION'	=>	'1.2.1.20170419_release',
+	'WEB_VERSION'	=>	'v1.2.2.20170508_release',
 );
 ?>

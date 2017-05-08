@@ -9,8 +9,8 @@
 return array(
     'MAIL_HOST' => 'smtp.qq.com',           //SMTP服务器。
     'MAIL_SMTPAUTH' => true,                //SMTP验证。
-    'MAIL_USERNAME' => '944688482@qq.com',  //用户名
-    'MAIL_PASSWORD' => 'kwgdfsbctngdbfcj',  //密码 -- QQ邮箱使用独立密码。
+    'MAIL_USERNAME' => '',  //用户名
+    'MAIL_PASSWORD' => '',  //密码 -- QQ邮箱使用独立密码。
     'MAIL_FROM' => 'admin@wj2015.com.cn',   //邮箱来自 ~~~
     'MAIL_FROM_NAME' => 'Wang',             //来自的名字
     'MAIL_IS_HTML' => true,                 //是否是HTML
