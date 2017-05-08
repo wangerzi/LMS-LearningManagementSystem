@@ -46,45 +46,8 @@ class CommonAction extends Action{
         //echo pillStr('这是一个未完成的计划123',C('PLAN_MIN_NAME'),C('PLAN_MAX_NAME'));
         //实例化user，签到信息的完善
         if(is_login()) {
-            $uid=session('uid');
+            $uid = session('uid');
             $this->user = M('user')->field(array('id', 'username', 'face' , 'checkout' , 'exp', 'email', 'info'))->find($uid);
-            $this->checkout=array(
-                'total' => M('checkout')->where("uid='%d' AND time > '%d'",session('uid'),get_time(0))->count(),
-                'serialize' => $this->user['checkout'],
-            );
-            //查找匹配的等级！
-            $level=M('level')->where("need < '%d'",$this->user['exp'])->order('level DESC')->limit(1)->select();
-            if(empty($level)){//如果没找到，那就默认一个。
-                $level=array(
-                    'level' => 0,
-                    'need'  => 0,
-                    'plan_num'=> 4,
-                    'exp'   => 2,
-                );
-            }else{
-                $level=$level[0];
-            }
-            //找出离用户经验最近的下一等级
-            $tmp=M('level')->where('need > %d',$this->user['exp'])->order('need ASC')->limit(1)->select();
-            if(empty($tmp)){
-                //这种情况在满级的时候能看到！
-                $level['next']=0;
-                $level['next_need']=$this->user['exp'];
-            }else{
-                $level['next']=$tmp[0]['need']-$this->user['exp'];
-                $level['next_need']=$tmp[0]['need'];
-            }
-            $this->level=$level;
-
-            //对需要提示的数字进行统计
-            $arr_num=array(
-                'message'   =>  M('message')->where("rid='%d' AND status=0",$uid)->count(),
-                'friend'    =>  M('friend_request')->where("rid='%d'",$uid)->count(),
-                //监控这里只需要统计未处理的申请就好了！
-                'supervision'=> M('supervision_request')->where("rid='%d' AND status=0",$uid)->count()+M('supervision_log')->table(C('DB_PREFIX').'supervision_log AS sv')->join(C('DB_PREFIX').'plan_clone AS pc ON sv.pcid=pc.id AND sv.status<>1')->where("pc.svid='%d'",$uid)->count(),
-                //'plan_all'  =>  M('plan_clone')->where("uid='%d'",$uid)->count(),加上个徽标之后空间不够了。。。
-            );
-            $this->number=$arr_num;
             //p($arr_num);
         }
     }
@@ -92,12 +55,18 @@ class CommonAction extends Action{
     /**
      * @param null $control
      * @param string $prefix    当需要初始化多个表单验证码的时候，可通过加前缀来解决。
+     * @param array $cache_clean   清除uniqid的时候会自动清除缓存，这里是模块名，控制器名，方法名的数组。
      * @return bool
      */
-    protected function initUniqid($control=null,$prefix=''){
+    protected function initUniqid($control=null,$prefix='',$cache_clean=array()){
         $control=empty($control)?GROUP_NAME.'/'.MODULE_NAME.'/'.ACTION_NAME:$control;
+        //相当于不带后缀，不带HTML_PATH的路径。
+        $cache_clean=get_cache_file_name($cache_clean);
         $uniqid=get_uniqid();
         session($control.'_uniqid',$uniqid);
+
+        //增加缓存以后新增的
+        session($control.'_cache_clean',$cache_clean);
 
         //保存生成随机码
         $name = $prefix.'url_uniqid';
@@ -118,6 +87,6 @@ class CommonAction extends Action{
     //标识码验证处理！
     protected function checkUrlUniqid($uniqid,$control=null){
         if(!checkFormUniqid($uniqid,$control))
-            $this->error('页面唯一标识码不正确，为了您的安全，请刷新重试！');
+            $this->error('页面唯一标识码不正确，为了您的安全，请刷新重试！'.session('Index/Login/forgetHandle_uniqid'));
     }
 }

@@ -139,6 +139,7 @@ class PlanAction extends CommonAction
 
         $this->total=count($arr);
 
+        $this->initUniqid();
         //p($this->data);
         $this->display();
     }
@@ -438,6 +439,8 @@ class PlanAction extends CommonAction
                 load('@/message');
                 addEmailTimeQueue(get_email($plan_clone['svid']),'监督者','您监督的学习计划有了新进展','您监督的学习计划《'.$plan['name'].'》在北京时间'.date('Y年m月d日 H:i:s',time()).'提交了学习总结，进入系统<a href="'.U(GROUP_NAME.'/Supervision/waiting','',true,false,true).'">检阅进度</a>吧！',time());
             }
+            //清理缓存文件
+            clearPlanCache($uid,null,$pcid);
             $data['status']=true;
             $data['time']=date('Y年m月d日 H:i:s',$time);
             $data['exp']=$exp;
@@ -558,11 +561,13 @@ class PlanAction extends CommonAction
             'end'           =>  $end,
             'create_time'   =>  time(),
         );
-        $plan_clone=$db_pc->add($arr);
+        $pcid=$db_pc->add($arr);
 
-        if(empty($plan_clone)) {
+        if(empty($pcid)) {
             $this->error('加入计划失败');
         }
+        //清理缓存文件
+        clearPlanCache($uid,$pid,$pcid);
         $this->success('加入成功');
     }
 
@@ -616,7 +621,7 @@ class PlanAction extends CommonAction
             $content=$this->user['username'].'在北京时间 '.date('Y年m月d日 H:i:s').' 对您的计划《'.$plan['name'].'》点了一个赞！';
             sendMessage($uid,$rid,C('WEB_NAME'),$content,get_email($rid));
         }
-
+        clear_cache('user/Index_Plan_share/'.$pid);
         $data['status']=true;
         $data['text']='点赞成功！';
         $this->ajaxReturn($data);
@@ -677,6 +682,8 @@ class PlanAction extends CommonAction
             //把相应的监督申请关系也删掉
             M('supervision_request')->where($map)->delete();
             //$this->redirect(GROUP_NAME . '/Plan/index');
+            //清理缓存文件
+            clearPlanCache($uid,$pid,$pcid);
             $data['status']=true;
             $this->initUniqid(GROUP_NAME.'/Plan/index');
             $data['uniqid']=$this->uniqid;
@@ -760,6 +767,7 @@ class PlanAction extends CommonAction
             'info'      =>  '',
         );
         if(!checkUrlUniqid(I('post.uniqid'))){
+            clear_cache('user/'.$uid.'/Index/Plan/edit/',true);//自动清理缓存
             $this->error('表单标识码不匹配，可能是您操作过快，请稍后重试或刷新页面');
         }
 
@@ -828,6 +836,7 @@ class PlanAction extends CommonAction
                 load('@/supervision');
                 $num=send_supervision_requests($pcid,$supervision,$plan_clone,$uid,$this->user['username'],true);
                 $data['num']=$num;
+                $data['info'] = '成功向'.$num.'个好友发送了监督邀请（去除重复邀请）';
                 break;
             case 'restart':
                 if($plan_clone['pcuid']!=$uid)
@@ -870,6 +879,9 @@ class PlanAction extends CommonAction
                 $this->error('不存在的类型');
                 break;
         }
+        //清理缓存文件
+        load('@/plan');
+        clearPlanCache($uid,$pid,$pcid);
         //重新为自己初始化随机码并分配到数据中
         $this->initUniqid();
         $data['uniqid']=$this->uniqid;
@@ -891,6 +903,7 @@ class PlanAction extends CommonAction
         );
         //检查标识码
         if(I('post.uniqid')!=session('operate_uniqid')){
+            clear_cache('user/'.$uid.'/Index/Plan/edit/',true);//自动清理缓存
             $this->error('表单标识码不匹配，可能是您操作过快导致，请稍后重试或者刷新页面');
         }
 
@@ -927,6 +940,9 @@ class PlanAction extends CommonAction
         if($mid=M('mission')->add($arr)){
             $data['mid']=$mid;
             $data['status']=true;
+            //清理缓存文件
+            load('@/plan');
+            clearPlanCache($uid,$pid);
             //更新标识码
             $uniqid=get_uniqid();
             session('operate_uniqid',$uniqid);
@@ -953,6 +969,7 @@ class PlanAction extends CommonAction
         );
         //检查标识码
         if(I('post.uniqid')!=session('operate_uniqid')){
+            clear_cache('user/'.$uid.'/Index/Plan/edit/',true);//自动清理缓存
             $this->error('表单标识码不匹配，可能是您操作过快导致，请稍后重试或者刷新页面');
         }
 
@@ -985,6 +1002,9 @@ class PlanAction extends CommonAction
         //添加数据
         if($mid=M('mission')->save($arr)){
             $data['status']=true;
+            //清理缓存文件
+            load('@/plan');
+            clearPlanCache($uid,$pid);
             //更新标识码
             $uniqid=get_uniqid();
             session('operate_uniqid',$uniqid);
@@ -1011,6 +1031,7 @@ class PlanAction extends CommonAction
         );
         //检查标识码
         if(I('post.uniqid')!=session('operate_uniqid')){
+            clear_cache('user/'.$uid.'/Index/Plan/edit/',true);//自动清理缓存
             $this->error('表单标识码不匹配，可能是您操作过快导致，请稍后重试或者刷新页面');
         }
 
@@ -1044,6 +1065,9 @@ class PlanAction extends CommonAction
         //保存数据
         if($mid=M('stage')->save($arr)){
             $data['status']=true;
+            //清理缓存文件
+            load('@/plan');
+            clearPlanCache($uid,$pid);
             //更新标识码
             $uniqid=get_uniqid();
             session('operate_uniqid',$uniqid);
@@ -1068,6 +1092,7 @@ class PlanAction extends CommonAction
         );
         //检查标识码
         if(I('post.uniqid')!=session('operate_uniqid')){
+            clear_cache('user/'.$uid.'/Index/Plan/edit/',true);//自动清理缓存
             $this->error('表单标识码不匹配，可能是您操作过快导致，请稍后重试或者刷新页面');
         }
         
@@ -1119,6 +1144,8 @@ class PlanAction extends CommonAction
                 $this->error('由于未知原因，新建任务出错，请刷新查看！');
             }*/
             $data['status']=true;
+            //清理缓存文件
+            clearPlanCache($uid,$pid);
             //更新标识码
             $uniqid=get_uniqid();
             session('operate_uniqid',$uniqid);
@@ -1146,6 +1173,7 @@ class PlanAction extends CommonAction
         );
         //检查标识码
         if(I('post.uniqid')!=session('operate_uniqid')){
+            clear_cache('user/'.$uid.'/Index/Plan/edit/',true);//自动清理缓存
             $this->error('表单标识码不匹配，可能是您操作过快导致，请稍后重试或者刷新页面');
         }
 
@@ -1173,7 +1201,10 @@ class PlanAction extends CommonAction
         //移除数据！
         if($db->delete($mid)){
             $data['status']=true;
+            //清理缓存文件
+            clearPlanCache($uid,$pid);
             //更新标识码
+            load('@/plan');
             $uniqid=get_uniqid();
             session('operate_uniqid',$uniqid);
             $data['uniqid']=$uniqid;
@@ -1199,6 +1230,7 @@ class PlanAction extends CommonAction
         );
         //检查标识码
         if(I('post.uniqid')!=session('operate_uniqid')){
+            clear_cache('user/'.$uid.'/Index/Plan/edit/',true);//自动清理缓存
             $this->error('表单标识码不匹配，可能是您操作过快导致，请稍后重试或者刷新页面');
         }
 
@@ -1225,6 +1257,10 @@ class PlanAction extends CommonAction
         //移除数据！
         if($db->delete($sid) && M('mission')->where("sid='%d'",$sid)->delete()){
             $data['status']=true;
+
+            //清理缓存文件
+            load('@/plan');
+            clearPlanCache($uid,$pid);
             //更新标识码
             $uniqid=get_uniqid();
             session('operate_uniqid',$uniqid);
@@ -1290,6 +1326,7 @@ class PlanAction extends CommonAction
                 $this->ajaxReturn($data);
             }
         }
+
 
         //上传封面文件或使用默认封面
         if(!empty($_FILES['face']['size'])) {
@@ -1357,6 +1394,8 @@ class PlanAction extends CommonAction
             $data['info']='创建计划成功，但添加至我的计划失败！<a href="'.U(GROUP_NAME.'/Plan/share',array('pid'=>$pid)).'">点击跳转</a>至计划分享目录，您可以自行通过加入计划自行添加！';
             $this->ajaxReturn($data);
         }
+        //清理缓存文件
+        clearPlanCache($uid,$pid,$pcid);
         //发送监督请求
         load('@/supervision');
         send_supervision_requests($pcid,I('post.supervision'),$plan,$uid,$this->user['username'],false);

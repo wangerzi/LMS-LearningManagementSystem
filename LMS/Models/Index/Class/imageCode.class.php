@@ -97,14 +97,15 @@ class imageCode{
         }
         require 'GIFEncoder.class.php';
         $gif = new GIFEncoder($imagedata);
+        //p($gif);
         header('Content-type:image/gif');
         echo $gif->GetAnimation();
         return true;
     }
 
     /**
-     * @param $name         名字
-     * @param $value        需要比较的值
+     * @param string $name  名字
+     * @param string $value 需要比较的值
      * @param bool $ignore  是否忽略大小写
      * @return bool         比对成功/失败
      */

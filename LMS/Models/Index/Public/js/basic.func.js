@@ -286,7 +286,7 @@ function submitForm(obj,callback,extdata){
 			if(typeof callback  ==   'function')
 				callback(data);
 			else{
-				wq_alert('保存成功');
+				wq_alert(data.info?data.info:'保存成功');
 			}
 
 			if(typeof data.uniqid != 'undefined')

@@ -78,13 +78,17 @@ function p($str){
     print_r($str);
     echo "</pre>";
 }
+
+/**
+ * 清理某控制器的表单标识码
+ * @param null $control
+ */
 function clearUniqid($control=null){
     $control=empty($control)?GROUP_NAME.'/'.MODULE_NAME.'/'.ACTION_NAME:$control;
-    if(isset($_SESSION[$control.'_uniqid']))
-        unset($_SESSION[$control.'_uniqid']);
+    unset($_SESSION[$control . '_uniqid']);
 }
 /*初始化唯一标识码，在common控制器里有个相同的方法！*/
-function initUniqid(&$obj,$control=null){
+/*function initUniqid(&$obj,$control=null){
     $control=empty($control)?GROUP_NAME.'/'.MODULE_NAME.'/'.ACTION_NAME:$control;
     $uniqid=get_uniqid();
     session($control.'_uniqid',$uniqid);
@@ -96,16 +100,28 @@ function initUniqid(&$obj,$control=null){
     //快捷生成表单的字符串。
     $obj->__UNIQID__="<input type='hidden' name='uniqid' value='{$obj->uniqid}'/>";
     return true;
-}
+}*/
 
 /**
  * 检查表单唯一标识码
- * @param $uniqid
- * @param $control 加密源源控制器的名称
+ * @param string        $uniqid
+ * @param string|null   $control 加密源源控制器的名称
  * @return bool
  */
 function checkFormUniqid($uniqid,$control=null){
     $control=empty($control)?GROUP_NAME.'/'.MODULE_NAME.'/'.ACTION_NAME:$control;
+
+    //自动清理缓存文件
+    if(isset($_SESSION[$control.'_uniqid'])) {
+        $cache = $_SESSION[$control.'_cache_clean'];
+        $cache = dirname($cache).'/'.basename($cache);//避免出现因为../导致文件删除BUG
+        //p($cache);
+        if(strpos($cache,HTML_PATH) === 0)
+            unlink($cache);
+        //unset($_SESSION[$control . '_uniqid']);
+        unset($_SESSION[$control . '_cache_clean']);
+    }
+
     if($uniqid!=session($control.'_uniqid'))//解密传递的UNIQID之后，与session里的原数据作比较。
         return false;
     else
@@ -412,4 +428,112 @@ function users_cache($uid){
     }
     return $users_cache[$uid];
 }
-?>
+
+/**
+ * 清理对应的缓存，支持删除整个文件夹。
+ * @param $filename
+ * @param bool $isDir
+ * @param string $ext
+ * @return bool
+ */
+function clear_cache($filename,$isDir=false,$ext='.html'){
+    $path = C('HTML_PATH').'/'.$filename.$ext;
+    $dir = dirname($path);
+    $path = $dir.'/'.basename($path);           //这里这样写是为了防止写入../之类的地址。
+    if(0 !== strpos($path,dirname(C('HTML_PATH').'/xxx.xx')))
+        return false;
+    //p($path);
+    //p($dir);
+    if(is_file($path)){
+        unlink($path);
+        return true;
+    }
+    if($isDir && is_dir($dir)){//只有在指定删除dir并且确切是dir的时候执行删除。
+        //p($dir);
+        return rmDirFile($dir);
+    }
+    return false;
+}
+function isEmptyAction($module,$action) {
+    $className  =   $module.'Action';
+    $class      =   new $className;
+    return !method_exists($class,$action);
+}
+
+/**
+ * 使用TP的解析静态文件的方式解析文件
+ * @param array $default
+ * @return bool|string
+ */
+function get_cache_file_name($default=array()){
+    //合并参数数组
+    $default = array_merge(array('group'=>GROUP_NAME,'module'=>MODULE_NAME,'action'=>ACTION_NAME),$default);
+    // 分析当前的静态规则
+    $htmls = C('HTML_CACHE_RULES'); // 读取静态规则
+    if(!empty($htmls)) {
+        $htmls = array_change_key_case($htmls);
+        // 静态规则文件定义格式 actionName=>array('静态规则','缓存时间','附加规则')
+        // 'read'=>array('{id},{name}',60,'md5') 必须保证静态规则的唯一性 和 可判断性
+        // 检测静态规则
+        $moduleName = strtolower($default['module']);
+        $actionName = strtolower($default['action']);
+        if (isset($htmls[$moduleName . ':' . $actionName])) {
+            $html = $htmls[$moduleName . ':' . $actionName];   // 某个模块的操作的静态规则
+        } elseif (isset($htmls[$moduleName . ':'])) {// 某个模块的静态规则
+            $html = $htmls[$moduleName . ':'];
+        } elseif (isset($htmls[$actionName])) {
+            $html = $htmls[$actionName]; // 所有操作的静态规则
+        } elseif (isset($htmls['*'])) {
+            $html = $htmls['*']; // 全局静态规则
+        } elseif (isset($htmls['empty:index']) && !class_exists(MODULE_NAME . 'Action')) {
+            $html = $htmls['empty:index']; // 空模块静态规则
+        } elseif (isset($htmls[$moduleName . ':_empty']) && isEmptyAction(MODULE_NAME, ACTION_NAME)) {
+            $html = $htmls[$moduleName . ':_empty']; // 空操作静态规则
+        }
+        if (!empty($html)) {
+            // 解读静态规则
+            $rule = $html[0];
+            // 以$_开头的系统变量
+            $rule = preg_replace('/{\$(_\w+)\.(\w+)\|(\w+)}/e', "\\3(\$\\1['\\2'])", $rule);
+            $rule = preg_replace('/{\$(_\w+)\.(\w+)}/e', "\$\\1['\\2']", $rule);
+            // {ID|FUN} GET变量的简写
+            $rule = preg_replace('/{(\w+)\|(\w+)}/e', "\\2(\$_GET['\\1'])", $rule);
+            $rule = preg_replace('/{(\w+)}/e', "\$_GET['\\1']", $rule);
+            // 特殊系统变量
+            $rule = str_ireplace(
+                array('{:app}', '{:module}', '{:action}', '{:group}'),
+                array(APP_NAME, MODULE_NAME, ACTION_NAME, defined('GROUP_NAME') ? GROUP_NAME : ''),
+                $rule);
+            // {|FUN} 单独使用函数
+            $rule = preg_replace('/{|(\w+)}/e', "\\1()", $rule);
+            if (!empty($html[2])) $rule = $html[2]($rule); // 应用附加函数
+
+            // 当前缓存文件
+            return HTML_PATH . $rule . C('HTML_FILE_SUFFIX');
+        }
+    }
+    return false;
+}
+
+/**
+ * 递归删除文件夹中文件和文件夹
+ * @param $path
+ * @param bool $rmDir
+ * @return bool
+ */
+function rmDirFile($path,$rmDir=true){
+    if(!is_dir($path))
+        return false;
+    $handle = opendir($path);
+    if(!$handle)
+        return false;
+    while(false !== ($item = readdir($handle))) {
+        if ($item != '.' && $item != '..') {
+            $real_item = $path . '/' . $item;
+            is_dir($real_item) ? rmDirFile($real_item) : unlink($real_item);
+        }
+    }
+    if($rmDir)
+        return rmdir($path);
+    return true;
+}

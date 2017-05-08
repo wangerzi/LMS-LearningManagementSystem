@@ -23,8 +23,10 @@ class SystemAction extends CommonAction
         $this->checkFormUniqid(I('post.uniqid'));
 
         $res = updateConf(CONF_PATH.'verify.php',$_POST);
-        if($res['status'])
+        if($res['status']) {
+            clearUniqid();
             $this->success('修改成功');
+        }
         else
             $this->error($res['info']);
     }
@@ -40,8 +42,10 @@ class SystemAction extends CommonAction
         $this->checkFormUniqid(I('post.uniqid'));
 
         $res = updateConf(CONF_PATH.'register.php',$_POST);
-        if($res['status'])
+        if($res['status']) {
+            clearUniqid();
             $this->success('修改成功');
+        }
         else
             $this->error($res['info']);
     }
@@ -56,8 +60,10 @@ class SystemAction extends CommonAction
         $this->checkFormUniqid(I('post.uniqid'));
 
         $res = updateConf(CONF_PATH.'web.php',$_POST);
-        if($res['status'])
+        if($res['status']) {
+            clearUniqid();
             $this->success('修改成功');
+        }
         else
             $this->error($res['info']);
     }
@@ -71,8 +77,10 @@ class SystemAction extends CommonAction
         $this->checkFormUniqid(I('post.uniqid'));
 
         $res = updateConf(CONF_PATH.'plan.php',$_POST);
-        if($res['status'])
+        if($res['status']) {
+            clearUniqid();
             $this->success('修改成功');
+        }
         else
             $this->error($res['info']);
     }

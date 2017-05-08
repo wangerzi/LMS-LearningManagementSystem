@@ -5,23 +5,62 @@ $(function(){
     //激活collapase折叠插件;
     //$('.collapse').collapse();
     $('#left-leader').find("li[alt='"+left_row+"']").addClass('active');
-    /*签到的提交按钮*/
-    $('#checkout').click(function(){
-        $.ajax({
-            url         :   checkoutUrl,
-            dataType    :   'json',
-            type        :   'post',
-            success     :   function(data){
-                $('#checkoutArea').html(data.text);
-            },
-            error       :   function(status,xml,statusText){
-                $('#checkoutArea').html(statusText);
+
+    //签到的ajax获取
+    $.ajax({
+        url     :   checkoutInitUrl,
+        dataType:   'json',
+        type    :   'post',
+        success :   function(data){
+            if(!data.status) {
+                wq_alert('数据获取失败' + data.info);
+                return 0;
             }
-        });
+            $('#checkoutArea').html(data.info);
+            /*进度条效果*/
+            $('#exp-bar').animate({
+                width:parseFloat($("#exp-bar").attr('alt'))*100+'%',
+            },'fast');
+            /*签到的提交按钮*/
+            $('#checkout').click(function(){
+                $.ajax({
+                    url         :   checkoutUrl,
+                    dataType    :   'json',
+                    type        :   'post',
+                    success     :   function(data){
+                        $('#checkoutArea').html(data.text);
+                    },
+                    error       :   function(status,xml,statusText){
+                        $('#checkoutArea').html(statusText);
+                    }
+                });
+            });
+        },
+        error   :   function(){
+            $('#checkoutArea').html('数据获取失败');
+        }
     });
-    $('#exp-bar').animate({
-        width:parseFloat($("#exp-bar").attr('alt'))*100+'%',
-    },'fast');
+    //气泡的获取
+    $.ajax({
+        url         :   popUrl,
+        type        :   'post',
+        dataType    :   'json',
+        success     :   function(data){
+            if(!data.status){
+                wq_alert(data.info);
+                return 0;
+            }
+            if(data.num.friend>0)
+                $('.number-friend').text(data.num.friend);
+            if(data.num.supervision>0)
+                $('.number-supervision').text(data.num.supervision);
+            if(data.num.message>0)
+                $('.number-message').text(data.num.message);
+        },
+        error       :   function(status,xml,statusText){
+            wq_alert('气泡获取失败，'.statusText);
+        }
+    });
 
     //问候。
     say_hello('span#title_hello');

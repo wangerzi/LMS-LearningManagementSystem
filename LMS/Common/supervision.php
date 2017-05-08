@@ -52,13 +52,15 @@ function send_supervision_requests($pcid,$friends,$plan,$uid=null,$username=null
             'pcid'  =>  $pcid,
         );
         //检查是否存在
-        if($checkExist && !$db_sv_r->where($arr)->find())
+        if($checkExist && !empty($db_sv_r->where($arr)->find()))
             continue;
         $arr['time']=time();
         $arr['status']=0;
         //添加数据
         $db_sv_r->add($arr);
         $i++;
+        //清理对应用户的缓存
+        clear_cache('user/'.$rid.'/Index/Supervision/request/',true);
         //发送信息
         $content=$username.'邀请你监督他（她）的学习计划 《'.$plan['name'].'》 ，'."<a href='".U(GROUP_NAME.'/Supervision/request','',true,false,true)."'>前往</a>看看吧！";
         sendMessage($uid,$rid,'系统邮件',$content,get_email($rid));

@@ -24,7 +24,7 @@ $(function(){
         $(this).attr('src',function(i,oldVal){return oldVal+'&r='+Math.random()});
     });
 
-    $('#basicForm .save').click(function(){
+    $('#basicForm .save,#supervisionFrom .save').click(function(){
         submitForm($(this).parents('form'),null,{pid:pid,pcid:pcid});
     });
 
@@ -32,8 +32,8 @@ $(function(){
         submitForm($(this).parents('form'),function (data) {
             wq_alert('保存成功');
             $('#faceImg').attr('src',data.face);
-        });
-    },{pid:pid,pcid:pcid});
+        },{pid:pid,pcid:pcid});
+    });
     $('#restartForm').bootstrapValidator({
         verbose: false,
         message: 'This value is not valid',
@@ -160,16 +160,14 @@ $(function(){
 });
 /**
  * 检查一组数据是否改变
- * @param isNew 是否是新建任务
- * @param isStage   是否是新建任务
  * @param obj
  */
 function bind_check_change(obj,change,notChange){
-    $(obj).find('input')
+    $(obj).find('input,textarea')
         .unbind('keyup')
         .bind('keyup',function(){
             var flag=false;
-            $(obj).find('input').each(function () {
+            $(obj).find('input,textarea').each(function () {
                 if($(this).val()!=$(this).attr('value'))
                     flag=true;
             });
@@ -208,7 +206,7 @@ function add_mission(obj,isStageNew)
         '   </td>' +
         '   <td>' +
         '       <div class="form-group">' +
-        '           <input class="form-control" name="mission_info&'+id+'" data="'+id+'" value="" type="text" />' +
+        '           <textarea class="form-control" name="mission_info&'+id+'" data="'+id+'" value="" type="text" ></textarea>' +
         '           <span class="small text-nowrap text-danger help"></span>'+
         '       </div>'+
         '   </td>' +
@@ -273,7 +271,7 @@ function bindMissionCheck(obj){
     for(var i=0;i<obj.length;i++){
         var id=$(obj[i]).attr('data');
         var name=obj.find('input[name="mission&'+id+'"]');
-        var info=obj.find('input[name="mission_info&'+id+'"]');
+        var info=obj.find('textarea[name="mission_info&'+id+'"]');
         var hour=obj.find('input[name="mission_hour&'+id+'"]');
         var sort=obj.find('input[name="mission_sort&'+id+'"]');
 
@@ -329,7 +327,7 @@ function check_mission(obj){
     for(var i=0;i<obj.length;i++){
         var id=$(obj[i]).attr('data');
         var name=obj.find('input[name="mission&'+id+'"]');
-        var info=obj.find('input[name="mission_info&'+id+'"]');
+        var info=obj.find('textarea[name="mission_info&'+id+'"]');
         var sort=obj.find('input[name="mission_sort&'+id+'"]');
 
         //分开是因为name对象可能后边还有用
@@ -383,7 +381,7 @@ function check_stage(obj){
     for(var i=0;i<obj.length;i++){
         var id=$(obj[i]).attr('data');
         var name=$(obj[i]).find('input[name="stage&'+id+'"]');
-        var info=$(obj[i]).find('input[name="stage_info&'+id+'"]');
+        var info=$(obj[i]).find('textarea[name="stage_info&'+id+'"]');
         var power=$(obj[i]).find('input[name="stage_power&'+id+'"]');
         var sort=$(obj[i]).find('input[name="stage_sort&'+id+'"]');
 
@@ -406,8 +404,9 @@ function check_stage(obj){
             help.text('');
         }
 
+        //alert(info.length);
         //简介的检测
-        var help=info.parents('.form-group').find('.help');
+        help=info.parents('.form-group').find('.help');
         if(info_str.length>STAGE_MAX_INFO){
             help.text('步骤简介长度需要在'+0+'到'+STAGE_MAX_INFO+'之间！');
             info.focus();
@@ -418,7 +417,7 @@ function check_stage(obj){
         }
 
         //优先级的检测
-        var help=sort.parents('.form-group').find('.help');
+        help=sort.parents('.form-group').find('.help');
         if(sort_str<0){
             help.text('优先级不得小于0');
             sort.focus();
@@ -429,7 +428,7 @@ function check_stage(obj){
         }
 
         //优先级的检测
-        var help=sort.parents('.form-group').find('.help');
+        help=sort.parents('.form-group').find('.help');
         if(power_str<0 || power_str>10000){
             help.text('权值不得小于0或大于9999');
             sort.focus();
@@ -468,7 +467,7 @@ function add_stage(){
         '</td>'+
         '<td>'+
         '<div class="form-group">'+
-        '<input class="form-control" name="stage_info&'+n+'" data="'+n+'" type="text" value="" />' +
+        '<textarea class="form-control" name="stage_info&'+n+'" data="'+n+'" type="text"></textarea>' +
         '<span class="small text-nowrap text-danger help"></span>'+
         '</div>'+
         '</td>'+
@@ -560,7 +559,7 @@ function save_stage_new(obj){
     var id=$(stage).attr('data');
     //这一块还得留着。。
     var name=$(stage).find('input[name="stage&'+id+'"]');
-    var info=$(stage).find('input[name="stage_info&'+id+'"]');
+    var info=$(stage).find('textarea[name="stage_info&'+id+'"]');
     var power=$(stage).find('input[name="stage_power&'+id+'"]');
     var sort=$(stage).find('input[name="stage_sort&'+id+'"]');
 
@@ -637,7 +636,7 @@ function save_stage_new(obj){
 
             //id还是以前的那个ID
             var name=$(mission).find('input[name="mission&'+id+'"]');
-            var info=$(mission).find('input[name="mission_info&'+id+'"]');
+            var info=$(mission).find('textarea[name="mission_info&'+id+'"]');
             var hour=$(mission).find('input[name="mission_hour&'+id+'"]');
             var sort=$(mission).find('input[name="mission_sort&'+id+'"]');
 
@@ -698,7 +697,7 @@ function save_mission(obj){
     //这一块还得留着，之所以不用jquery.form.js，因为一行一个表单，着实难以管理。
     var top=$(obj).parents('tr:first');
     var name=top.find('input[name="mission&'+id+'"]');
-    var info=top.find('input[name="mission_info&'+id+'"]');
+    var info=top.find('textarea[name="mission_info&'+id+'"]');
     var sort=top.find('input[name="mission_sort&'+id+'"]');
 
     //分开是因为name对象可能后边还有用
@@ -741,7 +740,7 @@ function save_stage(obj){
     //这一块还得留着。。
     var top=$(obj).parents('tr:first');
     var name=top.find('input[name="stage&'+id+'"]');
-    var info=top.find('input[name="stage_info&'+id+'"]');
+    var info=top.find('textarea[name="stage_info&'+id+'"]');
     var power=top.find('input[name="stage_power&'+id+'"]');
     var sort=top.find('input[name="stage_sort&'+id+'"]');
 
@@ -794,7 +793,7 @@ function save_mission_new(obj){
     //这一块还得留着。。
     var top=$(obj).parents('tr:first');
     var name=top.find('input[name="mission&'+id+'"]');
-    var info=top.find('input[name="mission_info&'+id+'"]');
+    var info=top.find('textarea[name="mission_info&'+id+'"]');
     var sort=top.find('input[name="mission_sort&'+id+'"]');
 
     //分开是因为name对象可能后边还有用

@@ -282,7 +282,8 @@
 								<!--这里用p标签的话，容易引起Marin合并的问题-->
 								<div class="help-block small">任务量：{:round($v['avg_time']*1.0/86400,2)}天</>
 								<div class="help-block small collapse" id="mission_{$i}_{$j}">
-									描述:{$v['info']?$v['info']:'未添加描述'}
+									描述: <br>
+									{$v['info']?$v['info']:'未添加描述'}
 								</div>
 							</td>
 							<if condition="$v['time']">

@@ -17,8 +17,9 @@ class FriendAction extends CommonAction
     }
     /*find的表单处理！*/
     public function findHandle(){
-        if(!IS_AJAX||!IS_POST)
-            _404('页面不存在！');
+        //因为设置了翻页，所以。。。
+        /*if(!IS_AJAX||!IS_POST)
+            _404('页面不存在！');*/
         if(!checkFormUniqid(I('post.uniqid'))){
             echo '<h1>表单标识码已过期，请点击 “找朋友” 重试！</h1>';
             return 0;
@@ -130,6 +131,7 @@ class FriendAction extends CommonAction
 
         }
         if($db->delete($rid)){
+            //清理缓存
             $data['status']=true;
             $data['text']='申请处理成功！';
         }
@@ -249,9 +251,12 @@ class FriendAction extends CommonAction
         );
         if(M('friend_request')->add($temp)){
             load('@/message');
-            sendMessage($uid,$rid,'好友申请','用户'.cookie('username').'向您发起好友申请'.'<a href="'.U(GROUP_NAME.'/Friend/index','',true,false,true).'">');
+            sendMessage($uid,$rid,'好友申请','用户'.cookie('username').'向您发起'.'<a href="'.U(GROUP_NAME.'/Friend/index','',true,false,true).'">好友申请</a>');
             $data['status']=true;
-            $data['text']='添加成功！';
+            $data['text']='申请成功！';
+            //清理对应用户的缓存
+            clear_cache('user/'.$rid.'/Index/Friend/friendRequest/',true);
+            clear_cache('user/'.$uid.'/Index/Friend/findHandle/',true);
             $this->ajaxReturn($data);
         }else{
             $data['text']='；由于未知原因，添加失败，请重试！';
@@ -286,6 +291,9 @@ class FriendAction extends CommonAction
             load('@/message');
             $rid=$uid==$friend['fid']?$friend['rid']:$friend['fid'];
             sendMessage($uid,$rid,'系统邮件',cookie('username').'在'.date('Y-m-d H:i:s',time()).'已跟你解除好友关系！',get_email($rid));
+
+            //清理对应用户的缓存
+            clear_cache('user/'.$rid.'/Index/Friend/friendList/',true);
             $data['status']=true;
             $data['text']='删除成功！';
             $this->ajaxReturn($data);

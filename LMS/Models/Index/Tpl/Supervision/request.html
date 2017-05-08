@@ -77,12 +77,12 @@
 							<td>
 							<span class="btn-group">
 								<if condition="$val['plan_clone']['svid']">
-									<a class="btn btn-info" href="{:U(GROUP_NAME.'/Plan/detail',array('pcid'=>$val['plan_clone']['id']))}">
-										<span class="glyphicon glyphicon-list-alt"></span>
-										查看计划
-									</a>
 									<!--监督人是自己-->
 									<if condition="$val['plan_clone']['svid'] eq session('uid')">
+										<a class="btn btn-info" href="{:U(GROUP_NAME.'/Plan/detail',array('pcid'=>$val['plan_clone']['id']))}">
+											<span class="glyphicon glyphicon-list-alt"></span>
+											查看计划
+										</a>
 										<a class="btn btn-info" href="{:U(GROUP_NAME.'/Message/send',array('uid'=>$val['fid']))}" target="_blank" data="{$val.id}">
 											<span class="glyphicon glyphicon-comment"></span>
 											私信
@@ -92,6 +92,10 @@
 											解除监督
 										</button>
 									<else/>
+										<a class="btn btn-info" href="{:U(GROUP_NAME.'/Plan/share',array('pid'=>$val['plan_clone']['pid']))}">
+											<span class="glyphicon glyphicon-list-alt"></span>
+											查看计划
+										</a>
 										<button class="btn btn-danger" onclick="delSv(this)" data="{$val.id}">
 											<span class="glyphicon glyphicon-remove"></span>
 											删除

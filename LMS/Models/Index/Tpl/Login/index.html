@@ -15,6 +15,7 @@
     <script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/moment-with-locales.min.js'></script>
 
 
+    <script type="text/javascript" src='__PUBLIC__/js/sha1.js'></script>
     <script type="text/javascript" src='__PUBLIC__/js/basic.func.js'></script>
     <script type="text/javascript" src='__PUBLIC__/js/show/login.js?r=1'></script>
 
@@ -155,6 +156,8 @@
                         </IF>
                         <button type="submit" id="submit" class="btn btn-success">登录</button>
                         <a href="{:U(GROUP_NAME.'/Register/index')}" class="btn btn-primary" style="margin-left:10px;">注册</a>
+                        &nbsp;&nbsp;&nbsp;
+                        <a href="{:U(GROUP_NAME.'/Login/forget')}" class="small">忘记密码？点此找回</a>
                     </form>
                 </div>
             </div>

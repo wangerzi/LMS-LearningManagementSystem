@@ -47,7 +47,7 @@ function readMessage(obj){
         },
         success:function(data){
             if(!data.status){
-                wq_alert(data.text);
+                wq_alert(data.info);
                 $(obj).removeAttr('disabled');
                 return 0;
             }

@@ -7,6 +7,7 @@ $(function(){
     replaceWord($("input[name='password_2']"),'请确认密码');
 
     $('#passwordEdit').bootstrapValidator({
+        verbose:false,
         message: 'This value is not valid',
         feedbackIcons:{
             /*验证状态用的图标！*/
@@ -44,10 +45,6 @@ $(function(){
                     notEmpty:{
                         message:'密码不能为空！'
                     },
-                    identical:{
-                        field:'password_2',
-                        message:'两次输入密码不相同',
-                    },
                     stringLength:{
                         min:MIN_PAS,
                         max:MAX_PAS,
@@ -66,9 +63,52 @@ $(function(){
                     }
                 }
             }
-        },
-        submitHandler:function(validator,form,submitButton){
-            $('#addPlan').bootstrapValidator('disableSubmitButtons',false).defaultSubmit();
         }
-    })
+    }).on('success.bv.form',function(e){
+        e.preventDefault();
+
+        //获取form表单
+        var form=$('#passwordEdit');
+
+        $('#submit').attr("disabled",'disabled');
+
+        //为加密做准备
+        var pas_1 = $('input[name="password"]');
+        var pas_2 = $('input[name="password_2"]');
+
+        var pwd_1 = pas_1.val();
+        var pwd_2 = pas_2.val();
+
+        pas_1.val(hex_sha1(pwd_1));
+        pas_2.val(hex_sha1(pwd_2));
+
+        //ajax提交
+        $(form).ajaxSubmit({
+            url:form.attr('action'),
+            dataType:'json',
+            type:'post',
+            success:function(data) {
+                if(!data.status){
+                    //恢复密码
+                    pas_1.val(pwd_1);
+                    pas_2.val(pwd_2);
+                    wq_alert(data.info);
+                    $('#submit').removeAttr('disabled');
+                    //$('#submit').attr("disabled",'disabled');//禁用按钮，除非有改动。
+                    return 0;
+                }
+                wq_alert('密码修改成功，请重新登录',function(){
+                    location.href=successUrl;
+                });
+            },
+            error:function(xml,text){
+                //恢复密码
+                pas_1.val(pwd_1);
+                pas_2.val(pwd_2);
+                wq_alert(text+'可能服务器忙，请稍后重试！');
+                $('#submit').removeAttr('disabled');
+                return 0;
+            }
+        });
+    });
 });

@@ -36,8 +36,8 @@ function get_friend_request($uid,$uid_2){
  */
 function get_friend($uid,$uid_2){
     $db=M('friend');
-    $data=$db->where("(fid='%d' AND rid='%d') OR (fid='%d' AND rid='%d')",$uid,$uid_2,$uid_2,$uid)->limit(1)->select();
-    return $data[0];
+    $data=$db->where("(fid='%d' AND rid='%d') OR (fid='%d' AND rid='%d')",$uid,$uid_2,$uid_2,$uid)->find();
+    return $data;
 }
 function get_user_friend_db($uid,$option=array(),$filed=array()){
     $map=array(

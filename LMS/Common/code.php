@@ -102,7 +102,7 @@ function sendCode($mail,$code,$info='您在北京时间{__TIME__}，进行邮箱
     $content=str_replace('{__INFO__}',$info,$content);
     $content=str_replace('{__CODE__}',$code,$content);
     $content=str_replace('{__TIME__}',date('Y-m-d H:i:s',time()),$content);
-    addEmailTimeQueue($mail,C('WEB_NAME'),C('WEB_NAME').'--验证码邮件',$content,0);
+    addEmailTimeQueue($mail,C('WEB_NAME'),C('WEB_NAME').'--验证码邮件',$content,time());
 }
 
 /**

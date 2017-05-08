@@ -6,8 +6,8 @@ return array(
     'APP_GROUP_MODE' => 1,
     'APP_GROUP_PATH' => 'Models',
     'DB_HOST' => 'localhost',
-    'DB_USER' => 'root',
-    'DB_PWD' => 'root',
+    'DB_USER' => '',
+    'DB_PWD' => '',
     'DB_NAME' => 'think_lms',
     'DB_PREFIX' => 'wq_',
 
@@ -20,7 +20,7 @@ return array(
     'MAIL_TPL' => APP_PATH.'data/mail/',
 
     //加载其他的配置文件
-    'LOAD_EXT_CONFIG' => 'verify,mail,register,web,plan,message,account,feedback',
+    'LOAD_EXT_CONFIG' => 'verify,mail,register,web,plan,message,account,feedback,htmls',
 
     //修改默认控制器为Show
     'DEFAULT_MODULE' => 'Show',
@@ -47,6 +47,11 @@ return array(
         'Index/Login/pwdCheck',
         //检查验证码的。
         'Index/Login/verifyCheck',
+        //忘记密码的。
+        'Index/Login/forget',
+        'Index/Login/sendEmailCode',
+        'Index/Login/emailCodeCheck',
+        'Index/Login/forgetHandle',
 
         //注册页面
         'Index/Register/index',
@@ -78,7 +83,7 @@ return array(
 
     //用户账户相关
     'USER_BASE_PATH'    =>  APP_PATH.'data/user/',
-	
+
 	//版本信息
 	'WEB_VERSION'	=>	'1.2.1.20170419_release',
 );

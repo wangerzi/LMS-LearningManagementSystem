@@ -54,9 +54,10 @@ $(function(){
                         message:'密码不正确',
                         delay: 1000,
                         data:function(){
+                            var pas = hex_sha1($("input[name='password']").val());
                             return {
                                 username:$("input[name='username']").val(),
-                                password:$("input[name='password']").val(),
+                                xxx:pas,                //也不知道是什么奇葩，如果名字用password，死活传不了加密信息。
                             };
                         },
                         type:'post',
@@ -96,6 +97,10 @@ $(function(){
 
         $('#submit').attr("disabled",'disabled');
 
+        //加密
+        var pas = $('input[name="password"]');
+        var pwd_before = pas.val();
+        pas.val(hex_sha1(pwd_before));
         //ajax提交
         $(form).ajaxSubmit({
             url:form.attr('action'),
@@ -103,6 +108,7 @@ $(function(){
             type:'post',
             success:function(data) {
                 if(!data.status){
+                    pas.val(pwd_before);//恢复以前的密码。
                     wq_alert(data.info);
                     $('#submit').attr("disabled",'disabled');//禁用按钮，除非有改动。
                     return 0;
@@ -113,6 +119,7 @@ $(function(){
                     location.href=successUrl;
             },
             error:function(xml,text){
+                pas.val(pwd_before);//恢复以前的密码。
                 wq_alert(text+'可能服务器忙，请稍后重试！');
                 $('#submit').removeAttr('disabled');
                 return 0;

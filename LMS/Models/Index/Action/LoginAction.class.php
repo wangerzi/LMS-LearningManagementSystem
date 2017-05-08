@@ -25,9 +25,8 @@ class LoginAction extends CommonAction{
         if(intval(C('LOGIN_VERIFY')) && !imageCode::check('login_verify',I('post.verify')))
             $this->error('验证码错误！');
         $db=D('user');
-        $user=$db->where('username="%s" or email="%s"',I('post.username'),I('post.username'))->limit(1)->select();
-        $user=$user[0];//定位到1.
-        if($user) {
+        $user=$db->where('username="%s" or email="%s"',I('post.username'),I('post.username'))->find();
+        if(!empty($user)) {
             $res=M('active')->where('user_id=%d',$user['id'])->limit(1)->select();
             if(count($res)>0)
                 $this->error('用户未激活，请前往注册邮箱激活!');
@@ -115,7 +114,7 @@ class LoginAction extends CommonAction{
         if(!IS_AJAX||!IS_POST)
             _404('页面不存在！');
         $username=I('post.username');
-        $pwd=I('post.password');
+        $pwd=I('post.xxx');
         $map=array(
             'username'  =>  array('eq',$username),
             'email'     =>  array('eq',$username),
@@ -153,5 +152,100 @@ class LoginAction extends CommonAction{
             Image::GBVerify(C('VERIFY_LEN'),'png',100,30,'simhei.ttf','login_verify');
         else
             Image::buildImageVerify(C('VERIFY_LEN'),C('VERIFY_TYPE'),'png',100,30,'login_verify');*/
+    }
+    public function forget(){
+        $this->initUniqid(GROUP_NAME.'/Login/forgetHandle');
+        $this->display();
+    }
+    public function forgetHandle(){
+        if(!IS_POST){
+            _404('页面不存在！');
+        }
+        $name = I('post.username');
+        $map=array(
+            'username'  =>  array('eq',$name),
+            'email'     =>  array('eq',$name),
+            '_logic'    =>  'or',
+        );
+        $user=M('user')->field('id,email')->where($map)->find();
+        if(empty($user))
+            $this->error('用户不存在'.$name);
+        session('uid',$user['id']);
+        //调用那个已存在的方法即可。
+        $account = A('Index/Account');
+        $account->passwordSetNew();
+    }
+    /**
+     * 发送设置新邮箱的邮箱验证码！
+     */
+    function sendEmailCode(){
+        if(!IS_POST||!IS_AJAX){
+            _404('页面不存在！');
+        }
+
+        $data=array(
+            'status'    =>  false,
+            'text'      =>  '',
+        );
+        //检查标识码
+        $this->checkUrlUniqid(I('get.uniqid'),GROUP_NAME.'/Login/forgetHandle');
+        $name = I('post.name');
+        $map=array(
+            'username'  =>  array('eq',$name),
+            'email'     =>  array('eq',$name),
+            '_logic'    =>  'or',
+        );
+        $user=M('user')->field('id,email')->where($map)->find();
+        if(empty($user))
+            $this->error('用户不存在'.$name);
+        //检查是否过期
+        $space = time()-session('_mailCode_time');
+        if($space < 60)
+            $this->error('一分钟之内只能请求一次，现在还差'.(60-$space).'s的冷却时间');
+        $email = $user['email'];
+        $uid = $user['id'];
+        //记录请求时间
+        session('_mailCode_time',time());
+
+        load('@/code');
+        $code=createCode();
+        //发送并保存邮箱验证码
+        saveCode($uid,$code,GROUP_NAME.'/Login/forgetHandle');
+        sendCode($email,$code);
+        $data['status']=true;
+        $this->ajaxReturn($data);
+    }
+
+    /**
+     * 检查邮箱验证码
+     */
+    function emailCodeCheck(){
+        if(!IS_POST||!IS_AJAX){
+            _404('页面不存在！');
+        }
+        $name = I('post.name');
+        $map=array(
+            'username'  =>  array('eq',$name),
+            'email'     =>  array('eq',$name),
+            '_logic'    =>  'or',
+        );
+        $user=M('user')->field('id,email')->where($map)->find();
+        if(empty($user))
+            $this->error('用户不存在'.$name);
+        $uid=$user['id'];
+        $code=I('post.code');
+
+        $arr=array('valid'=>false);
+        load('@/code');
+        $for=GROUP_NAME.'/Login/forgetHandle';
+
+        //检查码是否正确
+        if(checkCode($uid,$code,$for,false)==0){
+            $arr['valid']=true;
+        }
+        $arr['user'] = $user;
+        /*$arr['lastSql']=M('code')->getLastSql();
+        $arr['code']=checkCode($uid,$code,$control,false);*/
+        $this->ajaxReturn($arr);
     }
 }

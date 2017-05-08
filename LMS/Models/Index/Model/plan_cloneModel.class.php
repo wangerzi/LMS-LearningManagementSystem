@@ -38,7 +38,7 @@ class plan_cloneModel extends Model
             return $data;
         }
         $plan = $this
-            ->table($this->trueTableName.' AS pc')
+            ->table(C('DB_PREFIX').'plan_clone AS pc')//使用$this->trueName在某些非调试模式下会出错。
             ->join(C('DB_PREFIX').'plan AS p ON pc.pid = p.id')
             ->field('pc.id,pc.pid,pc.uid,pc.svid,pc.start,pc.complete_time,pc.create_time,pc.end,p.uid as puid,p.open,p.mode,p.name,p.create_time as pcreate_time,p.last_edit_time,p.face,p.praised,p.saw')
             ->where('pc.id=%d',$pcid)
@@ -103,6 +103,8 @@ class plan_cloneModel extends Model
                     $complete_total_time += $plan_clone['stage'][$key]['mission'][$k]['avg_time'];//累加已完成时间。
                     $complete_mission++;//统计完成的总任务数。
                 }
+                //将换行换为回车。
+                $plan_clone['stage'][$key]['mission'][$k]['info'] = str_replace("\n",'<br/>',$v['info']);
             }
         }
 

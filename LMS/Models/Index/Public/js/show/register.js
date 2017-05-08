@@ -170,6 +170,16 @@ $(function(){
 
         $('#submit').attr("disabled",'disabled');
 
+        //为加密做准备
+        var pas_1 = $('input[name="password"]');
+        var pas_2 = $('input[name="password_2"]');
+
+        var pwd_1 = pas_1;
+        var pwd_2 = pas_2;
+
+        pas_1.val(hex_sha1(pwd_1));
+        pas_2.val(hex_sha1(pwd_2));
+
         //ajax提交
         $(form).ajaxSubmit({
             url:form.attr('action'),
@@ -177,6 +187,9 @@ $(function(){
             type:'post',
             success:function(data) {
                 if(!data.status){
+                    //恢复密码
+                    pas_1(pwd_1);
+                    pas_2(pwd_2);
                     wq_alert(data.info);
                     $('#submit').attr("disabled",'disabled');//禁用按钮，除非有改动。
                     return 0;
@@ -186,6 +199,9 @@ $(function(){
                 });
             },
             error:function(xml,text){
+                //恢复密码
+                pas_1(pwd_1);
+                pas_2(pwd_2);
                 wq_alert(text+'可能服务器忙，请稍后重试！');
                 $('#submit').removeAttr('disabled');
                 return 0;

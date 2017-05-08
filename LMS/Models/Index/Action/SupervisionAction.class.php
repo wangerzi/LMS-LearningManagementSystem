@@ -77,6 +77,8 @@ class SupervisionAction extends CommonAction {
             $data['text']='不满足鞭笞条件';
             $this->ajaxReturn($data);
         }
+        //列表目录缓存删除
+        clear_cache('user/'.session('uid').'/Index/Supervision/index/',true);
 
         $map=array(
             'pcid'  =>  array('eq',$pcid),
@@ -227,6 +229,7 @@ class SupervisionAction extends CommonAction {
             'reply_time'=>  time(),
         );
         if($db_sl->save($arr)){
+            clear_cache('user/'.session('uid').'/Index/Supervision/waiting/',true);
 
             //plan_clone中的uid
             $rid=$arr_sl['uid'];
@@ -286,6 +289,8 @@ class SupervisionAction extends CommonAction {
             'svid'  =>  $uid,
         );
         if(M('plan_clone')->save($arr)){
+            clear_cache('user/'.session('uid').'/Index/Supervision/request/',true);
+            clear_cache('user/'.session('uid').'/Index/Supervision/index/',true);
             $plan=M('plan')->field('name')->find($pc['pid']);
             //短信通知
             load('@/message');
@@ -341,6 +346,8 @@ class SupervisionAction extends CommonAction {
             $this->ajaxReturn($data);
         }
 
+        //缓存清理
+        clear_cache('user/'.session('uid').'/Index/Supervision/request/',true);
 
         //拒绝，则发送站内信提醒
         load('@/message');
@@ -397,6 +404,9 @@ class SupervisionAction extends CommonAction {
                 $this->ajaxReturn($data);
                 add_log('解除关系失败！pcid='.$pcid);
             }
+            //缓存清理
+            clear_cache('user/'.session('uid').'/Index/Supervision/index/',true);
+            clear_cache('user/'.session('uid').'/Index/Supervision/request/',true);
             $plan=M('plan')->field('name')->find($plan_clone['pid']);
             //在解除监督这里，需要站内信提醒，而删除那里则不用。
             load('@/message');

@@ -128,3 +128,17 @@ function filterMissions($arr,$sid){
     }
     return $data;
 }
+function clearPlanCache($uid,$pid,$pcid = null){
+    /*//清理缓存文件
+    clear_cache('user/'.$uid.'/Index/Plan/index/',true);//列表目录缓存删除
+    //某些时候没有pid
+    if(!empty($pcid)) {
+        clear_cache('user/' . $uid . '/Index/Plan/detail/' . $pcid . '/', false);//详情缓存清除。
+        clear_cache('user/' . $uid . '/Index/Plan/log/' . $pcid , false);//日志目录缓存
+        clear_cache('user/' . $uid . '/Index/Plan/edit/' . $pcid . '/', false);//编辑目录缓存
+    }*/
+    //将下面所有的都清除。
+    clear_cache('user/'.$uid.'/Index/Plan/',true);
+    if(!empty($pcid))
+        clear_cache('user/Index_Plan_share/'.$pid.'/',true);//分享目录缓存
+}

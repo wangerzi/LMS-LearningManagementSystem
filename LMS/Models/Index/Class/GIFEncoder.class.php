@@ -30,10 +30,10 @@ Class GIFEncoder {
     ::
     */
     function GIFEncoder        (
-        $GIF_src, $GIF_dly, $GIF_lop, $GIF_dis,
-        $GIF_red, $GIF_grn, $GIF_blu, $GIF_mod='bin'
+        $GIF_src, $GIF_dly=null, $GIF_lop=null, $GIF_dis=null,
+        $GIF_red=null, $GIF_grn=null, $GIF_blu=null, $GIF_mod='bin'
     ) {
-        if ( ! is_array ( $GIF_src ) && ! is_array ( $GIF_tim ) ) {
+        if ( ! is_array ( $GIF_src ) && ! is_array ( $GIF_dly ) ) {
             printf        ( "%s: %s", $this->VER, $this->ERR [ 'ERR00' ] );
             exit        ( 0 );
         }

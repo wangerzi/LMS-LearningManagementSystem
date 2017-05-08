@@ -133,3 +133,6 @@ body{
 
 	display: none;
 }
+.btn:after{
+	content:' ';
+}

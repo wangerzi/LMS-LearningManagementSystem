@@ -1,0 +1,95 @@
+<html lang='en'>
+<head>
+	<meta charset='utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1.0'>
+	<title>忘记密码-LMS学习管理系统</title>
+
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/base.css" />
+
+	<script type="text/javascript" src='__PUBLIC__/js/jquery.min.js'></script>
+	<script type="text/javascript" src='__PUBLIC__/js/bootstrap.min.js'></script>
+	<script type="text/javascript" src='__PUBLIC__/js/penguin/jquery.form.js'></script>
+	<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/bootstrapValidator.min.js'></script>
+	<script type="text/javascript" src='__PUBLIC__/js/sha1.js'></script>
+    <script type="text/javascript">
+		MIN_PAS={:C("MIN_PAS")};
+		MAX_PAS={:C("MAX_PAS")};
+		CODE_LEN={:C('ACCOUNT_CODE_LEN')};
+
+		//code检查网址
+		codeCheckUrl="{:U(GROUP_NAME.'/Login/emailCodeCheck')}";
+		//邮件发送网址
+		emailCodeUrl="{:U(GROUP_NAME.'/Login/sendEmailCode',array('uniqid'=>$url_uniqid))}";
+		//检测是否能用这个用户名/邮箱登录。
+		userNameCheckUrl='{:U(GROUP_NAME."/Login/usernameCheck")}';
+		successUrl = '{:U(GROUP_NAME."/Login/index")}';
+    </script>
+
+	<script type="text/javascript" src='__PUBLIC__/js/basic.func.js'></script>
+	<script type="text/javascript" src='__PUBLIC__/js/account/password_edit.js'></script>
+	<script type="text/javascript" src='__PUBLIC__/js/show/forget.js'></script>
+	<style type="text/css">
+	</style>
+</head>
+<body>
+<div class="container">
+	<div class="col-md-8 col-md-offset-2 well"  style="background:#fff;">
+		<h2>密码找回</h2>
+		<form action="{:U(GROUP_NAME.'/Login/forgetHandle');}" method="post" role="form" id="passwordEdit">
+			{$__UNIQID__}
+			<div class="col-md-12">
+				<div class="form-group">
+					<label>
+						用户名/邮箱
+					</label>
+					<input type="text" name="username" class="form-control">
+				</div>
+				<div class="form-group">
+					<label>
+						发送验证码
+					</label>
+					<div>
+						<!--考虑到用户可能重新发送验证码，这里还是不做限制了！-->
+						<button type="button" onclick="sendEmailCode(this)" class="btn btn-primary">发送邮箱验证码</button>
+						<p class="help-block">
+							点击‘发送邮箱验证码‘后，我们会发送唯一验证密匙至您的绑定邮箱，输入密匙后方可更改密码。
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="form-group">
+					<label>
+						输入密匙
+					</label>
+					<input type="text"  name="code" class="form-control" />
+				</div>
+			</div>
+			<div class="col-md-10">
+				<div class="form-group">
+					<label>
+						输入新密码
+					</label>
+					<input type="password" name="password" class="form-control">
+				</div>
+			</div>
+			<div class="col-md-10">
+				<div class="form-group">
+					<label>
+						确认新密码
+					</label>
+					<input type="password" name="password_2" class="form-control">
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="form-group">
+					<button type="submit" class="btn btn-success" id="submit">提交</button>
+					<button class="btn btn-danger" type="button" onclick="cancle_back();">取消</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+</body>
+</html>

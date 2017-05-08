@@ -51,6 +51,7 @@ class AccountAction extends CommonAction
         if(!$db->save($arr)){
             $this->error('保存失败，请重试！');
         }else{
+            clear_cache('user/'.$uid.'/',true);//清除所有缓存，否则由于缓存容易出现头像，用户名显示错误。
             unlink($this->user['face']);//删除之前的头像。
             clearUniqid();
             $this->redirect(GROUP_NAME.'/Account/index');
@@ -108,8 +109,10 @@ class AccountAction extends CommonAction
             'info'      =>  $info,
             'birth'     =>  $birth,
         );
-        if($db->save($data))
-            $this->success('修改成功！',U(GROUP_NAME.'/Account/index'));
+        if($db->save($data)) {
+            clear_cache('user/'.$uid.'/',true);//清除所有缓存，否则由于缓存容易出现头像，用户名显示错误。
+            $this->success('修改成功！', U(GROUP_NAME . '/Account/index'));
+        }
         else{
             $this->error('没有数据被修改！');
         }
@@ -244,9 +247,10 @@ class AccountAction extends CommonAction
         //为了确保安全，这里的标识码只能用一次，每次改密码的时候才会生成这个标识码！
 
         load('@/check');
-        if($str=mb_check_stringLen($pwd,C('MIN_PAS'),C('MAX_PAS'),'密码长度')!=true){
+        //加密后不能验证密码长度。
+        /*if($str=mb_check_stringLen($pwd,C('MIN_PAS'),C('MAX_PAS'),'密码长度')!=true){
             $this->error($str);
-        }
+        }*/
         load('@/code');
         $uid=session('uid');
         $db=M('user');

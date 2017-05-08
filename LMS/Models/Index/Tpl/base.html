@@ -16,11 +16,14 @@
         //左侧导航栏的位置
         var left_row='{$module_name}';
 		var checkoutUrl='{:U(GROUP_NAME."/Index/checkout")}';
+		var checkoutInitUrl='{:U(GROUP_NAME."/Index/checkoutInit")}';
+		//气泡获取地址
+		var popUrl = '{:U(GROUP_NAME."/Index/popNum")}';
     </script>
 	<script type="text/javascript" src='__PUBLIC__/js/basic.func.js'></script>
+	<script type="text/javascript" src='__PUBLIC__/js/base.js'></script>
     <block name="CSS_AND_JS"><!--JS和CSS处理区域！-->
     </block>
-	<script type="text/javascript" src='__PUBLIC__/js/base.js'></script>
 	<style type="text/css">
 	</style>
 </head>
@@ -70,11 +73,7 @@
 		<li id="messageArea">
 			<a href="{:U(GROUP_NAME.'/Message/index',array('onlyRead'=>true))}">
 				消息
-				<if condition="$number['message']">
-					<span class="badge number-message" style="background-color:#d9534f;">
-						{$number['message']}
-					</span>
-				</if>
+				<span class="badge number-message" style="background-color:#d9534f;"></span>
 			</a>
 		</li>
 		<li class="dropdown">
@@ -146,7 +145,7 @@
 				<div class="col-md-6 clearfix">
 					<img src="{$user['face']}" alt="" width="100px" height="100px" class="img-circle img-thumbnail img-responsive pull-left" />
 					<h3 style="color:#fff;">
-						<a href="">{$user['username']}，<span id="title_hello">你好</span></a>
+						<a href="{:U(GROUP_NAME.'/Account/index')}">{$user['username']}，<span id="title_hello">你好</span></a>
 					</h3>
 					<h4>{$user['info']}<!--业精于勤荒于嬉，行成于思毁于随。--></h4>
 				</div>
@@ -160,24 +159,8 @@
 							</div>
 						</div>
 						<div class="panel-body" id="checkoutArea" style="color:#333;">
-							<!--没签到的情况：-->
-							<if condition="$checkout['total'] lt 1">
-								<p class="pull-left" style="line-height:2.42857143;margin-right:10px;">今天还没签到哦！戳我签到 ( ﹁ ﹁ ) ~→</p>
-								<button type="submit" id="checkout" class="btn btn-success">一键签到</button>
-								<else/>
-								<p>
-									当前等级：<b class="text-danger">Lv. {$level.level}</b>，距离 <b class="text-primary">Lv. {$level['level']+1}</b>还差 <b>{$level.next}</b>点经验
-								</p>
-								<div class="progress" style="height:10px;margin-bottom:5px;">
-									<div alt="{$user['exp']/$level['next_need']}" id="exp-bar" class="progress-bar progress-bar-success progress-bar-striped active">
-										<span style="line-height:10px;">{$user['exp']}/{$level['next_need']}</span>
-									</div>
-								</div>
-								<!--您已连续签到 <b>{$user.checkout}</b> 天，下次签到获得 <b>{:checkoutExp($user['checkout']+1)}</b> 点经验-->
-							</if>
-							<!--签到完成的情况：-->
-							<!--签到成功，您已连续签到 <b>2</b> 天，获得 <b>2</b> 点经验-->
-							<!--已经签到的情况：-->
+							<!--之所以放里边而不是直接在上层DIV写样式，是因为这里的DIV会被覆盖-->
+							<div class="center-block text-center" style="line-height:45px;"><span class="glyphicon glyphicon-refresh"></span> 数据获取中</div>
 						</div>
 					</div>
 				</div>
@@ -205,31 +188,21 @@
 						<a href="{:U(GROUP_NAME.'/Friend/index')}">
 							<span class="glyphicon glyphicon-user"></span>
 							好友管理
-							<if condition="$number['friend']">
-								<span class="badge number-friend">
-									{$number['friend']}
-								</span>
-							</if>
+							<span class="badge number-friend"></span>
 						</a>
 					</li>
 					<li class="" alt="Supervision">
 						<a href="{:U(GROUP_NAME.'/Supervision/index')}">
 							<span class="glyphicon glyphicon-eye-open"></span>
 							我的监督
-							<if condition="$number['supervision']">
-								<span class="badge supervision">{$number['supervision']}</span>
-							</if>
+							<span class="badge number-supervision"></span>
 						</a>
 					</li>
 					<li class="" alt="Message">
 						<a href="{:U(GROUP_NAME.'/Message/index')}">
 							<span class="glyphicon glyphicon-envelope"></span>
 							<span>私信管理</span>
-							<if condition="$number['message']">
-								<span class="badge number-message">
-									{$number['message']}
-								</span>
-							</if>
+							<span class="badge number-message"></span>
 						</a>
 					</li>
 					<li class="" alt="Account">

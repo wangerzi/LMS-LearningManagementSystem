@@ -42,8 +42,9 @@ class MessageAction extends CommonAction
     }
     public function send(){
         $this->initUniqid(GROUP_NAME.'/Message/sendHandle');
+        //p($_SESSION);
+        //p(get_cache_file_name());
         //获取朋友信息
-
         load('@/friend');
 
         $rid=I('get.uid',0,'intval');
