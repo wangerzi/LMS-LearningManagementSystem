@@ -174,8 +174,8 @@ $(function(){
         var pas_1 = $('input[name="password"]');
         var pas_2 = $('input[name="password_2"]');
 
-        var pwd_1 = pas_1;
-        var pwd_2 = pas_2;
+        var pwd_1 = pas_1.val();
+        var pwd_2 = pas_2.val();
 
         pas_1.val(hex_sha1(pwd_1));
         pas_2.val(hex_sha1(pwd_2));
@@ -188,10 +188,11 @@ $(function(){
             success:function(data) {
                 if(!data.status){
                     //恢复密码
-                    pas_1(pwd_1);
+                    pas_1.val(pwd_1);
                     pas_2(pwd_2);
                     wq_alert(data.info);
-                    $('#submit').attr("disabled",'disabled');//禁用按钮，除非有改动。
+                    $('#submit').removeAttr('disabled');
+                    //$('#submit').attr("disabled",'disabled');//禁用按钮，除非有改动。
                     return 0;
                 }
                 wq_alert('注册成功，系统已发送注册邮件至您所指定的邮箱，激活后方可登录。',function(){
@@ -200,8 +201,8 @@ $(function(){
             },
             error:function(xml,text){
                 //恢复密码
-                pas_1(pwd_1);
-                pas_2(pwd_2);
+                pas_1.val(pwd_1);
+                pas_2.val(pwd_2);
                 wq_alert(text+'可能服务器忙，请稍后重试！');
                 $('#submit').removeAttr('disabled');
                 return 0;

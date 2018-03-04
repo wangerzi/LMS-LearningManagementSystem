@@ -1,0 +1,64 @@
+<extend name="./LMS/Models/Admin/Tpl/base.html" />
+<block name="title">自动回复</block>
+<block name="body">
+	<script type="text/javascript">
+		// 关键字回复接口列表
+		var KEYWORDS_INFO_URL = '{:U('keywordsList')}';
+	</script>
+	<script type="text/javascript" src="__PUBLIC__/js/Wechat/reply.js"></script>
+	<div class="row">
+		<div class="col s12">
+		  <ul class="tabs">
+		    <li class="tab col s3"><a class="active" href="#keyword">关键词回复</a></li>
+		    <li class="tab col s3"><a href="#default">默认消息回复</a></li>
+		    <li class="tab col s3"><a href="#subscribe">被关注回复</a></li>
+		  </ul>
+		</div>
+		<div id="keyword" class="col s12">
+			<h5>关键字回复</h5>
+			<form action="{:U('keywordHandle')}" method="post">
+				{$__UNIQID__}
+				<input type="hidden" name="type" value="keyword">
+				<!-- <div class="row" class="reply-template">
+					 <div class="input-field col s6">
+			          <input placeholder="keywords，使用英文逗号隔开" type="text" maxlength="200">
+			          <label>关键字</label>
+			        </div>
+			        <div class="input-field col s12">
+			          <textarea class="materialize-textarea" maxlength="400"></textarea>
+			          <label>回复内容，支持__date__,__time__,__nickname__,__sex__,关键字替换</label>
+			        </div>
+				</div> -->
+				<br>
+				<button class="btn" type="button" onclick="addKeywordsForm($(this).parents('form'))">添加关键字</button>
+				<button class="btn green" type="submit">保存修改</button>
+				<br>
+				<br>
+			</form>
+		</div>
+		<div id="default" class="col s12">
+			<h5>默认回复(关键字匹配无效的回复)</h5>
+			<form action="{:U('keywordHandle')}" method="post">
+				{$__UNIQID__}
+				<input type="hidden" name="type" value="default">
+				<div class="input-field col s12">
+			          <textarea class="materialize-textarea" name="content" maxlength="400">{:C('WECHAT_DEFAULT_REPLY')}</textarea>
+			          <label>回复内容，支持__date__,__time__,__nickname__,__sex__,关键字替换</label>
+		        </div>
+				<button class="btn green" type="submit">保存修改</button>
+			</form>
+		</div>
+		<div id="subscribe" class="col s12">
+			<h5>关注时回复</h5>
+			<form action="{:U('keywordHandle')}" method="post">
+				{$__UNIQID__}
+				<input type="hidden" name="type" value="subscribe">
+				<div class="input-field col s12">
+			          <textarea class="materialize-textarea" name="content" maxlength="400">{:C('WECHAT_SUBCRIBE_CONTENT')}</textarea>
+			          <label>回复内容，支持__date__,__time__,__nickname__,__sex__,关键字替换</label>
+		        </div>
+				<button class="btn green" type="submit">保存修改</button>
+			</form>
+		</div>
+	</div>
+</block>

@@ -1,0 +1,92 @@
+<extend name="./LMS/Models/Admin/Tpl/base.html" />
+<block name="title">管理用户</block>
+<block name="body">
+	<script type="text/javascript" src="__PUBLIC__/js/Wechat/user.js"></script>
+	<form action="{:U('addBlackList')}" method="post">
+		{$__UNIQID__}
+		<table class="bordered highlight">
+			<thead>
+				<tr>
+					<th class="center-align"><input type="checkbox" id="select-all"><label for="select-all" onclick="selectAll(this)">全选</label></th>
+					<th>头像</th>
+					<th>昵称/备注</th>
+					<th>性别</th>
+					<th>位置</th>
+					<th>语言</th>
+					<th>关注时间</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<foreach name="data" item="v" key="k">
+					<tr>
+						<td class="center-align"><input type="checkbox" name="openid[]" value="{$v['openid']}" id="openid-{$v['openid']}"><label for="openid-{$v['openid']}"></label></td>
+						<td><img src="{$v['headimgurl']}" class="circle" style="width:40px;"></td>
+						<td>{$v['nickname']}<notempty name="v['remark']">({$v['remark']})</notempty></td>
+						<td>{$v['sex']?'男':'女'}</td>
+						<td>{$v['country']} {$v['province']} {$v['city']}</td>
+						<td>{$v['language']}</td>
+						<td>{:date('Y-m-d H:i:s', $v['subscribe_time'])}</td>
+						<td>
+							<a href="#!" alt="{$v['remark']}" data-openid="{$v['openid']}" onclick="editRemark(this)" title="编辑备注"><i class="material-icons green-text">mode_edit</i></a>
+							<a href="#!" data-openid="{$v['openid']}" title="回复"><i class="material-icons">chat</i></a>
+							<notempty name="v['is_black']">
+								<a href="#!" data-openid="{$v['openid']}" onclick="chooseOne(this);removeBlackList(this);" title="移除黑名单"><i class="material-icons green-text">not_interested</i></a>
+								<else/>
+								<a href="#!" data-openid="{$v['openid']}" onclick="chooseOne(this);addBlackList(this);" title="加入黑名单"><i class="material-icons red-text">not_interested</i></a>
+							</notempty>
+						</td>
+					</tr>
+				</foreach>
+			</tbody>
+		</table>
+		<div class="row">
+			<div class="col m12">
+				<br>
+				<button class="btn red" type="button" onclick="addBlackList(this)"><i class="material-icons white-text left">not_interested</i>选中加入黑名单</button>
+				<button class="btn green" type="button" onclick="removeBlackList(this)"><i class="material-icons white-text left">delete</i>选中移除黑名单</button>
+			</div>
+		</div>
+		<!-- 添加到黑名单的提示框 -->
+		<div id="addBlackList" class="modal">
+	        <div class="modal-content">
+	            <h4>确定要将用户加入黑名单吗？</h4>
+	            <p>加入黑名单后，你将无法接收该用户发来的消息，且该用户无法接收公众号发出的消息，无法参与留言和赞赏，确认加入黑名单？</p>
+	        </div>
+	        <div class="modal-footer">
+	            <button type="submit" name="add" value="1" id="addBlackListSure" class="modal-action modal-close waves-effect waves-green btn-flat">确定</button>
+	            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">取消</a>
+	        </div>
+	    </div>
+	    <!-- 移除黑名单的提示框 -->
+		<div id="removeBlackList" class="modal">
+	        <div class="modal-content">
+	            <h4>确定要将用户移除黑名单吗？</h4>
+	            <p>移除黑名单后，你将可以接收该用户发来的消息，恢复用户的留言赞赏等功能，确认移除黑名单？</p>
+	        </div>
+	        <div class="modal-footer">
+	            <button type="submit" name="add" value="0" id="removeBlackListSure" class="modal-action modal-close waves-effect waves-green btn-flat">确定</button>
+	            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">取消</a>
+	        </div>
+	    </div>
+	</form>
+	<div id="editRemark" class="modal">
+        <form action="{:U('editRemark')}" method="post">
+            {$edit_remark___UNIQID__}
+            <div class="modal-content">
+                <h4>编辑备注</h4>
+                <br>
+                    <div class="input-field">
+                        <label>备注</label>
+                        <input type="text" name="remark" value="">
+                        <input type="hidden" name="openid" value="0">
+                        {$edit_remark___UNIQID__}
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="modal-action btn-flat waves-effect waves-light">提交</button>
+                <button type="button" class="modal-action modal-close btn-flat waves-effect waves-green">取消</button>
+            </div>
+        </form>
+    </div>
+</block>

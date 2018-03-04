@@ -1,0 +1,285 @@
+<extend name="./LMS/Models/Index/Tpl/base.html" />
+<block name="title">
+	添加学习计划
+</block>
+<block name="CSS_AND_JS">
+	<link rel="stylesheet" href="__PUBLIC__/css/bootstrap/bootstrapValidator.min.css">
+	<link rel="stylesheet" href="__PUBLIC__/css/bootstrap/bootstrap-datepicker.min.css">
+	<link rel="stylesheet" href="__PUBLIC__/css/bootstrap/bootstrap-slider.min.css">
+	<!--特色JS/CSS-->
+	<script type="text/javascript">
+		var PLAN_MIN_NAME={:C('PLAN_MIN_NAME')};
+		var PLAN_MAX_NAME={:C('PLAN_MAX_NAME')};
+		var STAGE_MIN_NAME={:C('STAGE_MIN_NAME')};
+		var STAGE_MAX_NAME={:C('STAGE_MAX_NAME')};
+		var STAGE_MAX_INFO={:C('STAGE_MAX_INFO')};//阶段描述最多字数
+		var MISSION_MIN_NAME={:C('MISSION_MIN_NAME')};
+		var MISSION_MAX_NAME={:C('MISSION_MAX_NAME')};
+		var MISSION_MAX_INFO={:C('MISSION_MAX_INFO')};//任务描述最多字数
+		var yesterday='{:date("Y-m-d",time()-86400)}';
+		var today='{:date("Y-m-d",time())}';
+		var successUrl='{:U(GROUP_NAME."/Plan/index")}';
+		var n=0;//第几阶段
+	</script>
+	<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/bootstrapValidator.min.js'></script>
+	<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/moment-with-locales.min.js'></script>
+	<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/bootstrap-slider.min.js'></script>
+	<!---->
+	<!--时间选择插件-->
+	<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/bootstrap-datepicker.min.js'></script>
+	<script type="text/javascript" src='__PUBLIC__/js/penguin/bootstrap/bootstrap-datepicker.zh-CN.min.js'></script>
+	<!--涉及到异步文件上传，所以引入了jquery.form.js-->
+	<script type="text/javascript" src='__PUBLIC__/js/penguin/jquery.form.js'></script>
+	<!--使用VUE-->
+	<script src="__PUBLIC__/js/vue.js"></script>
+	<!--<script type="text/javascript" src='__PUBLIC__/js/plan/add.js'></script>-->
+	<style type="text/css">
+		#main-body{
+			background-color:transparent;
+		}
+	</style>
+	<!--/特色JS/CSS-->
+</block>
+<block name="body">
+	<if condition="$haveMore">
+		<form action="{:U(GROUP_NAME.'/Plan/addPlanHandle')}" method="post" role="form" enctype="multipart/form-data" id="addPlan">
+			{$__UNIQID__}
+			<!--基本设置-->
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<div class="panel-title">
+						基本设置
+					</div>
+				</div>
+				<div class="panel-body">
+					<div class="row">
+						<!--计划名称-->
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="planName" class="control-label">计划名称</label>
+								<input type="text" class="form-control" name="name" placeholder="请输入计划名称" :value="name" id="planName" />
+							</div>
+						</div>
+						<!--开启时间-->
+						<div class="col-md-6">
+							<label>执行时间</label>
+							<div class="input-group input-daterange">
+								<input class="input-sm form-control" type="text" name="start" :value="start">
+								<span class="input-group-addon">到</span>
+								<input class="input-sm form-control" type="text" name="end" :value="end">
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<!--是否公开-->
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="control-label">是否公开</label>
+								<div class="radio">
+									<label onclick="showTips(this)" alt="公开模式下，其他人可通过 分享链接或搜索关键字 找到您的计划并加入学习。">
+										<input type="radio" name="open" value="1" :checked="open" />
+										公开
+									</label>
+									<label onclick="showTips(this)" alt="私密模式下，其他人则不能查看或加入你的计划。">
+										<input type="radio" name="open" value="0" :checked="!open"/>
+										私密
+									</label>
+									<span class="help-block small">
+                                    公开模式下，其他人可通过 分享链接或搜索关键字 找到您的计划并加入学习。
+                                </span>
+								</div>
+							</div>
+						</div>
+						<!--两种模式-->
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="control-label">计划模式</label>
+								<div class="radio">
+									<label>
+										<input type="radio" name="mode" value="1" :checked="mode" />
+										顺序模式
+									</label>
+									<label>
+										<input type="radio" name="mode" value="0" :checked="!mode" />
+										列表模式
+									</label>
+									<span class="help-block small" v-if="mode">顺序模式下，未完成的任务将有部分会被锁定，您只能一步一步往后进行。</span>
+									<span class="help-block small" v-else>列表模式下，您可以跨步骤,自由的完成任务，未完成的任务不会被锁定。</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--学习步骤和任务！-->
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<div class="panel-title">添加学习任务和子任务</div>
+				</div>
+				<div class="panel-body">
+					<div class="col-md-12" style="margin-bottom:10px;">
+						<!--添加步骤就在这里！-->
+						<div class="col-md-12" id="addStageArea" style="margin-bottom:10px;">
+							<div class="stage" v-for="(item,index) in missions">
+								<label class="control-label col-md-12">任务 <span class="num">{{index+1}}</span></label>
+								<div class="col-md-6">
+									<div class="form-group">
+										<input type="text" :name="'plane['+index+'][name]'" class="form-control" placeholder="任务名称" v-model="item.name" style="margin-bottom:5px;">
+									</div>
+									<div class="form-group">
+										<textarea :name="'plane['+index+'][info]'" cols="30" rows="3" placeholder="步骤描述（选填）" class="form-control" v-model="item.info"></textarea>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="col-md-12">
+										<div class="form-group">
+											<button type="button" class="btn btn-danger" @click="del_mission(index)">
+												<span class="glyphicon glyphicon-remove"></span>删除任务
+											</button>
+											<button type="button" class="btn btn-success add-mission-btn" @click="add_child(index)">
+												<span class="glyphicon glyphicon-plus"></span>添加子任务
+											</button>
+										</div>
+									</div>
+								</div>
+								<!--子任务-->
+								<div class="mission" v-for="(child, i) in item.child">
+									<label class="control-label col-md-11 col-md-offset-1">子任务<span class="num">{{i+1}}</span></label>
+									<div class="col-md-5 col-md-offset-1">
+										<div class="form-group">
+											<input type="text" :name="'plane['+index+'][child][i][name]'" class="form-control" placeholder="任务名称" v-model="child.name">
+										</div>
+										<div class="form-group">
+											<textarea :name="'plane['+index+'][child][i][info]'" cols="30" rows="3" placeholder="任务描述" class="form-control" v-model="child.info"></textarea>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="col-md-12 form-group">
+											<button type="button" class="btn btn-warning" @click="del_child(index,i)">
+												<span class="glyphicon glyphicon-remove-circle"></span>删除子任务
+											</button>
+											<button type="button" class="btn btn-success" @click="add_child(index,i)">
+												<span class="glyphicon glyphicon-plus"></span>添加同级子任务
+											</button>
+										</div>
+										<div class="col-md-12">
+											<!--<input class="slider" type="text" onchange="app.slide_change(app.index,app.i)" :value="child.time" :data-slider-ticks="'[0, '+(child.time + end_to_start() - alloc)+']'" data-slider-step="0.1" data-slider-ticks-labels='["0天", "max"]'/>{{child.time}}-->
+											<span>min: 10</span>
+											<vue-range :min="10" :max="100" v-model="child.time">
+												<div slot="start">10</div>
+												<div slot="end">100</div>
+											</vue-range>
+											<p class="text-danger" v-if="end_to_start() - alloc <= 0">没有足够的时间分配</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!--添加步骤的按钮！-->
+						<div class="col-md-12">
+							<button type="button" class="btn btn-info" @click="add_mission()" id="addStage">
+								<span class="glyphicon glyphicon-plus-sign"></span>
+								添加任务
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="panel-footer">
+					您可以点击 <a href="javascript:void();" @click="add_mission()">添加任务</a> 添加一个学习任务，并可以在学习任务下添加许多子任务，学习任务可以设置完成时长，我们会根据您每日的可学习时间计算出完成计划的总时间，每日可学习时间可以在 <a
+						href="">系统设置</a>里设置。
+				</div>
+			</div>
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<div class="panel-title">
+						监督人邀请
+					</div>
+				</div>
+				<!--好友的组合-->
+				<div class="panel-body">
+					<div class="form-inline" v-if="friends.length">
+						<div class="form-group" v-for="item in friends" style="padding-right:10px;">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" name="supervision[]" :value="item.id" :checked="item.checked" />
+									{{item.name}}
+								</label>
+							</div>
+						</div>
+					</div>
+					<span class="grey-text" v-else>您还没有好友哦，交完朋友再申请他们监督吧！</span>
+				</div>
+				<div class="panel-footer">
+					我们会向选中好友发出监督申请，好友接受申请后即可开始监督（<span class="text-warning">监督者拥有查看学习记录，查看计划详情的权限</span>），每个学习计划只能各有一个监督者，此项可以创建完成后再做更改！
+				</div>
+			</div>
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<div class="panel-title">
+						选择封面图片并提交（<span class="text-warning">封面比例9:5最佳，选填</span>）
+					</div>
+				</div>
+				<div class="panel-body">
+					<div class="form-group col-md-6">
+						<label class="control-label">
+							选择图片：
+						</label>
+						<input type="file" name="face" class="form-control" />
+					</div>
+				</div>
+			</div>
+			<fieldset>
+				<legend>
+					提交学习计划<!--点击提交就可以啦 ↖(^ω^)↗-->
+				</legend>
+				<div class="col-md-12">
+					<div class="form-group">
+						<button type="submit" class="btn btn-success" id="submit">
+							<span class="glyphicon glyphicon-ok"></span>
+							提交
+						</button>
+						<!--<button type="button" class="btn btn-info" id="validateBtn">
+							验证
+						</button>-->
+						<button type="button" onclick="wq_confirm('确认离开此页？您的计划将不会被保存！',function(){history.back();})" class="btn btn-danger">
+							<span class="glyphicon glyphicon-remove"></span>
+							取消
+						</button>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+		<else/>
+        <h3>计划已达您所处等级（Lv.{$level['level']}）上限(<span	class="text-warning">{$level['plan_num']}</span>)，无法继续添加</h3>
+        <p class="help-block">您可以 <a href="{:U(GROUP_NAME.'/Plan/index')}">删除某些计划</a> 或者 <a href="">提升您的等级</a>!</p>
+	</if>
+	<script>
+        var data = {
+            name: '哈哈哈啊',
+            start: '{:date("Y-m-d", time())}',
+            end: '{:date("Y-m-d", get_time(7))}',
+			alloc: 0,// 分配过的时间
+            open: 1,
+            mode: 1,
+            missions: [
+                {
+                    name:'xxx',
+					info:'111',
+					child:[
+					    {name:'xxx', info:'111', time:0.5},
+					    {name:'xxx', info:'222', time:1},
+					    {name:'xxx', info:'333', time:2},
+					]
+                }
+			],// 格式：[ {name:'xxx', info:'xxx', child:[ {name:'xxx', info:'xxx', time:5} ]} ]// 时间单位为h
+            friends: [
+				{name: 'Google', id:'1', checked:1},
+				{name: 'Jeffrey', id:'1', checked:1},
+				{name: 'Wang', id:'1', checked:0},
+			],// 格式：[ {name:'xxx', id:'1',checked:1 }]
+            face: '',
+        };
+//        vueRange = require('__PUBLIC__/js/penguin/vur-range.vue')
+	</script>
+	<script src="__PUBLIC__/js/plan/add-new.js"></script>
+</block>

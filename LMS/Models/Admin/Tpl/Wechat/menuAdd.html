@@ -1,0 +1,32 @@
+<extend name="./LMS/Models/Admin/Tpl/base.html"/>
+<block name="title">微信设置</block>
+<block name="CSS_AND_JS">
+</block>
+<block name="body">
+    <form action="{:U(GROUP_NAME.'/Wechat/option')}" method="post">
+        {$__UNIQID__}
+        <h4><b>添加菜单</b></h4>
+        <div class="row">
+            <div class="col s12">
+                <div class="input-field">
+                    <label>菜单名</label>
+                    <input type="text" name="app_id[]" value="" />
+                </div>
+                <div class="input-field">
+                    <label>菜单类型</label>
+                    <select name="type[]">
+                        <option value="0">点击事件</option>
+                        <option value="1">网址</option>
+                        <option value="2"></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12">
+                <button type="submit" class="btn waves-effect waves-light green">提交更改 <i class="material-icons right">send</i></button>
+                <button type="reset" class="btn waves-effect waves-light">重置</button>
+            </div>
+        </div>
+    </form>
+</block>

@@ -19,12 +19,12 @@
  * @return mixed
  */
 function addEmailTimeQueue($email,$name,$title,$content,$time,$for=null,$repeat=0,$is_function=false){
-    import('mail.MyEmail','./');
+    import('email.MyEmail','./');
     $mail = new MyEmail();
     return $mail->addEmailTimeQueue($email,$name,$title,$content,$time,$for,$repeat,$is_function,null);
 }
 function delEmailTimeQueue($for,$limit=1){
-    import('mail.MyEmail','./');
+    import('email.MyEmail','./');
     $mail = new MyEmail();
     return $mail->delEmailTimeQueue($for,$limit);
 }

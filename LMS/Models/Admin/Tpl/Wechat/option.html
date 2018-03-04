@@ -1,0 +1,36 @@
+<extend name="./LMS/Models/Admin/Tpl/base.html"/>
+<block name="title">微信设置</block>
+<block name="CSS_AND_JS">
+</block>
+<block name="body">
+    <form action="{:U(GROUP_NAME.'/Wechat/option')}" method="post">
+        {$__UNIQID__}
+        <h4><b>微信设置</b></h4>
+        <div class="row">
+            <div class="col s12">
+                <div class="input-field">
+                    <label>APP_ID</label>
+                    <input type="text" name="app_id" value="{:C('wechat_option')['app_id']}" />
+                </div>
+                <div class="input-field">
+                    <label>token</label>
+                    <input type="text" name="token" value="{:C('wechat_option')['token']}" />
+                </div>
+                <div class="input-field">
+                    <label>SECERT</label>
+                    <input type="password" name="secret" value="{:C('wechat_option')['secret']}" />
+                </div>
+                <div class="input-field">
+                    <label>aes_key</label>
+                    <input type="password" name="aes_key" value="{:C('wechat_option')['aes_key']}" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12">
+                <button type="submit" class="btn waves-effect waves-light green">提交更改 <i class="material-icons right">send</i></button>
+                <button type="reset" class="btn waves-effect waves-light">重置</button>
+            </div>
+        </div>
+    </form>
+</block>
